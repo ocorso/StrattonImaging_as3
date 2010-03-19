@@ -69,8 +69,12 @@ package com.bigspaceship.events{
 		public static const CLICK_START   		: String = "animateClickStart";
 		public static const MOUSE_DOWN			: String = "animateMouseDown";
 		public static const MOUSE_DOWN_START	: String = "animateMouseDownStart";
-		public static const MOUSE_UP			: String = "animateMouseUp";
 		public static const MOUSE_UP_START		: String = "animateMouseUpStart";
+		public static const MOUSE_UP			: String = "animateMouseUp";
+		public static const SELECT_START		: String = "selectStart";
+		public static const SELECT				: String = "select";
+		public static const DESELECT_START		: String = "deselectStart";
+		public static const DESELECT			: String = "deselect";
 		
 		
 		private var _data : Object;

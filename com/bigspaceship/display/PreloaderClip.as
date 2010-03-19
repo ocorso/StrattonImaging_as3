@@ -58,7 +58,7 @@ package com.bigspaceship.display
 		public function animateIn():void
 		{
 			Out.debug(this,"animateIn");
-			gotoAndPlay("IN");
+			gotoAndPlay("IN_START");
 			addEventListener(AnimationEvent.IN, _onPreloaderIn,false,0,true);
 		};
 		
@@ -126,7 +126,7 @@ package com.bigspaceship.display
 		// the timeline goes away.	
 		private function _animateOut():void
 		{
-			gotoAndPlay("OUT");
+			gotoAndPlay("OUT_START");
 			addEventListener(AnimationEvent.OUT, _onPreloaderOut,false,0,true);			
 		};
 

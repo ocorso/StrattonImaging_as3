@@ -51,7 +51,7 @@ package com.bigspaceship.utils
 	public class Lib
 	{
 		/**
-		 * The <code>loadSound()</code> method creates a new Instance of a class.
+		 * The <code>createAsset()</code> method creates a new Instance of a class.
 		 * 
 		 * @param 	$appDomainOrMc	Object			ApplicationDomain or MovieClip (reference to swf) where the classDefinition can be found.
 		 * @param	$classname 		String			Name of the Class that you want to create

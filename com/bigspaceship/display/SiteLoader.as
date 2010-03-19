@@ -39,24 +39,33 @@ package com.bigspaceship.display
 	
 	import com.bigspaceship.utils.Out;
 		
+	
 	public class SiteLoader extends MovieClip
 	{
 		private static var __instance			:SiteLoader;
 		public var preloader_mc 				:PreloaderClip;
 		
+		private var _initialWidth				:Number;
+		private var _initialHeight				:Number;
 		public static function getInstance():SiteLoader { return __instance; };
 		
 		public function SiteLoader()
 		{
-			Out.enableAllLevels();
-			Out.disableAllLevels();
+			Out.enableAllLevels(true);
+			//Out.disableAllLevels();
 			
 			__instance = this;
 			
 			preloader_mc.animateIn();
 			preloader_mc.addEventListener(Event.INIT,_startLoad,false,0,true);
 			preloader_mc.addEventListener(Event.COMPLETE,_onPreloaderOut,false,0,true);
-		};
+			
+			_initialWidth = 980;
+			_initialHeight = 742;
+			
+			stage.addEventListener(Event.RESIZE,_stageOnResize,false,0,true);
+			_stageResized();
+		}
 
 		protected function _startLoad($evt:Event):void
 		{
@@ -64,11 +73,17 @@ package com.bigspaceship.display
 			l.contentLoaderInfo.addEventListener(Event.COMPLETE,_onLoadComplete,false,0,true);
 			l.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS,_onLoadProgress,false,0,true);
 			
-			var baseSWFPath:String = stage.loaderInfo.parameters.baseSWFPath || "./";
+			var baseSWFPath:String = stage.loaderInfo.parameters.baseUrl || "./";
 			
-			l.load(new URLRequest(baseSWFPath + "main.swf"));
+			l.load(new URLRequest(baseSWFPath + "Main.swf"));
 		};
-		
+		private function _stageOnResize($evt:Event):void { _stageResized(); }
+		private function _stageResized():void {
+			var w:Number = Math.max(stage.stageWidth,_initialWidth);
+			var h:Number = Math.max(stage.stageWidth,_initialHeight);
+			preloader_mc.x = w * .5 - preloader_mc.width/2;
+			
+		}
 		protected function _onLoadProgress($evt:ProgressEvent):void { preloader_mc.updateProgress($evt.bytesLoaded,$evt.bytesTotal,0,10); };
 		protected function _onLoadComplete($evt:Event):void { addChild($evt.target.content); };		
 		protected function _onPreloaderOut($evt:Event):void { __instance = null; };
