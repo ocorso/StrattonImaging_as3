@@ -10,7 +10,7 @@ package com.strattonimaging.site.display
 	import com.bigspaceship.utils.SimpleSequencer;
 	import com.strattonimaging.site.Constants;
 	import com.strattonimaging.site.display.components.Background;
-	import com.strattonimaging.site.display.components.BackgroundSquare;
+	import com.strattonimaging.site.display.components.Footer;
 	import com.strattonimaging.site.display.components.Header;
 	import com.strattonimaging.site.display.screens.Home;
 	import com.strattonimaging.site.display.screens.Screen;
@@ -22,6 +22,8 @@ package com.strattonimaging.site.display
 	import flash.events.Event;
 	import flash.events.ProgressEvent;
 	import flash.utils.Dictionary;
+	
+	import net.ored.util.Resize;
 
 	public class MainView extends Standard
 	{
@@ -29,8 +31,7 @@ package com.strattonimaging.site.display
 		private var _screens				:Dictionary;
 		
 		private var _header					:Header;
-		//TODO: create footer
-		//private var _footer					:Footer;
+		private var _footer					:Footer;
 		private var _background				:Background;
 		
 		private var _siteModel				:SiteModel;
@@ -41,7 +42,7 @@ package com.strattonimaging.site.display
 		private var _screenLoading			:String;
 		
 		
-		private var _isInitialIn			:Boolean;
+		private var _isInitialIn			:Boolean = true;
 		private var _bPreloaderIn			:Boolean;
 		
 		public function MainView($mc:MovieClip, $useWeakReference:Boolean=false)
@@ -61,22 +62,31 @@ package com.strattonimaging.site.display
 				_mc.addChild(_layers[i]);
 			}
 			
-			_mc.stage.addEventListener(Event.RESIZE,_stageOnResize,false,0,true);
+			_mc.stage.addEventListener(Event.RESIZE,Resize.onResize,false,0,true);
 			_stageOnResize();
 			
 		}//end constructor
 		
 		// resize
 		private function _stageOnResize($evt:Event = null):void {
-			var w:Number = Math.max(_mc.stage.stageWidth,Constants.STAGE_WIDTH);
-			var h:Number = Math.max(_mc.stage.stageHeight,Constants.STAGE_HEIGHT);
+		
+			Resize.add(
+				"@id+centerBottom",
+				_layers[Constants.LAYERS_HEADER],
+				[Resize.BOTTOM, Resize.CENTER_X, Resize.CUSTOM],
+				{
+					bottom_offset:		500,
+					custom:				function($target, $params, $stage):void{
+						$target.y	-=	$params.bottom_offset;
+					}
+				}
+			);
+			//_layers[Constants.LAYERS_HEADER].x = Math.round((w - Constants.STAGE_WIDTH) * .5);
+			//_layers[Constants.LAYERS_FOOTER].y = Math.max(Math.round((h - Constants.STAGE_HEIGHT)),85);
+			//_layers[Constants.LAYERS_SCREEN].x = Math.round((w - Constants.STAGE_WIDTH) * .5);
+			//_layers[Constants.LAYERS_LOADER].x = Math.round((w - Constants.STAGE_WIDTH) * .5);
 			
-			_layers[Constants.LAYERS_HEADER].x = Math.round((w - Constants.STAGE_WIDTH) * .5);
-			_layers[Constants.LAYERS_FOOTER].y = Math.max(Math.round((h - Constants.STAGE_HEIGHT)),85);
-			_layers[Constants.LAYERS_SCREEN].x = Math.round((w - Constants.STAGE_WIDTH) * .5);
-			_layers[Constants.LAYERS_LOADER].x = Math.round((w - Constants.STAGE_WIDTH) * .5);
-			
-			_layers[Constants.LAYERS_BACKGROUND].x = Math.round((w - Constants.STAGE_WIDTH) * .5);
+			//_layers[Constants.LAYERS_BACKGROUND].x = Math.round((w - Constants.STAGE_WIDTH) * .5);
 		}
 		/***********************************************************/
 		//loading functions
@@ -106,6 +116,12 @@ package com.strattonimaging.site.display
 					_background = new Background($swf);
 					_layers[Constants.LAYERS_BACKGROUND].addChild(_background.mc);
 					break;
+				case Constants.COMPONENT_FOOTER:
+					_footer = new Footer($swf,$xml);
+					_layers[Constants.LAYERS_FOOTER].addChild(_footer.mc);
+					_footer.animateIn();
+					
+					break;
 				case Constants.COMPONENT_HEADER:
 					_header = new Header($swf,$xml);
 					_layers[Constants.LAYERS_HEADER].addChild(_header.mc);
@@ -114,10 +130,6 @@ package com.strattonimaging.site.display
 				/*
 				//TODO: Create these other components and screens
 					
-				case Constants.COMPONENT_FOOTER:
-					_footer = new Footer($swf,$xml);
-					_layers[Constants.LAYERS_FOOTER].addChild(_footer.mc);
-					break;
 				
 				
 				case Constants.COMPONENT_SECTION_LOADER:
@@ -199,13 +211,12 @@ package com.strattonimaging.site.display
 			_sequencer = new SimpleSequencer("in");
 			_sequencer.addEventListener(Event.COMPLETE,_screenOnAnimateIn,false,0,true);
 			
-			if(!_isInitialIn) {
-				_isInitialIn = true;
+			if(_isInitialIn) {
+				_isInitialIn = false;
 				
 				_sequencer.addStep(1,_background,_background.animateIn,AnimationEvent.IN);
 				_sequencer.addStep(3,_header,_header.animateIn,AnimationEvent.IN);	
-				//TODO: add footer!!
-				//_sequencer.addStep(3,_footer,_footer.animateIn,AnimationEvent.IN);	
+				_sequencer.addStep(3,_footer,_footer.animateIn,AnimationEvent.IN);	
 			}
 			
 			_header.setActiveScreen();
@@ -217,7 +228,7 @@ package com.strattonimaging.site.display
 		private function _screenOnAnimateIn($evt:Event):void {
 			Out.status(this,"_screenOnAnimateIn();");
 			_destroySequencer();
-			if(_siteModel.nextScreen != _siteModel.currentScreen) _goToNextScreen();
+			//if(_siteModel.nextScreen != _siteModel.currentScreen) _goToNextScreen();
 		
 		}		
 		

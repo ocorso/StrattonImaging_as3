@@ -29,15 +29,17 @@
 
 package com.bigspaceship.display
 {	
-	import flash.net.URLRequest;
-
+	import com.bigspaceship.utils.Out;
+	
 	import flash.display.Loader;
 	import flash.display.MovieClip;
-
+	import flash.display.StageAlign;
+	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.ProgressEvent;
+	import flash.net.URLRequest;
 	
-	import com.bigspaceship.utils.Out;
+	import net.ored.util.Resize;
 		
 	
 	public class SiteLoader extends MovieClip
@@ -55,7 +57,8 @@ package com.bigspaceship.display
 			//Out.disableAllLevels();
 			
 			__instance = this;
-			
+			stage.scaleMode = StageScaleMode.NO_SCALE;
+			stage.align = StageAlign.TOP_LEFT;
 			preloader_mc.animateIn();
 			preloader_mc.addEventListener(Event.INIT,_startLoad,false,0,true);
 			preloader_mc.addEventListener(Event.COMPLETE,_onPreloaderOut,false,0,true);
@@ -63,8 +66,9 @@ package com.bigspaceship.display
 			_initialWidth = 980;
 			_initialHeight = 742;
 			
-			stage.addEventListener(Event.RESIZE,_stageOnResize,false,0,true);
-			_stageResized();
+			Resize.setStage(this.stage);
+			stage.addEventListener(Event.RESIZE, Resize.onResize,false,0,true);
+			Resize.onResize();
 		}
 
 		protected function _startLoad($evt:Event):void
@@ -77,15 +81,10 @@ package com.bigspaceship.display
 			
 			l.load(new URLRequest(baseSWFPath + "Main.swf"));
 		};
-		private function _stageOnResize($evt:Event):void { _stageResized(); }
-		private function _stageResized():void {
-			var w:Number = Math.max(stage.stageWidth,_initialWidth);
-			var h:Number = Math.max(stage.stageWidth,_initialHeight);
-			preloader_mc.x = w * .5;
-			
-		}
 		protected function _onLoadProgress($evt:ProgressEvent):void { preloader_mc.updateProgress($evt.bytesLoaded,$evt.bytesTotal,0,10); };
 		protected function _onLoadComplete($evt:Event):void { addChild($evt.target.content); };		
-		protected function _onPreloaderOut($evt:Event):void { __instance = null; };
+		protected function _onPreloaderOut($evt:Event):void {
+			__instance = null;
+		};
 	};
 }

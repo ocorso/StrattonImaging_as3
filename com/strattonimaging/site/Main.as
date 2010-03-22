@@ -3,6 +3,7 @@ package com.strattonimaging.site
 	import com.bigspaceship.display.PreloaderClip;
 	import com.bigspaceship.display.SiteLoader;
 	import com.bigspaceship.loading.BigLoader;
+	import com.bigspaceship.utils.Environment;
 	import com.bigspaceship.utils.Out;
 	import com.strattonimaging.site.display.MainView;
 	import com.strattonimaging.site.events.ScreenEvent;
@@ -14,9 +15,11 @@ package com.strattonimaging.site
 	import flash.events.Event;
 	import flash.events.ProgressEvent;
 	
+	import net.ored.util.Resize;
+	
 	import nl.demonsters.debugger.MonsterDebugger;
 	
-	[SWF (width="980", height="742", backgroundColor="#DDDDDD", frameRate="30")]
+	[SWF (width="980", height="742", backgroundColor="#ffffff", frameRate="30")]
 	public class Main extends MovieClip
 	{
 		private var _mainview										:MainView;
@@ -42,24 +45,28 @@ package com.strattonimaging.site
 		public function Main()
 		{
 			super();
-			Out.enableAllLevels(true);
-			// Init the debugger
-			debugger = new MonsterDebugger(this);
-
-			
-			_siteModel = SiteModel.getInstance();
-			
 			if(!stage) addEventListener(Event.ADDED_TO_STAGE,_initialize,false,0,true);
 			else _initialize();
+			
 		}//end constructor
 		
 		private function _initialize($evt:Event = null):void{
-			Out.status(this,"_initialize();");
+						
 			removeEventListener(Event.ADDED_TO_STAGE,_initialize);
+			// Init the debuggers
+			debugger = new MonsterDebugger(this);
+			Out.enableAllLevels(true);
+			Out.status(this,"_initialize();");
 			
+			//site wide config
+			_siteModel = SiteModel.getInstance();
 			_siteModel.initialize(stage.loaderInfo);
-			stage.scaleMode = StageScaleMode.NO_SCALE;
-			stage.align = StageAlign.TOP_LEFT;
+			
+			if(!Environment.IS_IN_BROWSER){
+				stage.scaleMode = StageScaleMode.NO_SCALE;
+				stage.align = StageAlign.TOP_LEFT;
+				Resize.setStage(stage);
+			}//end if we're running from FB
 			
 			
 			_mainview = new MainView(this);
@@ -76,7 +83,7 @@ package com.strattonimaging.site
 			
 			_loadState = __LOAD_STATE_INIT;
 			_loadConfigXml();
-			//TODO: create the site!
+			
 		}//end initialize function
 		
 		/***********************************************************/
@@ -260,6 +267,10 @@ package com.strattonimaging.site
 		
 		private function _preloaderOnAnimateOut($evt:Event = null):void {
 			Out.status(this,"_preloaderOnAnimateOut();");
+			
+			_preloader = new PreloaderClip();
+			_mainview.addPreloader(_preloader);
+			
 			if(!_mainview.isNextScreenLoaded) _loadScreen();
 			else _mainview.screenOnLoaded();	
 			

@@ -30,13 +30,14 @@
 
 package com.bigspaceship.display
 {	
+	import com.bigspaceship.events.AnimationEvent;
+	import com.bigspaceship.utils.Out;
+	
 	import flash.display.MovieClip;
-
 	import flash.events.Event;
 	import flash.events.ProgressEvent;
 	
-	import com.bigspaceship.utils.Out;	
-	import com.bigspaceship.events.AnimationEvent;
+	import net.ored.util.Resize;
 	
 	// the filename will be PreloaderClip.as. class name and file name have to match
 	public class PreloaderClip extends MovieClip
@@ -52,7 +53,18 @@ package com.bigspaceship.display
 		
 		// the constructor.
 		// when a PreloaderClip begins to exist (either by appearing on the timeline or by calling new PreloaderClip() in code) this function is automatically called.
-		public function PreloaderClip():void {};
+		public function PreloaderClip():void {
+			Resize.add(	"@Preloader",
+				this,
+				[Resize.CENTER_X, Resize.CUSTOM],
+				{
+					top_offset:		45,
+					custom:				function($target, $params, $stage):void{
+						$target.y	+=	$params.top_offset;
+					}
+				}
+			);
+		}
 		
 		// call animateIn to kick off the timeline IN animation.
 		public function animateIn():void
