@@ -71,16 +71,17 @@ package com.strattonimaging.site.display
 		private function _stageOnResize($evt:Event = null):void {
 		
 			Resize.add(
-				"@id+centerBottom",
+				"@headerResize",
 				_layers[Constants.LAYERS_HEADER],
 				[Resize.BOTTOM, Resize.CENTER_X, Resize.CUSTOM],
 				{
-					bottom_offset:		500,
+					bottom_offset:		Constants.BOTTOM_OFFSET,
 					custom:				function($target, $params, $stage):void{
 						$target.y	-=	$params.bottom_offset;
 					}
 				}
 			);
+			
 			//_layers[Constants.LAYERS_HEADER].x = Math.round((w - Constants.STAGE_WIDTH) * .5);
 			//_layers[Constants.LAYERS_FOOTER].y = Math.max(Math.round((h - Constants.STAGE_HEIGHT)),85);
 			//_layers[Constants.LAYERS_SCREEN].x = Math.round((w - Constants.STAGE_WIDTH) * .5);

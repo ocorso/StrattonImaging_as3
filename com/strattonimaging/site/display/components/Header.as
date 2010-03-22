@@ -3,11 +3,14 @@ package com.strattonimaging.site.display.components
 	import com.asual.swfaddress.SWFAddress;
 	import com.bigspaceship.display.StandardButton;
 	import com.bigspaceship.utils.Out;
+	import com.strattonimaging.site.Constants;
 	import com.strattonimaging.site.display.screens.Screen;
 	
 	import flash.display.MovieClip;
 	import flash.events.MouseEvent;
 	import flash.utils.Dictionary;
+	
+	import net.ored.util.Resize;
 	
 	public class Header extends Screen
 	{
@@ -20,20 +23,46 @@ package com.strattonimaging.site.display.components
 		public function Header($mc:MovieClip, $xml:*, $useWeakReference:Boolean=false)
 		{
 			super($mc, $xml, $useWeakReference);
+			
+			_setupNav();
+			_setupResize();
+			
+		}//end constructor
+		
+		private function _setupNav():void{
 			_navIdsToItems = new Dictionary(true);
 			_navItemsToIds = new Dictionary(true);
 			
 			//setup nav
 			for(var i:int=0;i<_xml.menu.length();i++) {
 				var id:String = _xml.menu[i].@id.toString();
-				
-				if (id == "home")	_navIdsToItems[id] = new StandardButton(_mc[id + "_mc"]);					
-				else _navIdsToItems[id] = new StandardButton(_mc.tabs_mc[id + "_mc"]);					
+				Out.info(this, "the id of this button is: "+ id);
+				//setup nav btns
+				_navIdsToItems[id] = new StandardButton(_mc.tabs_mc[id + "_mc"]);					
 				_navIdsToItems[id].addEventListener(MouseEvent.CLICK,_navOnClick,false,0,true);
 				//_navIdsToItems[id].addEventListener(MouseEvent.ROLL_OVER,_navOnRoll,false,0,true);
 				_navItemsToIds[_navIdsToItems[id]] = id;
 			}//end for
-		}//end constructor
+			
+		}//end function
+		
+		private function _setupResize():void{
+			Resize.add(
+				"@headerBtns",
+				_mc.tabs_mc,
+				Resize.CENTER_X,
+				{}
+			);//end btns center
+			Resize.add(
+				"@headerBar",
+				_mc.bar_mc,
+				Resize.FULLSCREEN_X,
+				{}
+			);//end nav bar full X
+		
+		}//end function
+		
+		
 		private function _navOnClick($evt:MouseEvent):void {
 			Out.debug(this, "just clicked: "+ $evt.target);
 			var screenId:String = _navItemsToIds[$evt.target];

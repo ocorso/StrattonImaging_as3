@@ -19,7 +19,7 @@ package com.strattonimaging.site
 	
 	import nl.demonsters.debugger.MonsterDebugger;
 	
-	[SWF (width="980", height="742", backgroundColor="#ffffff", frameRate="30")]
+	[SWF (width="960", height="570", backgroundColor="#ffffff", frameRate="30")]
 	public class Main extends MovieClip
 	{
 		private var _mainview										:MainView;
