@@ -30,6 +30,7 @@
 package com.bigspaceship.display
 {
 	import com.bigspaceship.events.AnimationEvent;
+	import com.bigspaceship.utils.Out;
 	
 	import flash.display.MovieClip;
 	
@@ -110,7 +111,6 @@ package com.bigspaceship.display
 		 */		
 		public function animateIn($forceAnim:Boolean=false):void{
 			if((_curState != AnimationState.IN_START && _curState != AnimationState.IN) || $forceAnim ){
-				//trace("animateIn");
 				_mc.gotoAndPlay("IN_START");
 				_curState = AnimationState.IN_START;
 			}else if(_curState == AnimationState.IN && _dispatchCompleteOnUnchangedState){
@@ -124,7 +124,6 @@ package com.bigspaceship.display
 		 * 
 		 */		
 		public function animateOut($forceAnim:Boolean=false):void{
-			//trace("animate out called");
 			if((_curState == AnimationState.IN && _curState != AnimationState.OUT_START && _curState != AnimationState.OUT) || $forceAnim){
 				_curState = AnimationState.OUT_START;
 				_mc.gotoAndPlay("OUT_START");
@@ -155,7 +154,7 @@ package com.bigspaceship.display
 		}
 	
 		private function _onAnimateIn_handler($evt:AnimationEvent = null):void{
-			trace("_onAnimateIn_handler");
+			Out.debug(this, "_onAnimateIn_handler");
 			_mc.stop();
 			_curState = AnimationState.IN;
 			_onAnimateIn();

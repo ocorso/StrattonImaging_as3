@@ -1,4 +1,4 @@
-package com.strattonimaging.site.display.assets
+package com.strattonimaging.site.display.components
 {
 	import com.asual.swfaddress.SWFAddress;
 	import com.bigspaceship.display.StandardButton;
@@ -27,7 +27,8 @@ package com.strattonimaging.site.display.assets
 			for(var i:int=0;i<_xml.menu.length();i++) {
 				var id:String = _xml.menu[i].@id.toString();
 				
-				_navIdsToItems[id] = new StandardButton(_mc.tabs_mc[id + "_mc"]);					
+				if (id == "home")	_navIdsToItems[id] = new StandardButton(_mc[id + "_mc"]);					
+				else _navIdsToItems[id] = new StandardButton(_mc.tabs_mc[id + "_mc"]);					
 				_navIdsToItems[id].addEventListener(MouseEvent.CLICK,_navOnClick,false,0,true);
 				//_navIdsToItems[id].addEventListener(MouseEvent.ROLL_OVER,_navOnRoll,false,0,true);
 				_navItemsToIds[_navIdsToItems[id]] = id;

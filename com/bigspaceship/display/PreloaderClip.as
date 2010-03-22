@@ -109,7 +109,7 @@ package com.bigspaceship.display
 			}
 			catch($error:Error)
 			{
-//				Out.debug(this,"% loaded: " + totalPct.toString());
+				Out.debug(this,"% loaded: " + totalPct.toString());
 			}
 		};
 		

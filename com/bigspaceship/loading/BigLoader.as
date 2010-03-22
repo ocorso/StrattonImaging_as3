@@ -13,6 +13,7 @@ package com.bigspaceship.loading
 	import flash.utils.Dictionary;
 	
 	import com.bigspaceship.utils.Out;
+	import com.bigspaceship.loading.BigLoadItem;
 	
 	/**
 	 *  Multiple file loader.

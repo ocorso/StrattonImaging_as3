@@ -4,8 +4,8 @@ package com.strattonimaging.site
 	import com.bigspaceship.display.SiteLoader;
 	import com.bigspaceship.loading.BigLoader;
 	import com.bigspaceship.utils.Out;
-	import com.carlcalderon.arthropod.Debug;
 	import com.strattonimaging.site.display.MainView;
+	import com.strattonimaging.site.events.ScreenEvent;
 	import com.strattonimaging.site.model.SiteModel;
 	
 	import flash.display.MovieClip;
@@ -13,7 +13,8 @@ package com.strattonimaging.site
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
 	import flash.events.ProgressEvent;
-	import com.strattonimaging.site.events.ScreenEvent;
+	
+	import nl.demonsters.debugger.MonsterDebugger;
 	
 	[SWF (width="980", height="742", backgroundColor="#DDDDDD", frameRate="30")]
 	public class Main extends MovieClip
@@ -22,6 +23,8 @@ package com.strattonimaging.site
 		private var _preloader										:PreloaderClip;
 		private var _siteModel:SiteModel;
 		
+		//demonster debugger
+		private var debugger:MonsterDebugger;
 		//master loader
 		private var _loader											:BigLoader;
 		private var _loadList										:XMLList;
@@ -40,6 +43,9 @@ package com.strattonimaging.site
 		{
 			super();
 			Out.enableAllLevels(true);
+			// Init the debugger
+			debugger = new MonsterDebugger(this);
+
 			
 			_siteModel = SiteModel.getInstance();
 			
@@ -81,7 +87,7 @@ package com.strattonimaging.site
 		private function _loadConfigXml():void{
 			_loader = new BigLoader();
 			
-			var configURL:String = SiteModel.CONFIG_XML_PATH;
+			var configURL:String = _siteModel.getBaseURL() + SiteModel.CONFIG_XML_PATH;
 			
 			Out.debug(this,"Config URL: " + configURL);
 			_loader.add(configURL, "config");

@@ -9,6 +9,7 @@ package com.strattonimaging.site.model
 	import flash.display.LoaderInfo;
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
+	import flash.system.Capabilities;
 	
 	public class SiteModel extends EventDispatcher
 	{
@@ -17,7 +18,7 @@ package com.strattonimaging.site.model
 		
 		private var _configXml								:XML;
 		
-		public static const CONFIG_XML_PATH					:String = "xml/site/config.xml";
+		public static const CONFIG_XML_PATH					:String = "/xml/site/config.xml";
 		
 		public static const CONFIG_SETTING					:String	= "setting";
 		public static const CONFIG_COMPONENTS				:String = "components";
@@ -47,9 +48,14 @@ package com.strattonimaging.site.model
 		public function initialize($loaderInfo:LoaderInfo):void {
 			Out.status(this,"initialize();");
 			
-			_flashvars = $loaderInfo.parameters;
-			_baseUrl = getFlashVar("baseUrl") ? unescape(getFlashVar("baseUrl")) : "http://localhost/";
-			logFVs();
+			if(Capabilities.playerType == "PlugIn" || Capabilities.playerType == "ActiveX"){
+				_flashvars = $loaderInfo.parameters;
+				_baseUrl =  unescape(getFlashVar("baseUrl")); 
+				logFVs();
+			}
+			else _baseUrl = "http://localhost/";
+			
+			Out.info(this, "Here is the base URL: "+ _baseUrl);
 			
 		}//end function
 		/**

@@ -9,9 +9,9 @@ package com.strattonimaging.site.display
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.SimpleSequencer;
 	import com.strattonimaging.site.Constants;
-	import com.strattonimaging.site.display.assets.Background;
-	import com.strattonimaging.site.display.assets.BackgroundSquare;
-	import com.strattonimaging.site.display.assets.Header;
+	import com.strattonimaging.site.display.components.Background;
+	import com.strattonimaging.site.display.components.BackgroundSquare;
+	import com.strattonimaging.site.display.components.Header;
 	import com.strattonimaging.site.display.screens.Home;
 	import com.strattonimaging.site.display.screens.Screen;
 	import com.strattonimaging.site.events.ScreenEvent;
@@ -129,7 +129,7 @@ package com.strattonimaging.site.display
 					_audio.addAudioLibrary(Constants.COMPONENT_AUDIO,$swf);
 					break;	*/			
 			}
-		}//end function add assets 
+		}//end function add components 
 		public function addPreloader($preloader:MovieClip):void { _layers[Constants.LAYERS_LOADER_2].addChild($preloader); }
 		public function addScreen($id:String,$swf:MovieClip,$xml:XML):void
 		{
@@ -200,12 +200,11 @@ package com.strattonimaging.site.display
 			_sequencer.addEventListener(Event.COMPLETE,_screenOnAnimateIn,false,0,true);
 			
 			if(!_isInitialIn) {
-				_layers[Constants.LAYERS_BACKGROUND_SQUARE].addChild(new BackgroundSquare(Lib.createMovieClip("Background",_siteModel.siteAssets)).mc);
-				
 				_isInitialIn = true;
 				
 				_sequencer.addStep(1,_background,_background.animateIn,AnimationEvent.IN);
 				_sequencer.addStep(3,_header,_header.animateIn,AnimationEvent.IN);	
+				//TODO: add footer!!
 				//_sequencer.addStep(3,_footer,_footer.animateIn,AnimationEvent.IN);	
 			}
 			

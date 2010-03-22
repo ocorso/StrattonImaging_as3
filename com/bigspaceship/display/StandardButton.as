@@ -296,7 +296,7 @@ package com.bigspaceship.display
 			}
 		}
 		
-		private function _onMouseClick_handler($evt:MouseEvent):void{
+		protected function _onMouseClick_handler($evt:MouseEvent):void{
 			//trace('StandardBtn: CLICK');
 			_mc.gotoAndPlay('CLICK_START');
 		}

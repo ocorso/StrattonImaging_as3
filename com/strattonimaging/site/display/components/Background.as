@@ -1,4 +1,4 @@
-package com.strattonimaging.site.display.assets
+package com.strattonimaging.site.display.components
 {
 	import com.bigspaceship.display.StandardInOut;
 	

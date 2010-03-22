@@ -1,16 +1,17 @@
 package com.bigspaceship.loading
 {
+    import com.bigspaceship.utils.Out;
+    
+    import flash.display.Loader;
     import flash.events.Event;
     import flash.events.EventDispatcher;
-    import flash.events.ProgressEvent;
     import flash.events.IOErrorEvent;
-
-    import flash.display.Loader;
-
+    import flash.events.ProgressEvent;
     import flash.net.URLLoader;
     import flash.net.URLRequest;
-
-    import com.bigspaceship.utils.Out;
+    import flash.system.LoaderContext;
+    import flash.system.Security;
+    import flash.system.SecurityDomain;
 
 	/**
 	 *  A single item loader to be used with BigLoader (not instanciated directly).  It handles different media and
@@ -87,7 +88,14 @@ package com.bigspaceship.loading
                 _state = LOADING;
 				
 				var req:URLRequest = (_url is URLRequest) ? _url : new URLRequest(_url);
-                _loader.load(req);
+	        	if(Security.sandboxType == Security.REMOTE){
+					
+					var context:LoaderContext = new LoaderContext();
+					context.securityDomain = SecurityDomain.currentDomain;
+	                _loader.load(req, context);
+					
+				}else       _loader.load(req);
+				
             }
             else if(_state == LOADED) _onComplete();
             else Out.warning(this,"Item is currently loading.");
@@ -115,6 +123,7 @@ package com.bigspaceship.loading
         // PRIVATE
         // ===================================================================
         private function _setupLoader():void {
+            
             if(_type == BigLoadItem.DATA){
                 _loader = new URLLoader();
                 _loader.addEventListener(IOErrorEvent.IO_ERROR,     _onFail,     false, 0, true);
