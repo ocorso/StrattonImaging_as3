@@ -81,7 +81,7 @@ package com.bigspaceship.display
 		private function _stageResized():void {
 			var w:Number = Math.max(stage.stageWidth,_initialWidth);
 			var h:Number = Math.max(stage.stageWidth,_initialHeight);
-			preloader_mc.x = w * .5 - preloader_mc.width/2;
+			preloader_mc.x = w * .5;
 			
 		}
 		protected function _onLoadProgress($evt:ProgressEvent):void { preloader_mc.updateProgress($evt.bytesLoaded,$evt.bytesTotal,0,10); };

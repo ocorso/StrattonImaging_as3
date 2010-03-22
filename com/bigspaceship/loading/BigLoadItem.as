@@ -88,13 +88,7 @@ package com.bigspaceship.loading
                 _state = LOADING;
 				
 				var req:URLRequest = (_url is URLRequest) ? _url : new URLRequest(_url);
-	        	if(Security.sandboxType == Security.REMOTE){
-					
-					var context:LoaderContext = new LoaderContext();
-					context.securityDomain = SecurityDomain.currentDomain;
-	                _loader.load(req, context);
-					
-				}else       _loader.load(req);
+	        	 _loader.load(req);
 				
             }
             else if(_state == LOADED) _onComplete();
