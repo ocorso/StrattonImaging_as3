@@ -16,9 +16,8 @@ package com.strattonimaging.site.display.components
 			super($mc, $xml, $useWeakReference);
 		}//end constructor
 
-		
-		override protected function _onAnimateIn():void{
-			Out.info(this, "HEEEEEEYYYYY_onAnimateIn()");
+		override protected function _onAnimateInStart():void{
+			Out.info(this, "HEY YO_onAnimateInStart()");
 			Resize.add(
 				"@footer",
 				_mc.mask_mc,
@@ -30,7 +29,10 @@ package com.strattonimaging.site.display.components
 					}
 				}
 			);
-			Out.info(this, "why is the footer so low? metal y: "+ _mc.mask_mc.y);
+			
+		}
+		override protected function _onAnimateIn():void{
+			Out.info(this, "HEEEEEEYYYYY_onAnimateIn()");
 
 		}//end function
 	}//end class

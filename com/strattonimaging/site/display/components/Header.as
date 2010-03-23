@@ -78,6 +78,9 @@ package com.strattonimaging.site.display.components
 			
 			//_navIdsToItems[_currentActive].select();
 		}//end function
-		
+		override protected function _onAnimateIn():void{
+			Out.info(this, "HEEEEEEYYYYY_onAnimateIn()");
+			
+		}//end function
 	}//end class
 }//end package

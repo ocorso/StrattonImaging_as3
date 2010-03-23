@@ -13,6 +13,7 @@ package com.strattonimaging.site.display
 	import com.strattonimaging.site.display.components.Footer;
 	import com.strattonimaging.site.display.components.Header;
 	import com.strattonimaging.site.display.screens.Home;
+	import com.strattonimaging.site.display.screens.Learn;
 	import com.strattonimaging.site.display.screens.Screen;
 	import com.strattonimaging.site.events.ScreenEvent;
 	import com.strattonimaging.site.model.SiteModel;
@@ -149,7 +150,10 @@ package com.strattonimaging.site.display
 				case Constants.SCREEN_HOME:
 					_screens[$id] = new Home($swf,$xml);
 					break;
-				
+				case Constants.SCREEN_LEARN:
+					_screens[$id] = new Learn($swf,$xml);
+					break;
+			
 				
 				default:
 					Out.warning(this,"No Screen with this ID: " + $id + ". Using StandardInOutXML.");
@@ -164,6 +168,7 @@ package com.strattonimaging.site.display
 		//animation functions
 		/***********************************************************/
 		public function _goToNextScreen($evt:NavigationEvent = null):void {
+			Out.status(this, "goToNextScreen");
 			if(!_sequencer) {
 				if(!_screens[_siteModel.currentScreen] || _screens[_siteModel.currentScreen].state == AnimationState.OUT) _screenOnAnimateOut();
 				else if(_screens[_siteModel.currentScreen].state == AnimationState.IN) _animateScreenOut();
@@ -215,7 +220,7 @@ package com.strattonimaging.site.display
 				Out.info(this, "_animateScreenIn THE FIRST TIME ONLY");
 				_sequencer.addStep(1,_background,_background.animateIn,AnimationEvent.IN);
 				_sequencer.addStep(3,_header,_header.animateIn,AnimationEvent.IN);	
-				_sequencer.addStep(3,_footer,_footer.animateIn,AnimationEvent.IN);	
+				_sequencer.addStep(3,_footer,_footer.animateIn,AnimationEvent.IN);
 			}
 			
 			_header.setActiveScreen();

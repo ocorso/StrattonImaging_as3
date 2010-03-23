@@ -1,5 +1,7 @@
 package com.strattonimaging.site.display.screens
 {
+	import com.bigspaceship.utils.Out;
+	
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	
@@ -18,6 +20,11 @@ package com.strattonimaging.site.display.screens
 
 		public override function onURLChange():void{
 			super.onURLChange();
+			Out.status(this, "we'd do something within the same screen here");
 		}//end function
-	}
-}
+		
+		override protected function _onAnimateIn():void{
+			Out.status(this, "onAnimateIn(): but i can't see it");
+		}//end function
+	}//end class
+}//end package
