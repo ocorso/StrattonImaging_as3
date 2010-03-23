@@ -70,7 +70,7 @@ package com.strattonimaging.site.display
 		// resize
 		private function _stageOnResize($evt:Event = null):void {
 		
-			Resize.add(
+			/*Resize.add(
 				"@headerResize",
 				_layers[Constants.LAYERS_HEADER],
 				[Resize.BOTTOM, Resize.CENTER_X, Resize.CUSTOM],
@@ -80,7 +80,7 @@ package com.strattonimaging.site.display
 						$target.y	-=	$params.bottom_offset;
 					}
 				}
-			);
+			);*/
 			
 			//_layers[Constants.LAYERS_HEADER].x = Math.round((w - Constants.STAGE_WIDTH) * .5);
 			//_layers[Constants.LAYERS_FOOTER].y = Math.max(Math.round((h - Constants.STAGE_HEIGHT)),85);
@@ -120,8 +120,6 @@ package com.strattonimaging.site.display
 				case Constants.COMPONENT_FOOTER:
 					_footer = new Footer($swf,$xml);
 					_layers[Constants.LAYERS_FOOTER].addChild(_footer.mc);
-					_footer.animateIn();
-					
 					break;
 				case Constants.COMPONENT_HEADER:
 					_header = new Header($swf,$xml);
@@ -214,7 +212,7 @@ package com.strattonimaging.site.display
 			
 			if(_isInitialIn) {
 				_isInitialIn = false;
-				
+				Out.info(this, "_animateScreenIn THE FIRST TIME ONLY");
 				_sequencer.addStep(1,_background,_background.animateIn,AnimationEvent.IN);
 				_sequencer.addStep(3,_header,_header.animateIn,AnimationEvent.IN);	
 				_sequencer.addStep(3,_footer,_footer.animateIn,AnimationEvent.IN);	

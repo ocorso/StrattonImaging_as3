@@ -56,7 +56,7 @@ package com.bigspaceship.display
 		public function PreloaderClip():void {
 			Resize.add(	"@Preloader",
 				this,
-				[Resize.CENTER_X, Resize.CUSTOM],
+				[Resize.CENTER_X],
 				{
 					top_offset:		45,
 					custom:				function($target, $params, $stage):void{

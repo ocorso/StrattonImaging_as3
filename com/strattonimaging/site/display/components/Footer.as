@@ -16,29 +16,22 @@ package com.strattonimaging.site.display.components
 			super($mc, $xml, $useWeakReference);
 		}//end constructor
 
-		override protected function _onAnimateInStart():void{
-			Resize.add(
-				"@FooterInStart",
-				_mc.mask_mc.shape_mc,
-				[Resize.BOTTOM, Resize.FULLSCREEN_X],
-				{
-				}
-			);
-		}//end function
 		
 		override protected function _onAnimateIn():void{
 			Out.info(this, "HEEEEEEYYYYY_onAnimateIn()");
-			/*Resize.add(
+			Resize.add(
 				"@footer",
 				_mc.mask_mc,
-				[Resize.BOTTOM, Resize.FULLSCREEN_X, Resize.CUSTOM],
+				[Resize.FULLSCREEN_X, Resize.CUSTOM],
 				{
 					bottom_offset:		Constants.BOTTOM_OFFSET,
 					custom:				function($target, $params, $stage):void{
-						$target.y	-=	$params.bottom_offset;
+						$target.height	=	$stage.stageHeight - $params.bottom_offset;
 					}
 				}
-			);*/
+			);
+			Out.info(this, "why is the footer so low? metal y: "+ _mc.mask_mc.y);
+
 		}//end function
 	}//end class
 }//end package

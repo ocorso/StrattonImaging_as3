@@ -5,7 +5,7 @@ package com.strattonimaging.site
 		public static const STAGE_WIDTH						:int = 980;
 		public static const STAGE_HEIGHT					:int = 742;
 		//positioning
-		public static const BOTTOM_OFFSET					:int = 215;
+		public static const BOTTOM_OFFSET					:int = 355;
 		
 		public static const LAYERS_BACKGROUND				:int = 0;
 		public static const LAYERS_FOOTER					:int = 1;

@@ -30,6 +30,7 @@ package com.strattonimaging.site.display.components
 		}//end constructor
 		
 		private function _setupNav():void{
+			
 			_navIdsToItems = new Dictionary(true);
 			_navItemsToIds = new Dictionary(true);
 			
@@ -59,7 +60,6 @@ package com.strattonimaging.site.display.components
 				Resize.FULLSCREEN_X,
 				{}
 			);//end nav bar full X
-		
 		}//end function
 		
 		
