@@ -33,7 +33,7 @@ package com.strattonimaging.site
 		private var _loadList										:XMLList;
 		private var _loadState										:String;
 		
-		//here are the types of load states
+		//here are the types of load states 
 		private static const __LOAD_STATE_INIT						:String 		= "init";
 		private static const __LOAD_STATE_INITIAL_ASSETS_BEGIN		:String			= "initialLoadAssetsInit";
 		private static const __LOAD_STATE_INITIAL_ASSETS_COMPLETE	:String			= "initialLoadAssetsLoaded";
@@ -149,7 +149,6 @@ package com.strattonimaging.site
 					_siteModel.siteAssets = swf;
 				}
 				else if(_loadList[i].@id == Constants.COMPONENT_SECTION_LOADER) {
-					//_sectionLoader = swf.preloader_mc as PreloaderClip;
 					_mainview.addAsset(_loadList[i].@id,swf,xml);
 				}
 				else {

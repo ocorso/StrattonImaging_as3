@@ -56,12 +56,9 @@ package com.bigspaceship.display
 		public function PreloaderClip():void {
 			Resize.add(	"@Preloader",
 				this,
-				[Resize.CENTER_X, ],
+				[ Resize.CENTER_X],
 				{
-					top_offset:		5,
-					custom:				function($target, $params, $stage):void{
-						$target.y	+=	$params.top_offset;
-					}
+					
 				}
 			);
 		}
@@ -69,7 +66,7 @@ package com.bigspaceship.display
 		// call animateIn to kick off the timeline IN animation.
 		public function animateIn():void
 		{
-			Out.debug(this,"animateIn");
+			//Out.debug(this,"animateIn");
 			gotoAndPlay("IN_START");
 			addEventListener(AnimationEvent.IN, _onPreloaderIn,false,0,true);
 		};
@@ -97,7 +94,7 @@ package com.bigspaceship.display
 			var pct:Number = $bytesLoaded/$bytesTotal;
 			_targetFrame = Math.floor(framesPerItem * pct) + (framesPerItem * $itemsLoaded);
 
-		//	Out.debug(this, "updatePreloader :: " + $bytesLoaded + "/" + $bytesTotal + " :: " + $itemsLoaded + "/" + $itemsTotal + " :: " + preloader_mc.progress_mc.currentFrame + "/" + preloader_mc.progress_mc.totalFrames + " :: " + targetFrame);
+			Out.debug(this, "updatePreloader :: " + $bytesLoaded + "/" + $bytesTotal + " :: " + $itemsLoaded + "/" + $itemsTotal + " :: " + this.progress_mc.currentFrame + "/" + this.progress_mc.totalFrames + " :: " + _targetFrame);
 		};
 		
 		// loading is complete, so make sure the preloader progress clip plays away.
