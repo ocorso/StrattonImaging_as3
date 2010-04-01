@@ -56,7 +56,7 @@ package com.strattonimaging.site
 			// Init the debuggers
 			debugger = new MonsterDebugger(this);
 			Out.enableAllLevels(true);
-			Out.status(this,"_initialize();");
+			Out.status(this,"_initialize(); Main the next generation");
 			
 			//site wide config
 			_siteModel = SiteModel.getInstance();
@@ -180,7 +180,6 @@ package com.strattonimaging.site
 			Out.status(this,"_onLoadScreenSpecificComplete()");
 			_loadState = __LOAD_STATE_SCREEN_COMPLETE;
 			
-			Out.debug(this,"Preloader: " + _preloader);
 			if(_preloader) _preloader.setComplete();
 			else _preloaderOnAnimateOut();
 		}//end onLoadScreenSpecificComplete function
@@ -265,11 +264,11 @@ package com.strattonimaging.site
 		}
 		
 		private function _preloaderOnAnimateOut($evt:Event = null):void {
-			Out.status(this,"_preloaderOnAnimateOut();");
+			Out.status(this,"we need to destroy the preloader;");
 			
-			_preloader = new PreloaderClip();
+			/* _preloader = new PreloaderClip();
 			_mainview.addPreloader(_preloader);
-			
+			 */
 			if(!_mainview.isNextScreenLoaded) _loadScreen();
 			else _mainview.screenOnLoaded();	
 			
@@ -279,9 +278,8 @@ package com.strattonimaging.site
 					_preloader.removeEventListener(Event.INIT,_preloaderOnAnimateIn);
 				if(_preloader.hasEventListener(Event.COMPLETE))
 					_preloader.removeEventListener(Event.COMPLETE,_preloaderOnAnimateOut);
-			
-				_preloader.addEventListener(Event.INIT,_preloaderOnAnimateIn,false,0,true);
-				_preloader.addEventListener(Event.COMPLETE,_preloaderOnAnimateOut,false,0,true);
+				//_preloader.addEventListener(Event.INIT,_preloaderOnAnimateIn,false,0,true);
+				//_preloader.addEventListener(Event.COMPLETE,_preloaderOnAnimateOut,false,0,true);
 			}
 			
 		}//end function

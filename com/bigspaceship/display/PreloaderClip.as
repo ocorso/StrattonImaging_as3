@@ -35,7 +35,6 @@ package com.bigspaceship.display
 	
 	import flash.display.MovieClip;
 	import flash.events.Event;
-	import flash.events.ProgressEvent;
 	
 	import net.ored.util.Resize;
 	
@@ -54,11 +53,15 @@ package com.bigspaceship.display
 		// the constructor.
 		// when a PreloaderClip begins to exist (either by appearing on the timeline or by calling new PreloaderClip() in code) this function is automatically called.
 		public function PreloaderClip():void {
+			Out.status(this, "PreloaderClip contructor");
 			Resize.add(	"@Preloader",
 				this,
-				[ Resize.CENTER_X],
+				[ Resize.CENTER_X, Resize.CUSTOM],
 				{
-					
+						custom:			function($target, $params, $stage):void{
+						$target.x	+=	$target.width/2;
+						
+					}
 				}
 			);
 		}
@@ -94,7 +97,7 @@ package com.bigspaceship.display
 			var pct:Number = $bytesLoaded/$bytesTotal;
 			_targetFrame = Math.floor(framesPerItem * pct) + (framesPerItem * $itemsLoaded);
 
-			Out.debug(this, "updatePreloader :: " + $bytesLoaded + "/" + $bytesTotal + " :: " + $itemsLoaded + "/" + $itemsTotal + " :: " + this.progress_mc.currentFrame + "/" + this.progress_mc.totalFrames + " :: " + _targetFrame);
+			//Out.debug(this, "updatePreloader :: " + $bytesLoaded + "/" + $bytesTotal + " :: " + $itemsLoaded + "/" + $itemsTotal + " :: " + this.progress_mc.currentFrame + "/" + this.progress_mc.totalFrames + " :: " + _targetFrame);
 		};
 		
 		// loading is complete, so make sure the preloader progress clip plays away.
@@ -149,7 +152,7 @@ package com.bigspaceship.display
 			
 
 			if(_isLoadComplete) dispatchEvent(new Event(Event.COMPLETE));
-			else animateIn();			
+			//else animateIn();			
 		};
 
 		// if we need to kill the preloader midload to restart it for whatever reason, here's how. reset() will bring the loader back in automatically.
