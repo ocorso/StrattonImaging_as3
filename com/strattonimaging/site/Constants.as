@@ -2,8 +2,19 @@ package com.strattonimaging.site
 {
 	public class Constants
 	{
+		//stage
 		public static const STAGE_WIDTH						:int = 980;
-		public static const STAGE_HEIGHT					:int = 742;
+		public static const STAGE_HEIGHT					:int = 643;
+		
+		//load states
+		public static const LOAD_STATE_INIT						:String 		= "init";
+		public static const LOAD_STATE_INITIAL_ASSETS_BEGIN		:String			= "initialLoadAssetsInit";
+		public static const LOAD_STATE_INITIAL_ASSETS_COMPLETE	:String			= "initialLoadAssetsLoaded";
+		public static const LOAD_STATE_INITIAL_SCREEN_BEGIN		:String			= "initialLoadScreenBegin";
+		public static const LOAD_STATE_SCREEN_BEGIN				:String			= "screenLoadBegin";
+		public static const LOAD_STATE_SCREEN_COMPLETE			:String			= "screenLoadComplete";
+		public static const LOAD_STATE_SCREEN_COMPONENT_BEGIN	:String			= "screenComponentLoadBegin";
+		
 		//positioning
 		public static const BOTTOM_OFFSET					:int = 355;
 		

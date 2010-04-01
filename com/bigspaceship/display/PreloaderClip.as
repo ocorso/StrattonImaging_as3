@@ -60,6 +60,7 @@ package com.bigspaceship.display
 				{
 						custom:			function($target, $params, $stage):void{
 						$target.x	+=	$target.width/2;
+						$target.y 	=	150;
 						
 					}
 				}

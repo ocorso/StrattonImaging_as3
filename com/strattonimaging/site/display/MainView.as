@@ -44,6 +44,8 @@ package com.strattonimaging.site.display
 		
 		
 		private var _isInitialIn			:Boolean = true;
+		
+		//is the preloader in?
 		private var _bPreloaderIn			:Boolean;
 		
 		public function MainView($mc:MovieClip, $useWeakReference:Boolean=false)
@@ -132,9 +134,6 @@ package com.strattonimaging.site.display
 					
 				
 				
-				case Constants.COMPONENT_SECTION_LOADER:
-					_layers[Constants.LAYERS_LOADER].addChild($swf);
-					break;
 				
 				case Constants.COMPONENT_AUDIO:
 					var _audio:AudioManager = AudioManager.getInstance();
@@ -155,7 +154,7 @@ package com.strattonimaging.site.display
 					break;
 			
 				
-				default:
+				default:	
 					Out.warning(this,"No Screen with this ID: " + $id + ". Using StandardInOutXML.");
 					_screens[$id] = new Screen($swf,$xml);
 					break;
@@ -168,7 +167,7 @@ package com.strattonimaging.site.display
 		//animation functions
 		/***********************************************************/
 		public function _goToNextScreen($evt:NavigationEvent = null):void {
-			Out.status(this, "goToNextScreen");
+			Out.status(this, "_goToNextScreen");
 			if(!_sequencer) {
 				if(!_screens[_siteModel.currentScreen] || _screens[_siteModel.currentScreen].state == AnimationState.OUT) _screenOnAnimateOut();
 				else if(_screens[_siteModel.currentScreen].state == AnimationState.IN) _animateScreenOut();
@@ -176,6 +175,7 @@ package com.strattonimaging.site.display
 		}//end function
 		
 		public function screenOnLoaded():void {
+			Out.status(this, "screenOnLoaded(): _bPreloaderIn: "+_bPreloaderIn);
 			_bPreloaderIn = false;
 			cancelLoadScreenSpecifics();
 			_screenOnAnimateOut();
@@ -198,6 +198,7 @@ package com.strattonimaging.site.display
 			_siteModel.currentScreen = _siteModel.nextScreen;
 			
 			if(_screens[_siteModel.currentScreen]) {
+				
 				if(_bPreloaderIn) dispatchEvent(new ScreenEvent(ScreenEvent.REQUEST_LOAD_CANCEL));
 				else _animateScreenIn();
 			}
@@ -232,7 +233,7 @@ package com.strattonimaging.site.display
 		private function _screenOnAnimateIn($evt:Event):void {
 			Out.status(this,"_screenOnAnimateIn();");
 			_destroySequencer();
-			//if(_siteModel.nextScreen != _siteModel.currentScreen) _goToNextScreen();
+			if(_siteModel.nextScreen != _siteModel.currentScreen) _goToNextScreen();
 		
 		}		
 		

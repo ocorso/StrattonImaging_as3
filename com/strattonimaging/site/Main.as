@@ -33,14 +33,7 @@ package com.strattonimaging.site
 		private var _loadList										:XMLList;
 		private var _loadState										:String;
 		
-		//here are the types of load states 
-		private static const __LOAD_STATE_INIT						:String 		= "init";
-		private static const __LOAD_STATE_INITIAL_ASSETS_BEGIN		:String			= "initialLoadAssetsInit";
-		private static const __LOAD_STATE_INITIAL_ASSETS_COMPLETE	:String			= "initialLoadAssetsLoaded";
-		private static const __LOAD_STATE_INITIAL_SCREEN_BEGIN		:String			= "initialLoadScreenBegin";
-		private static const __LOAD_STATE_SCREEN_BEGIN				:String			= "screenLoadBegin";
-		private static const __LOAD_STATE_SCREEN_COMPLETE			:String			= "screenLoadComplete";
-		private static const __LOAD_STATE_SCREEN_COMPONENT_BEGIN	:String			= "screenComponentLoadBegin";
+		
 		
 		public function Main()
 		{
@@ -66,7 +59,7 @@ package com.strattonimaging.site
 				stage.scaleMode = StageScaleMode.NO_SCALE;
 				stage.align = StageAlign.TOP_LEFT;
 				Resize.setStage(stage);
-			}//end if we're running from FB
+			}//end if 
 			
 			
 			_mainview = new MainView(this);
@@ -81,7 +74,7 @@ package com.strattonimaging.site
 				_mainview.addPreloader(_preloader);
 			}
 			
-			_loadState = __LOAD_STATE_INIT;
+			_loadState = Constants.LOAD_STATE_INIT;
 			_loadConfigXml();
 			
 		}//end initialize function
@@ -109,7 +102,7 @@ package com.strattonimaging.site
 			_loaderCleanUp();
 			
 			// initial load begins here
-			_loadState = __LOAD_STATE_INITIAL_ASSETS_BEGIN;
+			_loadState = Constants.LOAD_STATE_INITIAL_ASSETS_BEGIN;
 			_loadList = _siteModel.getNodeByType(SiteModel.CONFIG_LOADABLES, SiteModel.CONFIG_COMPONENTS).component;
 			Out.status(this, "_onConfigXMLLoaded :: loadlist.length = "+ _loadList.length());
 			if(_loadList.length() > 0) _startLoad();
@@ -152,7 +145,7 @@ package com.strattonimaging.site
 					_mainview.addAsset(_loadList[i].@id,swf,xml);
 				}
 				else {
-					if(_loadState == __LOAD_STATE_INITIAL_ASSETS_BEGIN) _mainview.addAsset(_loadList[i].@id,swf,xml);
+					if(_loadState == Constants.LOAD_STATE_INITIAL_ASSETS_BEGIN) _mainview.addAsset(_loadList[i].@id,swf,xml);
 					else _mainview.addScreen(_loadList[i].@id,swf,xml);					
 				}
 				
@@ -160,8 +153,8 @@ package com.strattonimaging.site
 			
 			_loadList = null;
 			
-			if(_loadState == __LOAD_STATE_INITIAL_ASSETS_BEGIN) _onFrontloadComplete();
-			else if(_loadState == __LOAD_STATE_INITIAL_SCREEN_BEGIN || _loadState == __LOAD_STATE_SCREEN_BEGIN) _onScreenloadComplete();
+			if(_loadState == Constants.LOAD_STATE_INITIAL_ASSETS_BEGIN) _onFrontloadComplete();
+			else if(_loadState == Constants.LOAD_STATE_INITIAL_SCREEN_BEGIN || _loadState == Constants.LOAD_STATE_SCREEN_BEGIN) _onScreenloadComplete();
 			else Out.fatal(this,"_onComponentLoadComplete() :: strange state encountered :: " + _loadState);
 		}//end onComponentLoadComplete
 		
@@ -169,7 +162,7 @@ package com.strattonimaging.site
 		{
 			Out.status(this,"_onScreenloadComplete();");
 			var lastLoadState:String = _loadState;
-			_loadState = __LOAD_STATE_SCREEN_COMPONENT_BEGIN;
+			_loadState = Constants.LOAD_STATE_SCREEN_COMPONENT_BEGIN;
 			
 			_mainview.addEventListener(ProgressEvent.PROGRESS,_onLoadProgress,false,0,true);
 			_mainview.addEventListener(Event.COMPLETE,_onLoadScreenSpecificComplete,false,0,true);
@@ -178,7 +171,7 @@ package com.strattonimaging.site
 		
 		private function _onLoadScreenSpecificComplete($evt:Event):void {
 			Out.status(this,"_onLoadScreenSpecificComplete()");
-			_loadState = __LOAD_STATE_SCREEN_COMPLETE;
+			_loadState = Constants.LOAD_STATE_SCREEN_COMPLETE;
 			
 			if(_preloader) _preloader.setComplete();
 			else _preloaderOnAnimateOut();
@@ -187,7 +180,7 @@ package com.strattonimaging.site
 		private function _onFrontloadComplete():void {	
 			Out.status(this,"_onFrontloadComplete();");
 			
-			_loadState = __LOAD_STATE_INITIAL_ASSETS_COMPLETE;
+			_loadState = Constants.LOAD_STATE_INITIAL_ASSETS_COMPLETE;
 			
 			// jk: force the first screen to load.
 			_siteModel.getInitialPath();
@@ -213,27 +206,27 @@ package com.strattonimaging.site
 		private function _loadScreen($evt:ScreenEvent = null):void {
 			var lastLoadState:String = _loadState;
 			
-			_loadState = (_loadState == __LOAD_STATE_INITIAL_ASSETS_COMPLETE) ? __LOAD_STATE_INITIAL_SCREEN_BEGIN: __LOAD_STATE_SCREEN_BEGIN;
+			_loadState = (_loadState == Constants.LOAD_STATE_INITIAL_ASSETS_COMPLETE) ? Constants.LOAD_STATE_INITIAL_SCREEN_BEGIN: Constants.LOAD_STATE_SCREEN_BEGIN;
 			_loadList = _siteModel.configXml.loadables.component.(@id == _siteModel.currentScreen);
 			
 			switch(lastLoadState)
 			{
-				case __LOAD_STATE_INITIAL_ASSETS_BEGIN:
-				case __LOAD_STATE_INITIAL_SCREEN_BEGIN:
+				case Constants.LOAD_STATE_INITIAL_ASSETS_BEGIN:
+				case Constants.LOAD_STATE_INITIAL_SCREEN_BEGIN:
 					Out.fatal(this,"Something is wrong... _loadScreen() called before initial load finished.");
 					break;
 				
-				case __LOAD_STATE_SCREEN_COMPONENT_BEGIN:
+				case Constants.LOAD_STATE_SCREEN_COMPONENT_BEGIN:
 					_loadScreenCancel();
 					break;
 				
-				case __LOAD_STATE_SCREEN_BEGIN:
-				case __LOAD_STATE_SCREEN_COMPLETE:
+				case Constants.LOAD_STATE_SCREEN_BEGIN:
+				case Constants.LOAD_STATE_SCREEN_COMPLETE:
 					if(_preloader) _preloader.animateIn();
 					else _preloaderOnAnimateIn();
 					break;
 				
-				case __LOAD_STATE_INITIAL_ASSETS_COMPLETE:
+				case Constants.LOAD_STATE_INITIAL_ASSETS_COMPLETE:
 					_startLoad();
 					break;
 				
@@ -249,7 +242,8 @@ package com.strattonimaging.site
 		 * 
 		 */		
 		private function _loadScreenCancel($evt:ScreenEvent = null):void {
-			if($evt != null) _loadState = __LOAD_STATE_SCREEN_COMPLETE;
+			Out.status(this,"_loadScreenCancel();");
+			if($evt != null) _loadState = Constants.LOAD_STATE_SCREEN_COMPLETE;
 			
 			_mainview.cancelLoadScreenSpecifics();
 			if(_preloader) _preloader.cancel();						
@@ -264,23 +258,31 @@ package com.strattonimaging.site
 		}
 		
 		private function _preloaderOnAnimateOut($evt:Event = null):void {
-			Out.status(this,"we need to destroy the preloader;");
 			
-			/* _preloader = new PreloaderClip();
-			_mainview.addPreloader(_preloader);
-			 */
-			if(!_mainview.isNextScreenLoaded) _loadScreen();
+			Out.status(this,"we need to destroy the preloader and make a new one;");
+			
+			if(_preloader) {
+					_preloader.removeEventListener(Event.INIT,_preloaderOnAnimateIn);
+					_preloader.removeEventListener(Event.COMPLETE,_preloaderOnAnimateOut);
+					_preloader = null;
+					Out.debug(this,"we tried to destroy it, can you see it? ok make a new one");
+			}
+					
+		 			//making a new preloader
+				 	_preloader = new PreloaderClip();
+					_mainview.addPreloader(_preloader);
+					_preloader.addEventListener(Event.INIT,_preloaderOnAnimateIn,false,0,true);
+					_preloader.addEventListener(Event.COMPLETE,_preloaderOnAnimateOut,false,0,true);
+					_mainview.addPreloader(_preloader);
+			if(!_mainview.isNextScreenLoaded) {
+				
+				Out.debug(this,"the next screen isn't loaded we need to load it;");
+				_loadScreen();
+			}
 			else _mainview.screenOnLoaded();	
 			
 		
-			if(_preloader) {
-				if(_preloader.hasEventListener(Event.INIT))
-					_preloader.removeEventListener(Event.INIT,_preloaderOnAnimateIn);
-				if(_preloader.hasEventListener(Event.COMPLETE))
-					_preloader.removeEventListener(Event.COMPLETE,_preloaderOnAnimateOut);
-				//_preloader.addEventListener(Event.INIT,_preloaderOnAnimateIn,false,0,true);
-				//_preloader.addEventListener(Event.COMPLETE,_preloaderOnAnimateOut,false,0,true);
-			}
+			
 			
 		}//end function
 		
@@ -298,28 +300,28 @@ package com.strattonimaging.site
 			
 			switch(_loadState)
 			{
-				case __LOAD_STATE_SCREEN_BEGIN:
+				case Constants.LOAD_STATE_SCREEN_BEGIN:
 					itemsLoaded = 0;
 					itemsTotal = 2;
 					break;
 				
-				case __LOAD_STATE_SCREEN_COMPLETE:
+				case Constants.LOAD_STATE_SCREEN_COMPLETE:
 					itemsLoaded = 2;
 					itemsTotal = 2;
 					break;
 				
-				case __LOAD_STATE_SCREEN_COMPONENT_BEGIN:
+				case Constants.LOAD_STATE_SCREEN_COMPONENT_BEGIN:
 					itemsLoaded = 1;
 					itemsTotal = 2;
 					break;
 				
-				case __LOAD_STATE_INITIAL_SCREEN_BEGIN:
-				case __LOAD_STATE_INITIAL_ASSETS_COMPLETE:
+				case Constants.LOAD_STATE_INITIAL_SCREEN_BEGIN:
+				case Constants.LOAD_STATE_INITIAL_ASSETS_COMPLETE:
 					itemsLoaded = 1;
 					itemsTotal = 3;
 					break;
 				
-				case __LOAD_STATE_INITIAL_ASSETS_BEGIN:
+				case Constants.LOAD_STATE_INITIAL_ASSETS_BEGIN:
 					itemsLoaded = 0;
 					itemsTotal = 3;
 					break;
