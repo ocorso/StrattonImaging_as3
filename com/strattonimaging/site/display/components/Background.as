@@ -23,7 +23,12 @@ package com.strattonimaging.site.display.components
 				[Resize.CORNER_TL, Resize.FULLSCREEN],
 				{
 				}
-			);
+				
+			);//end @background resize
+			
+		}//end function onAnimateInStart
+		override protected function _onAnimateIn():void{
+			
 		}//end function
 	}//end class
 }//end package

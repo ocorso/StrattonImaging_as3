@@ -45,14 +45,14 @@ package com.strattonimaging.site.display.components
 						if ($stage.stageHeight > 643){
 							_mc.y = $stage.stageHeight-643;
 						}
-						_bgSprite.graphics.beginBitmapFill(_bgTile, null, false);
-						_bgSprite.graphics.drawRect(0, 0, $stage.stageWidth, $stage.stageHeight);
-						_bgSprite.graphics.endFill();
-
+						
 					}
 				}
 			);//end @footerCenter
-			Resize.add(
+		}
+		override protected function _onAnimateIn():void{
+			Out.info(this, "HEEEEEEYYYYY_onAnimateIn(), lets add the background footer tiling");
+			/*Resize.add(
 				"@footerBg",
 				_bgSprite,
 				[Resize.CUSTOM],
@@ -60,20 +60,18 @@ package com.strattonimaging.site.display.components
 					
 					custom:				function($target, $params, $stage):void{
 						Out.debug(this, "here is the y val of the movie clip: "+_bgSprite.y);
-						if ($stage.stageHeight > 643){
-							_mc.y = $stage.stageHeight-643;
-						}
+						
 						_bgSprite.graphics.beginBitmapFill(_bgTile, null, false);
 						_bgSprite.graphics.drawRect(0, 0, $stage.stageWidth, $stage.stageHeight);
 						_bgSprite.graphics.endFill();
 						
+						if ($stage.stageHeight > 643){
+							_bgSprite.y = 643+($stage.stageHeight-643);
+						} else _bgSprite.y = 643;
 					}
 				}
-			);//end @footerCenter
-		}
-		override protected function _onAnimateIn():void{
-			Out.info(this, "HEEEEEEYYYYY_onAnimateIn()");
-
+			);//end @footerBg
+*/
 		}//end function
 	}//end class
 }//end package
