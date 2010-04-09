@@ -16,7 +16,7 @@ package com.strattonimaging.site
 		public static const LOAD_STATE_SCREEN_COMPONENT_BEGIN	:String			= "screenComponentLoadBegin";
 		
 		//positioning
-		public static const BOTTOM_OFFSET					:int = 355;
+		public static const BOTTOM_OFFSET					:int = 389;
 		
 		public static const LAYERS_BACKGROUND				:int = 0;
 		public static const LAYERS_FOOTER					:int = 1;

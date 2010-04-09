@@ -220,8 +220,8 @@ package com.strattonimaging.site.display
 				_isInitialIn = false;
 				Out.info(this, "_animateScreenIn THE FIRST TIME ONLY");
 				_sequencer.addStep(1,_background,_background.animateIn,AnimationEvent.IN);
+				_sequencer.addStep(2,_footer,_footer.animateIn,AnimationEvent.IN);
 				_sequencer.addStep(3,_header,_header.animateIn,AnimationEvent.IN);	
-				_sequencer.addStep(3,_footer,_footer.animateIn,AnimationEvent.IN);
 			}
 			
 			_header.setActiveScreen();

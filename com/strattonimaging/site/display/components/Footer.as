@@ -14,10 +14,7 @@ package com.strattonimaging.site.display.components
 	
 	public class Footer extends Screen
 	{
-		
-		private var _bgTile		:BitmapData;
-		private var _bgSprite	:Sprite;
-		
+
 		public function Footer($mc:MovieClip, $xml:XML, $useWeakReference:Boolean=false)
 		{
 			super($mc, $xml, $useWeakReference);
@@ -25,10 +22,7 @@ package com.strattonimaging.site.display.components
 			
 		}//end constructor
 		private function _init():void{
-			_bgTile = Lib.createBitmapData("bgTile", _mc);
-			Out.status(this, "here is our background tile: "+_bgTile);
-			_bgSprite = new Sprite();
-			_mc.addChildAt(_bgSprite, 0);			
+			
 			
 		}
 		override protected function _onAnimateInStart():void{
@@ -41,37 +35,15 @@ package com.strattonimaging.site.display.components
 				{
 							
 					custom:				function($target, $params, $stage):void{
-						Out.debug(this, "here is the y val of the movie clip: "+_mc.y);
 						if ($stage.stageHeight > 643){
 							_mc.y = $stage.stageHeight-643;
-						}
-						
-					}
-				}
+						}else _mc.y = Constants.BOTTOM_OFFSET;
+					}//end custom resize function
+				}//end 4th param
 			);//end @footerCenter
 		}
 		override protected function _onAnimateIn():void{
-			Out.info(this, "HEEEEEEYYYYY_onAnimateIn(), lets add the background footer tiling");
-			/*Resize.add(
-				"@footerBg",
-				_bgSprite,
-				[Resize.CUSTOM],
-				{
-					
-					custom:				function($target, $params, $stage):void{
-						Out.debug(this, "here is the y val of the movie clip: "+_bgSprite.y);
-						
-						_bgSprite.graphics.beginBitmapFill(_bgTile, null, false);
-						_bgSprite.graphics.drawRect(0, 0, $stage.stageWidth, $stage.stageHeight);
-						_bgSprite.graphics.endFill();
-						
-						if ($stage.stageHeight > 643){
-							_bgSprite.y = 643+($stage.stageHeight-643);
-						} else _bgSprite.y = 643;
-					}
-				}
-			);//end @footerBg
-*/
+			
 		}//end function
 	}//end class
 }//end package

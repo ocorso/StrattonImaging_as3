@@ -50,16 +50,19 @@ package com.strattonimaging.site.display.components
 		private function _setupResize():void{
 			Resize.add(
 				"@headerBtns",
-				_mc.tabs_mc,
-				Resize.CENTER_X,
-				{}
+				_mc,
+				[Resize.CENTER_X, Resize.CUSTOM],
+				{
+					custom:				function($target, $params, $stage):void{
+						Out.debug(this, "here is the y val of the movie clip: "+_mc.y);
+						if ($stage.stageHeight > 643){
+							_mc.y = $stage.stageHeight-643;
+						}
+						
+					}
+				}
 			);//end btns center
-			Resize.add(
-				"@headerBar",
-				_mc.bar_mc,
-				Resize.FULLSCREEN_X,
-				{}
-			);//end nav bar full X
+		
 		}//end function
 		
 		
