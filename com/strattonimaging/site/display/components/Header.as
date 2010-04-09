@@ -57,7 +57,7 @@ package com.strattonimaging.site.display.components
 						Out.debug(this, "here is the y val of the movie clip: "+_mc.y);
 						if ($stage.stageHeight > 643){
 							_mc.y = $stage.stageHeight-643;
-						}
+						}else _mc.y = 0;
 						
 					}
 				}

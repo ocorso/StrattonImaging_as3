@@ -37,7 +37,7 @@ package com.strattonimaging.site.display.components
 					custom:				function($target, $params, $stage):void{
 						if ($stage.stageHeight > 643){
 							_mc.y = $stage.stageHeight-643;
-						}else _mc.y = Constants.BOTTOM_OFFSET;
+						}else _mc.y = 0;
 					}//end custom resize function
 				}//end 4th param
 			);//end @footerCenter
