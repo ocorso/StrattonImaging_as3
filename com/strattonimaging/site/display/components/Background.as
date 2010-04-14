@@ -28,7 +28,6 @@ package com.strattonimaging.site.display.components
 		private function _init():void{
 			_mc.alpha = 0;
 			_bgTile = Lib.createBitmapData("bgTile", _mc);
-			Out.status(this, "here is our background tile: "+_bgTile);
 			_bgSprite = new Sprite();
 			_mc.addChild(_bgSprite);			
 			TweenLite.to(_mc, 1, {alpha:1});
@@ -42,8 +41,6 @@ package com.strattonimaging.site.display.components
 			{
 			
 				custom:				function($target, $params, $stage):void{
-						Out.status(this, "here is the y val of the tile clip: "+_bgSprite.y);
-						
 						_bgSprite.graphics.beginBitmapFill(_bgTile, null, false);
 						_bgSprite.graphics.drawRect(0, 0, $stage.stageWidth, 254);
 						_bgSprite.graphics.endFill();

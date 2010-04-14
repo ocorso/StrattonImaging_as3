@@ -19,9 +19,9 @@ package com.strattonimaging.site
 		public static const BOTTOM_OFFSET					:int = 389;
 		
 		public static const LAYERS_BACKGROUND				:int = 0;
-		public static const LAYERS_FOOTER					:int = 1;
-		public static const LAYERS_HEADER					:int = 2;
-		public static const LAYERS_SCREEN					:int = 3;
+		public static const LAYERS_SCREEN					:int = 1;
+		public static const LAYERS_FOOTER					:int = 2;
+		public static const LAYERS_HEADER					:int = 3;
 		public static const LAYERS_LOADER					:int = 4;
 		public static const LAYERS_LOADER_2					:int = 5;
 		public static const LAYERS_FTPCLIENT				:int = 6;
@@ -31,6 +31,7 @@ package com.strattonimaging.site
 		//components
 		public static const COMPONENT_HEADER				:String = "header";
 		public static const COMPONENT_FOOTER				:String = "footer";
+		public static const COMPONENT_FTP					:String = "ftpclient";
 		public static const COMPONENT_NAV					:String = "nav";
 		public static const COMPONENT_TICKER				:String = "featureTicker";
 		public static const COMPONENT_BACKGROUND			:String = "background";

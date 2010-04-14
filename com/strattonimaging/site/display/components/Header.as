@@ -39,7 +39,7 @@ package com.strattonimaging.site.display.components
 				var id:String = _xml.menu[i].@id.toString();
 				Out.info(this, "the id of this button is: "+ id);
 				//setup nav btns
-				_navIdsToItems[id] = new StandardButton(_mc.tabs_mc[id + "_mc"]);					
+				_navIdsToItems[id] = new StandardButton(_mc.tabs_mc[id + "_mc"], _mc.tabs_mc[id + "_mc"].btn);					
 				_navIdsToItems[id].addEventListener(MouseEvent.CLICK,_navOnClick,false,0,true);
 				//_navIdsToItems[id].addEventListener(MouseEvent.ROLL_OVER,_navOnRoll,false,0,true);
 				_navItemsToIds[_navIdsToItems[id]] = id;
@@ -54,9 +54,8 @@ package com.strattonimaging.site.display.components
 				[Resize.CENTER_X, Resize.CUSTOM],
 				{
 					custom:				function($target, $params, $stage):void{
-						Out.debug(this, "here is the y val of the movie clip: "+_mc.y);
-						if ($stage.stageHeight > 643){
-							_mc.y = $stage.stageHeight-643;
+						if ($stage.stageHeight > Constants.STAGE_HEIGHT){
+							_mc.y = $stage.stageHeight-Constants.STAGE_HEIGHT;
 						}else _mc.y = 0;
 						
 					}
@@ -73,13 +72,12 @@ package com.strattonimaging.site.display.components
 		}
 		
 		public function setActiveScreen():void {
+			
 			Out.status(this, "setActiveScreen(): _currentActive = "+_currentActive);
 			if(_currentActive != null) _navIdsToItems[_currentActive].deselect();
-			//else _currentActive = _siteModel.currentScreen;
-			//if current screen is products or video then set active to current screen OR set set active to features
-			//_currentActive = (_siteModel.currentScreen == "products" || _siteModel.currentScreen == "videos") ? _siteModel.currentScreen : "features";
+			_currentActive = _siteModel.currentScreen;
+			_navIdsToItems[_currentActive].select();
 			
-			//_navIdsToItems[_currentActive].select();
 		}//end function
 		override protected function _onAnimateIn():void{
 			Out.info(this, "HEEEEEEYYYYY_onAnimateIn()");

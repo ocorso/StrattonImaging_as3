@@ -19,7 +19,7 @@ package com.strattonimaging.site
 	
 	import nl.demonsters.debugger.MonsterDebugger;
 	
-	[SWF (width="960", height="570", backgroundColor="#ffffff", frameRate="30")]
+	[SWF (width="1000", height="643", backgroundColor="#ffffff", frameRate="30")]
 	public class Main extends MovieClip
 	{
 		private var _mainview										:MainView;
@@ -49,6 +49,7 @@ package com.strattonimaging.site
 			// Init the debuggers
 			debugger = new MonsterDebugger(this);
 			Out.enableAllLevels(true);
+			Out.silence(Resize);
 			Out.status(this,"_initialize(); Main the next generation");
 			
 			//site wide config

@@ -78,8 +78,8 @@ package com.bigspaceship.display
 		protected var _active:Boolean = true;
 		protected var _btn:DisplayObject;
 		
-		protected var _selectAnimStartLabel:String = 'ROLL_OVER_START';
-		protected var _deselectAnimStartLabel:String = 'ROLL_OUT_START';
+		protected var _selectAnimStartLabel:String = 'SELECT_START';
+		protected var _deselectAnimStartLabel:String = 'DESELECT_START';
 		
 		public function get btn():DisplayObject{
 			return _btn;

@@ -5,12 +5,12 @@ package com.strattonimaging.site.display
 	import com.bigspaceship.display.Standard;
 	import com.bigspaceship.events.AnimationEvent;
 	import com.bigspaceship.events.NavigationEvent;
-	import com.bigspaceship.utils.Lib;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.SimpleSequencer;
 	import com.strattonimaging.site.Constants;
 	import com.strattonimaging.site.display.components.Background;
 	import com.strattonimaging.site.display.components.Footer;
+	import com.strattonimaging.site.display.components.ftp.FtpClient;
 	import com.strattonimaging.site.display.components.Header;
 	import com.strattonimaging.site.display.screens.Home;
 	import com.strattonimaging.site.display.screens.Learn;
@@ -33,6 +33,7 @@ package com.strattonimaging.site.display
 		
 		private var _header					:Header;
 		private var _footer					:Footer;
+		private var _ftp					:FtpClient;
 		private var _background				:Background;
 		
 		private var _siteModel				:SiteModel;
@@ -104,6 +105,10 @@ package com.strattonimaging.site.display
 				case Constants.COMPONENT_HEADER:
 					_header = new Header($swf,$xml);
 					_layers[Constants.LAYERS_HEADER].addChild(_header.mc);
+					break;
+				case Constants.COMPONENT_FTP:
+					_ftp = new FtpClient($swf,$xml);
+					_layers[Constants.LAYERS_FTPCLIENT].addChild(_ftp.mc);
 					break;
 				
 				/*
@@ -196,6 +201,7 @@ package com.strattonimaging.site.display
 				_sequencer.addStep(1,_background,_background.animateIn,AnimationEvent.IN);
 				_sequencer.addStep(2,_footer,_footer.animateIn,AnimationEvent.IN);
 				_sequencer.addStep(3,_header,_header.animateIn,AnimationEvent.IN);	
+				_sequencer.addStep(4,_ftp,_ftp.animateIn,AnimationEvent.IN);	
 			}
 			
 			_header.setActiveScreen();
