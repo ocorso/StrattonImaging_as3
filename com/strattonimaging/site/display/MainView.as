@@ -2,6 +2,7 @@ package com.strattonimaging.site.display
 {
 	import com.asual.swfaddress.SWFAddressEvent;
 	import com.bigspaceship.display.AnimationState;
+	import com.bigspaceship.display.IPreloader;
 	import com.bigspaceship.display.Standard;
 	import com.bigspaceship.events.AnimationEvent;
 	import com.bigspaceship.events.NavigationEvent;
@@ -10,8 +11,9 @@ package com.strattonimaging.site.display
 	import com.strattonimaging.site.Constants;
 	import com.strattonimaging.site.display.components.Background;
 	import com.strattonimaging.site.display.components.Footer;
-	import com.strattonimaging.site.display.components.ftp.FtpClient;
 	import com.strattonimaging.site.display.components.Header;
+	import com.strattonimaging.site.display.components.SectionLoader;
+	import com.strattonimaging.site.display.components.ftp.FtpClient;
 	import com.strattonimaging.site.display.screens.Home;
 	import com.strattonimaging.site.display.screens.Learn;
 	import com.strattonimaging.site.display.screens.Screen;
@@ -35,6 +37,7 @@ package com.strattonimaging.site.display
 		private var _footer					:Footer;
 		private var _ftp					:FtpClient;
 		private var _background				:Background;
+		private var _sl						:SectionLoader;
 		
 		private var _siteModel				:SiteModel;
 		
@@ -110,6 +113,10 @@ package com.strattonimaging.site.display
 					_ftp = new FtpClient($swf,$xml);
 					_layers[Constants.LAYERS_FTPCLIENT].addChild(_ftp.mc);
 					break;
+				case Constants.COMPONENT_SECTION_LOADER:
+					Out.debug(this, "adding sl");
+					_sl = new SectionLoader($swf);
+					break;
 				
 				/*
 				//TODO: Create these other components and screens
@@ -120,7 +127,10 @@ package com.strattonimaging.site.display
 					break;	*/			
 			}
 		}//end function add components 
-		public function addPreloader($preloader:MovieClip):void { _layers[Constants.LAYERS_LOADER_2].addChild($preloader); }
+		public function addPreloader($preloader:IPreloader):void { 
+			Out.status(this, "addPreloader():");
+			_layers[Constants.LAYERS_LOADER_2].addChild($preloader as MovieClip); }
+		public function getSectionLoader():IPreloader { return _sl; }
 		public function addScreen($id:String,$swf:MovieClip,$xml:XML):void
 		{
 			switch($id){

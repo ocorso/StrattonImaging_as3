@@ -59,7 +59,7 @@ package com.bigspaceship.display
 			__instance = this;
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
-			preloader_mc.animateIn();
+			preloader_mc.animatePreloaderIn();
 			preloader_mc.addEventListener(Event.INIT,_startLoad,false,0,true);
 			preloader_mc.addEventListener(Event.COMPLETE,_onPreloaderOut,false,0,true);
 			

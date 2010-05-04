@@ -39,7 +39,7 @@ package com.bigspaceship.display
 	import net.ored.util.Resize;
 	
 	// the filename will be PreloaderClip.as. class name and file name have to match
-	public class PreloaderClip extends MovieClip
+	public class PreloaderClip extends MovieClip implements IPreloader
 	{	
 		// this variables can only be accessed from PreloaderClip. if you tried to access them outside that scope you'd get an error.
 		private var _targetFrame		:Number;
@@ -53,7 +53,7 @@ package com.bigspaceship.display
 		// the constructor.
 		// when a PreloaderClip begins to exist (either by appearing on the timeline or by calling new PreloaderClip() in code) this function is automatically called.
 		public function PreloaderClip():void {
-			Out.status(this, "PreloaderClip contructor");
+			Out.status(this, "PreloaderClip constructor");
 			Resize.add(	"@Preloader",
 				this,
 				[ Resize.CENTER_X, Resize.CUSTOM],
@@ -68,7 +68,7 @@ package com.bigspaceship.display
 		}
 		
 		// call animateIn to kick off the timeline IN animation.
-		public function animateIn():void
+		public function animatePreloaderIn($forceAnim:Boolean=false):void
 		{
 			//Out.debug(this,"animateIn");
 			gotoAndPlay("IN_START");

@@ -9,10 +9,11 @@ package com.strattonimaging.site.display.components.ftp
 	import com.strattonimaging.site.display.screens.Screen;
 	import com.strattonimaging.site.model.SiteModel;
 	
+	import fl.controls.DataGrid;
+	
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.net.Socket;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import flash.net.URLRequestMethod;
@@ -28,7 +29,7 @@ package com.strattonimaging.site.display.components.ftp
 		protected var ftp			:StandardInOut;
 		protected var login			:StandardInOut;
 		protected var loginBtn		:StandardButton;
-		private const LOGIN_ROUTE	:String 		= "/site/login.xml";
+		private const LOGIN_ROUTE	:String 		= "/ftp/login.xml";
 		private var _submitLoader	:URLLoader;
 		private var _ss				:SimpleSequencer;
 
@@ -120,7 +121,10 @@ package com.strattonimaging.site.display.components.ftp
 		private function _loginHandler($evt:Event):void{
 			Out.status(this, "loginHandler, here is the response: "+$evt.target.data);
 			if ($evt.target.data == "no") login.mc.gotoAndStop("FAILURE");
-			else login.mc.gotoAndStop("SUCCESS");
+			else{
+				login.mc.gotoAndStop("SUCCESS");
+				var dg:DataGrid = new DataGrid();
+			} 
 		}//end function
 	}//end class
 }//end package

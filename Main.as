@@ -1,10 +1,12 @@
-package com.strattonimaging.site
+package
 {
-	import com.bigspaceship.display.PreloaderClip;
+	import com.bigspaceship.display.IPreloader;
 	import com.bigspaceship.display.SiteLoader;
 	import com.bigspaceship.loading.BigLoader;
 	import com.bigspaceship.utils.Environment;
+	import com.bigspaceship.utils.Lib;
 	import com.bigspaceship.utils.Out;
+	import com.strattonimaging.site.Constants;
 	import com.strattonimaging.site.display.MainView;
 	import com.strattonimaging.site.events.ScreenEvent;
 	import com.strattonimaging.site.model.SiteModel;
@@ -23,7 +25,7 @@ package com.strattonimaging.site
 	public class Main extends MovieClip
 	{
 		private var _mainview										:MainView;
-		private var _preloader										:PreloaderClip;
+		private var _preloader										:IPreloader;
 		private var _siteModel:SiteModel;
 		
 		//demonster debugger
@@ -50,7 +52,7 @@ package com.strattonimaging.site
 			debugger = new MonsterDebugger(this);
 			Out.enableAllLevels(true);
 			Out.silence(Resize);
-			Out.status(this,"_initialize(); Main the next generation");
+			Out.status(this,"_initialize(); Main the next generation ");
 			
 			//site wide config
 			_siteModel = SiteModel.getInstance();
@@ -70,6 +72,7 @@ package com.strattonimaging.site
 			if(SiteLoader.getInstance()) _preloader = SiteLoader.getInstance().preloader_mc;
 			
 			if(_preloader) {
+				//_preloader = Lib.createMovieClip("PreloaderClip", "./loader.swf") as IPreloader;
 				_preloader.addEventListener(Event.INIT,_preloaderOnAnimateIn,false,0,true);
 				_preloader.addEventListener(Event.COMPLETE,_preloaderOnAnimateOut,false,0,true);
 				_mainview.addPreloader(_preloader);
@@ -123,6 +126,7 @@ package com.strattonimaging.site
 				
 				if (swfPath != "") _loader.add(_siteModel.getFilePath(swfPath, "swf"), _loadList[n].@id + "_" + Constants.TYPE_SWF);//spits out an id that looks like this "header_swf"
 				if (xmlPath != "") _loader.add(_siteModel.getFilePath(xmlPath, "xml"), _loadList[n].@id + "_" + Constants.TYPE_XML);//spits out an id that looks like this "header_swf"
+				Out.debug(this, "_loadList[n].@id "+_loadList[n].@id);
 			}//end for
 			
 			_loader.start();
@@ -205,6 +209,8 @@ package com.strattonimaging.site
 		 * 
 		 */		
 		private function _loadScreen($evt:ScreenEvent = null):void {
+			Out.status(this, "loadScreen");
+			if(false)	_createSectionLoader();
 			var lastLoadState:String = _loadState;
 			
 			_loadState = (_loadState == Constants.LOAD_STATE_INITIAL_ASSETS_COMPLETE) ? Constants.LOAD_STATE_INITIAL_SCREEN_BEGIN: Constants.LOAD_STATE_SCREEN_BEGIN;
@@ -223,7 +229,7 @@ package com.strattonimaging.site
 				
 				case Constants.LOAD_STATE_SCREEN_BEGIN:
 				case Constants.LOAD_STATE_SCREEN_COMPLETE:
-					if(_preloader) _preloader.animateIn();
+					if(_preloader) _preloader.animatePreloaderIn();
 					else _preloaderOnAnimateIn();
 					break;
 				
@@ -257,10 +263,18 @@ package com.strattonimaging.site
 			Out.status(this,"_preloaderOnAnimateIn();");
 			_startLoad();						
 		}
-		
+		private function _createSectionLoader():void{
+			
+			//making a new preloader
+				 	_preloader = _mainview.getSectionLoader();
+					//_preloader = SectionLoader(Lib.createMovieClip("sectionLoader", "./swf/site/section_loader.swf"));
+					_preloader.addEventListener(Event.INIT,_preloaderOnAnimateIn,false,0,true);
+					_preloader.addEventListener(Event.COMPLETE,_preloaderOnAnimateOut,false,0,true);
+					_mainview.addPreloader(_preloader);
+		}
 		private function _preloaderOnAnimateOut($evt:Event = null):void {
 			
-			Out.status(this,"we need to destroy the preloader and make a new one;");
+			Out.status(this,"we need to destroy the main preloader and make a section one;");
 			
 			if(_preloader) {
 					_preloader.removeEventListener(Event.INIT,_preloaderOnAnimateIn);
@@ -268,13 +282,7 @@ package com.strattonimaging.site
 					_preloader = null;
 					Out.debug(this,"we tried to destroy it, can you see it? ok make a new one");
 			}
-					
-		 			//making a new preloader
-				 	_preloader = new PreloaderClip();
-					_mainview.addPreloader(_preloader);
-					_preloader.addEventListener(Event.INIT,_preloaderOnAnimateIn,false,0,true);
-					_preloader.addEventListener(Event.COMPLETE,_preloaderOnAnimateOut,false,0,true);
-					_mainview.addPreloader(_preloader);
+	
 			if(!_mainview.isNextScreenLoaded) {
 				
 				Out.debug(this,"the next screen isn't loaded we need to load it;");
