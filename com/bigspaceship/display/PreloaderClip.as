@@ -70,7 +70,7 @@ package com.bigspaceship.display
 		// call animateIn to kick off the timeline IN animation.
 		public function animatePreloaderIn($forceAnim:Boolean=false):void
 		{
-			//Out.debug(this,"animateIn");
+			Out.debug(this,"animateIn");
 			gotoAndPlay("IN_START");
 			addEventListener(AnimationEvent.IN, _onPreloaderIn,false,0,true);
 		};

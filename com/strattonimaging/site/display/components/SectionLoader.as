@@ -11,7 +11,7 @@ package com.strattonimaging.site.display.components
 	import net.ored.util.Resize;
 	
 	// the filename will be PreloaderClip.as. class name and file name have to match
-	public class SectionLoader extends StandardInOut implements IPreloader
+	public class SectionLoader extends MovieClip implements IPreloader
 	{	
 		// this variables can only be accessed from PreloaderClip. if you tried to access them outside that scope you'd get an error.
 		private var _targetFrame		:Number;
@@ -25,13 +25,8 @@ package com.strattonimaging.site.display.components
 		
 		// the constructor.
 		// when a PreloaderClip begins to exist (either by appearing on the timeline or by calling new PreloaderClip() in code) this function is automatically called.
-		public function SectionLoader($mc:MovieClip=null):void {
+		public function SectionLoader():void {
 			Out.status(this, "Section Loader constructor");
-			if ($mc){
-				this.progress_mc = $mc.progress_mc;
-				this.pct_mc = $mc.pct_mc;
-				super($mc);
-			}
 			Resize.add(	"@Preloader",
 				this,
 				[ Resize.CENTER_X, Resize.CUSTOM],
@@ -49,8 +44,8 @@ package com.strattonimaging.site.display.components
 		public function animatePreloaderIn($forceAnim:Boolean=false):void
 		{
 			//Out.debug(this,"animateIn");
-			_mc.gotoAndPlay("IN_START");
-			_mc.addEventListener(AnimationEvent.IN, _onPreloaderIn,false,0,true);
+			gotoAndPlay("IN_START");
+			addEventListener(AnimationEvent.IN, _onPreloaderIn,false,0,true);
 		};
 		
 		// our first "event hook." the preloader timeline resolves to a frame where a line of code like this appears:
@@ -117,8 +112,8 @@ package com.strattonimaging.site.display.components
 		// the timeline goes away.	
 		private function _animateOut():void
 		{
-			_mc.gotoAndPlay("OUT_START");
-			_mc.addEventListener(AnimationEvent.OUT, _onPreloaderOut,false,0,true);			
+			gotoAndPlay("OUT_START");
+			addEventListener(AnimationEvent.OUT, _onPreloaderOut,false,0,true);			
 		};
 
 		// and once we reach the AnimationEvent.OUT event hook, we dispatch an event saying the preloader is complete. whatever is listening now knows the preloader has disappeared.
@@ -126,8 +121,8 @@ package com.strattonimaging.site.display.components
 		{
 			// kill listeners. this will prep the loader for the next use.
 			// if i didn't do this, I might get _onPreloaderIn() twice when I reach the IN event hook. that'd mess everything up.
-			_mc.removeEventListener(AnimationEvent.IN,_onPreloaderIn);
-			_mc.removeEventListener(AnimationEvent.OUT,_onPreloaderOut);
+			removeEventListener(AnimationEvent.IN,_onPreloaderIn);
+			removeEventListener(AnimationEvent.OUT,_onPreloaderOut);
 			
 
 			if(_isLoadComplete) dispatchEvent(new Event(Event.COMPLETE));

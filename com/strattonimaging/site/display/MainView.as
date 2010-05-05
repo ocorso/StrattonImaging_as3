@@ -1,19 +1,22 @@
 package com.strattonimaging.site.display
 {
+	import __AS3__.vec.Vector;
+	
 	import com.asual.swfaddress.SWFAddressEvent;
 	import com.bigspaceship.display.AnimationState;
 	import com.bigspaceship.display.IPreloader;
 	import com.bigspaceship.display.Standard;
 	import com.bigspaceship.events.AnimationEvent;
 	import com.bigspaceship.events.NavigationEvent;
+	import com.bigspaceship.utils.Lib;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.SimpleSequencer;
 	import com.strattonimaging.site.Constants;
 	import com.strattonimaging.site.display.components.Background;
 	import com.strattonimaging.site.display.components.Footer;
 	import com.strattonimaging.site.display.components.Header;
-	import com.strattonimaging.site.display.components.SectionLoader;
 	import com.strattonimaging.site.display.components.ftp.FtpClient;
+	import com.strattonimaging.site.display.screens.Craft;
 	import com.strattonimaging.site.display.screens.Home;
 	import com.strattonimaging.site.display.screens.Learn;
 	import com.strattonimaging.site.display.screens.Screen;
@@ -37,7 +40,7 @@ package com.strattonimaging.site.display
 		private var _footer					:Footer;
 		private var _ftp					:FtpClient;
 		private var _background				:Background;
-		private var _sl						:SectionLoader;
+		private var _sl						:MovieClip;
 		
 		private var _siteModel				:SiteModel;
 		
@@ -115,11 +118,12 @@ package com.strattonimaging.site.display
 					break;
 				case Constants.COMPONENT_SECTION_LOADER:
 					Out.debug(this, "adding sl");
-					_sl = new SectionLoader($swf);
+					_sl = Lib.createMovieClip("com.strattonimaging.site.display.components.SectionLoader", $swf);
+					_layers[Constants.LAYERS_LOADER].addChild(_sl);
 					break;
 				
 				/*
-				//TODO: Create these other components and screens
+				TODO: Create these other components and screens
 				
 				case Constants.COMPONENT_AUDIO:
 					var _audio:AudioManager = AudioManager.getInstance();
@@ -127,10 +131,11 @@ package com.strattonimaging.site.display
 					break;	*/			
 			}
 		}//end function add components 
-		public function addPreloader($preloader:IPreloader):void { 
+		public function addPreloader($preloader:MovieClip):void { 
 			Out.status(this, "addPreloader():");
-			_layers[Constants.LAYERS_LOADER_2].addChild($preloader as MovieClip); }
-		public function getSectionLoader():IPreloader { return _sl; }
+			_layers[Constants.LAYERS_LOADER_2].addChild($preloader);
+		}
+		public function getSectionLoader():IPreloader { return _sl as IPreloader; }
 		public function addScreen($id:String,$swf:MovieClip,$xml:XML):void
 		{
 			switch($id){
@@ -140,6 +145,9 @@ package com.strattonimaging.site.display
 					break;
 				case Constants.SCREEN_LEARN:
 					_screens[$id] = new Learn($swf,$xml);
+					break;
+				case Constants.SCREEN_CRAFT:
+					_screens[$id] = new Craft($swf,$xml);
 					break;
 			
 				

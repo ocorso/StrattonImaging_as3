@@ -8,8 +8,8 @@ package com.strattonimaging.site.display.components.ftp
 	import com.bigspaceship.utils.SimpleSequencer;
 	import com.strattonimaging.site.display.screens.Screen;
 	import com.strattonimaging.site.model.SiteModel;
-	
-	import fl.controls.DataGrid;
+	import mx.controls.dataGridClasses.MXDataGridItemRenderer;
+	//import fl.controls.DataGrid;
 	
 	import flash.display.MovieClip;
 	import flash.events.Event;
@@ -123,7 +123,7 @@ package com.strattonimaging.site.display.components.ftp
 			if ($evt.target.data == "no") login.mc.gotoAndStop("FAILURE");
 			else{
 				login.mc.gotoAndStop("SUCCESS");
-				var dg:DataGrid = new DataGrid();
+				//var dg:DataGrid = new DataGrid();
 			} 
 		}//end function
 	}//end class

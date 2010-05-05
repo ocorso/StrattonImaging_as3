@@ -4,7 +4,6 @@ package
 	import com.bigspaceship.display.SiteLoader;
 	import com.bigspaceship.loading.BigLoader;
 	import com.bigspaceship.utils.Environment;
-	import com.bigspaceship.utils.Lib;
 	import com.bigspaceship.utils.Out;
 	import com.strattonimaging.site.Constants;
 	import com.strattonimaging.site.display.MainView;
@@ -35,7 +34,7 @@ package
 		private var _loadList										:XMLList;
 		private var _loadState										:String;
 		
-		
+		public var isInitial										:Boolean = true;
 		
 		public function Main()
 		{
@@ -59,23 +58,25 @@ package
 			_siteModel.initialize(stage.loaderInfo);
 			
 			if(!Environment.IS_IN_BROWSER){
+				Out.warning(this, "!Environment.IS_IN_BROWSER");
 				stage.scaleMode = StageScaleMode.NO_SCALE;
 				stage.align = StageAlign.TOP_LEFT;
 				Resize.setStage(stage);
-			}//end if 
+			}else{
+				Out.error(this, "Environment.IS_IN_BROWSER "+SiteLoader(parent).preloader_mc);
+				_preloader = SiteLoader(parent).preloader_mc;
+			}
 			
 			
 			_mainview = new MainView(this);
 			_mainview.addEventListener(ScreenEvent.REQUEST_LOAD,_loadScreen,false,0,true);
 			_mainview.addEventListener(ScreenEvent.REQUEST_LOAD_CANCEL,_loadScreenCancel,false,0,true);
 
-			if(SiteLoader.getInstance()) _preloader = SiteLoader.getInstance().preloader_mc;
 			
 			if(_preloader) {
-				//_preloader = Lib.createMovieClip("PreloaderClip", "./loader.swf") as IPreloader;
 				_preloader.addEventListener(Event.INIT,_preloaderOnAnimateIn,false,0,true);
 				_preloader.addEventListener(Event.COMPLETE,_preloaderOnAnimateOut,false,0,true);
-				_mainview.addPreloader(_preloader);
+				_mainview.addPreloader(_preloader as MovieClip);
 			}
 			
 			_loadState = Constants.LOAD_STATE_INIT;
@@ -125,7 +126,7 @@ package
 				var xmlPath:String = _loadList[n].@xml || "";
 				
 				if (swfPath != "") _loader.add(_siteModel.getFilePath(swfPath, "swf"), _loadList[n].@id + "_" + Constants.TYPE_SWF);//spits out an id that looks like this "header_swf"
-				if (xmlPath != "") _loader.add(_siteModel.getFilePath(xmlPath, "xml"), _loadList[n].@id + "_" + Constants.TYPE_XML);//spits out an id that looks like this "header_swf"
+				if (xmlPath != "") _loader.add(_siteModel.getFilePath(xmlPath, "xml", true), _loadList[n].@id + "_" + Constants.TYPE_XML);//spits out an id that looks like this "header_swf"
 				Out.debug(this, "_loadList[n].@id "+_loadList[n].@id);
 			}//end for
 			
@@ -210,7 +211,8 @@ package
 		 */		
 		private function _loadScreen($evt:ScreenEvent = null):void {
 			Out.status(this, "loadScreen");
-			if(false)	_createSectionLoader();
+			if(isInitial) isInitial = false;
+			else	_createSectionLoader();
 			var lastLoadState:String = _loadState;
 			
 			_loadState = (_loadState == Constants.LOAD_STATE_INITIAL_ASSETS_COMPLETE) ? Constants.LOAD_STATE_INITIAL_SCREEN_BEGIN: Constants.LOAD_STATE_SCREEN_BEGIN;
@@ -264,13 +266,13 @@ package
 			_startLoad();						
 		}
 		private function _createSectionLoader():void{
-			
+			Out.status(this, "createSectionLoader():");
 			//making a new preloader
 				 	_preloader = _mainview.getSectionLoader();
 					//_preloader = SectionLoader(Lib.createMovieClip("sectionLoader", "./swf/site/section_loader.swf"));
 					_preloader.addEventListener(Event.INIT,_preloaderOnAnimateIn,false,0,true);
 					_preloader.addEventListener(Event.COMPLETE,_preloaderOnAnimateOut,false,0,true);
-					_mainview.addPreloader(_preloader);
+					_mainview.addPreloader(_preloader as MovieClip);
 		}
 		private function _preloaderOnAnimateOut($evt:Event = null):void {
 			
@@ -336,8 +338,12 @@ package
 					break;
 			}
 			
-			if(_preloader) _preloader.updateProgress($evt.bytesLoaded,$evt.bytesTotal,itemsLoaded,itemsTotal);
-		}
+			if(_preloader) {
+				Out.debug(this, "somehow we're here even when _preloader = "+_preloader);
+				_preloader.updateProgress($evt.bytesLoaded,$evt.bytesTotal,itemsLoaded,itemsTotal);
+	
+			}
+		}//end function
 
 
 	}//end class
