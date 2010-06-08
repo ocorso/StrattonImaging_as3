@@ -1,7 +1,6 @@
 package com.strattonimaging.site.display.components
 {	
 	import com.bigspaceship.display.IPreloader;
-	import com.bigspaceship.display.StandardInOut;
 	import com.bigspaceship.events.AnimationEvent;
 	import com.bigspaceship.utils.Out;
 	
@@ -26,6 +25,7 @@ package com.strattonimaging.site.display.components
 		// the constructor.
 		// when a PreloaderClip begins to exist (either by appearing on the timeline or by calling new PreloaderClip() in code) this function is automatically called.
 		public function SectionLoader():void {
+			super();
 			Out.status(this, "Section Loader constructor");
 			Resize.add(	"@Preloader",
 				this,
@@ -41,7 +41,7 @@ package com.strattonimaging.site.display.components
 		}
 		
 		// call animateIn to kick off the timeline IN animation.
-		public function animatePreloaderIn($forceAnim:Boolean=false):void
+		public function animateIn($forceAnim:Boolean=false):void
 		{
 			//Out.debug(this,"animateIn");
 			gotoAndPlay("IN_START");
@@ -53,7 +53,7 @@ package com.strattonimaging.site.display.components
 		// in the constructor we listened for when that happened, and mapped it to this function. as a result, this function will automatically happen when we hit that frame.
 		private function _onPreloaderIn($evt:Event):void
 		{
-			Out.debug(this, "onPreloaderIn");
+			Out.info(this, "onPreloaderIn");
 			
 			progress_mc.addEventListener(Event.COMPLETE,_onProgressBarComplete,false,0,true);
 			progress_mc.addEventListener(Event.ENTER_FRAME,_onProgressEnterFrame,false,0,true);
@@ -79,7 +79,11 @@ package com.strattonimaging.site.display.components
 		{
 			progress_mc.play();
 			_targetFrame = 9999999999;
-		};
+		}
+		
+		public function get mc():MovieClip{
+			return this;
+		}
 		
 		// this is some extra fun. in case we wanted to show the user that we're 75% loaded.
 		private function _onProgressEnterFrame($evt:Event):void
@@ -140,6 +144,6 @@ package com.strattonimaging.site.display.components
 		public function cancel():void
 		{
 			_onProgressBarComplete();
-		};
-	};
+		}
+	}
 }

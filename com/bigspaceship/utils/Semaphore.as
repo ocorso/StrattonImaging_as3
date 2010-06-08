@@ -1,5 +1,5 @@
 /**
- * MathUtils by Big Spaceship. 2008
+ * Semaphore by Big Spaceship. 2008-2009
  *
  * To contact Big Spaceship, email info@bigspaceship.com or write to us at 45 Main Street #716, Brooklyn, NY, 11201.
  * Visit http://labs.bigspaceship.com for documentation, updates and more free code.
@@ -36,7 +36,7 @@ package com.bigspaceship.utils
 	/**
 	 * Semaphore
 	 *
-	 * @copyright 		2008 Big Spaceship, LLC
+	 * @copyright 		2009 Big Spaceship, LLC
 	 * @author			
 	 * @version			1.0
 	 * @langversion		ActionScript 3.0 			
@@ -56,10 +56,10 @@ package com.bigspaceship.utils
 	    		if(v) {
 	    			// If there is an open lock, isLocked = false;
 	    			return false;
-	    		};
-	    	};
+	    		}
+	    	}
 	    	return true;
-	    };
+	    }
 	    
 	    public function get isUnlocked():Boolean {
 	        // If every stored condition has been marked "true", then
@@ -68,22 +68,22 @@ package com.bigspaceship.utils
 	        for each(v in _locks) {
 	        	if(!v) {
 	        		return false;
-	        	};
-	        };
+	        	}
+	        }
 	        return true;
-	    }; 
+	    }
 	    
 		public function get countLocked():Number {
 			return _numlocks - _numunlocked;
-		};
+		}
 	    
 		public function get countUnlocked():Number {
 			return _numunlocked;
-		};
+		}
 		
 		public function get countLocks():Number {
 			return _numlocks;
-		};
+		}
 		
 		
 
@@ -95,7 +95,7 @@ package com.bigspaceship.utils
 			_locks = new Dictionary(true);
 			
 			if(i) while(i--) addLock(l[i]);
-		};
+		}
 		
 		
 		public function openLock($l:String):Boolean {
@@ -113,8 +113,8 @@ package com.bigspaceship.utils
 			} else {
 				return false;
 				
-			};
-		};
+			}
+		}
 		
 			
 	    public function resetLocks():void {
@@ -124,8 +124,7 @@ package com.bigspaceship.utils
 	        for(l in _locks) _locks[l] = false;
 	        
 	        _numunlocked = 0;
-	    };
-	    
+	    }
 		
 		// WARNING: Functionality you should think twice about using, because
 		// it may result in serious logic issues if you're not careful.  A
@@ -135,14 +134,14 @@ package com.bigspaceship.utils
 		public function addLock($l:String):void {
 			_numlocks++;
 			_locks[$l] = false;
-		};
+		}
 		
 		public function removeLock($l:String):void {
 	        // I'm not sure if it's a good idea to remove locks
 	        // but I guess I'll leave in the ability to do it.
 	        _numlocks--;    
 			delete _locks[$l];
-		};
+		}
 		
 		public function closeLock($l:String):void {
 	        // I'm not sure if it's a good idea to re-close locks either,
@@ -150,7 +149,6 @@ package com.bigspaceship.utils
 	        // do it often.
 			_locks[$l] = false;	
 			_numunlocked--;
-		};
-		
-	};
-};
+		}
+	}
+}

@@ -1,5 +1,5 @@
 /**
- * OutputEvent by Big Spaceship. 2009
+ * NavigationEvent by Big Spaceship. 2009
  *
  * To contact Big Spaceship, email info@bigspaceship.com or write to us at 45 Main Street #716, Brooklyn, NY, 11201.
  * Visit http://labs.bigspaceship.com for documentation, updates and more free code.
@@ -31,12 +31,13 @@ package com.bigspaceship.events
 	import flash.events.Event;
 	
 	/**
-	 *  The <code>NavEvent</code> Class describes all events dispatched for Navigation through (and out of) the site
+	 *  The <code>NavigationEvent</code> Class describes all events dispatched for Navigation through the site
 	 *
 	 *  @param			$type: (String) Which event to dispatch.
 	 *  @param			$info: (Object) Information to pass.
 	 *  @param			$bubbles: (Boolean) Indicates whether an event is a bubbling event.
 	 *  @param			$cancelable: (Boolean) Indicates whether the behavior associated with the event can be prevented.
+	 * 
 	 *  @copyright 		2009 Big Spaceship, LLC
 	 *  @author			Daniel Scheibel
 	 *  @version		1.0

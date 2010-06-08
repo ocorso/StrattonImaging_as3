@@ -1,11 +1,11 @@
 /**
- * OutEvent by Big Spaceship. 2006
+ * IOutAdapter by Big Spaceship. 2010
  *
  * To contact Big Spaceship, email info@bigspaceship.com or write to us at 45 Main Street #716, Brooklyn, NY, 11201.
  * Visit http://labs.bigspaceship.com for documentation, updates and more free code.
  *
  *
- * Copyright (c) 2006 Big Spaceship, LLC
+ * Copyright (c) 2010 Big Spaceship, LLC
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,31 +26,32 @@
  * THE SOFTWARE.
  *
  **/
- 
- 
-package com.bigspaceship.events{
-	
-	import flash.events.Event;
-	
-	public class OutEvent extends Event{
+package com.bigspaceship.utils.out.adapters
+{
+	/**
+	 * 
+	 * 
+	 * @copyright 		2010 Big Spaceship, LLC
+	 * @author			Charlie Whitney
+	 * @version			1.0
+	 * @langversion		ActionScript 3.0 			
+	 * @playerversion 	Flash 9.0.0
+	 */	
+	public interface IOutAdapter
+	{
+		/**
+		 * Out will print trace data to this function
+		 *  
+		 * @param $prefix A standard string that Out prefaces it's calls with. Looks something like "STATUS  :::	MyClass	::"
+		 * @param $level Which debugging level this call is on.  See Out.as for a list of constants.
+		 * @param $objects A list of all of the parameters passed into the Out call.
+		 * 
+		 */		
+		function output($prefix:String, $level:String, ...$objects):void;
 		
-		public static const ALL			: String = "all";
-		public static const INFO		: String = "info";
-		public static const STATUS		: String = "status";
-		public static const DEBUG		: String = "debug";
-		public static const WARNING		: String = "warning";
-		public static const ERROR		: String = "error";
-		public static const FATAL		: String = "fatal";
-		
-		public var output				: String;
-		
-		public function OutEvent($type:String, $out:String){
-			super($type);
-			output = $out;
-		}
-
-		public override function clone():Event{
-			return new OutEvent(type, output);
-		}
+		/**
+		 * Called on "Out.clear()"  This should clear the screen of your debugger.
+		 */		
+		function clear():void;
 	}
 }

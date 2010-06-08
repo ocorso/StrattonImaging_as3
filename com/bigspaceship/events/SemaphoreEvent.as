@@ -27,7 +27,6 @@
  *
  **/
 
-
 package com.bigspaceship.events
 {
 	import flash.events.Event;

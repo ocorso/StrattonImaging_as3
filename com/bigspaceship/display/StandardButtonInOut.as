@@ -1,5 +1,5 @@
 /**
- * StandardButtonScreen by Big Spaceship. 2009
+ * StandardButtonInOut by Big Spaceship. 2009
  *
  * To contact Big Spaceship, email info@bigspaceship.com or write to us at 45 Main Street #716, Brooklyn, NY, 11201.
  * Visit http://labs.bigspaceship.com for documentation, updates and more free code.
@@ -37,10 +37,11 @@ package com.bigspaceship.display
 	import flash.events.MouseEvent;
 
 	/**
-	 * This class ads the BigScreen IN/OUT label functionality
+	 * This class combines the BigScreen IN/OUT label functionality
 	 * to the StandardButton.
 	 * 
-	 * @author Daniel Scheibel
+ 	 * @copyright 	2009 Big Spaceship, LLC
+	 * @author 		Daniel Scheibel
 	 */	
 	public class StandardButtonInOut extends Standard
 	{

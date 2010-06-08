@@ -48,18 +48,17 @@ package com.bigspaceship.utils
 	 * @playerversion 	Flash 9.0.0
 	 *
 	 */
-	public class Lib
-	{
+	public class Lib{
+		
 		/**
-		 * The <code>createAsset()</code> method creates a new Instance of a class.
+		 * The <code>loadSound()</code> method creates a new Instance of a class.
 		 * 
 		 * @param 	$appDomainOrMc	Object			ApplicationDomain or MovieClip (reference to swf) where the classDefinition can be found.
 		 * @param	$classname 		String			Name of the Class that you want to create
 		 * @return 					DisplayObject	Instance of the Class $classname, null if class definition couldn't be found.
 		 * 
 		 */		
-		public static function createAsset($classname:String, $appDomainOrMc:Object ):DisplayObject
-		{
+		public static function createAsset($classname:String, $appDomainOrMc:Object ):DisplayObject{
 			var c:Class = _getClassDefinition($classname, $appDomainOrMc);
 			return new c();
 		}
@@ -72,8 +71,7 @@ package com.bigspaceship.utils
 		 * @return 					MovieClip
 		 * 
 		 */		
-		public static function createMovieClip($classname:String, $appDomainOrMc:Object):MovieClip
-		{
+		public static function createMovieClip($classname:String, $appDomainOrMc:Object):MovieClip{
 			return MovieClip(createAsset($classname, $appDomainOrMc));
 		}
 		
@@ -85,8 +83,7 @@ package com.bigspaceship.utils
 		 * @return 					Sound
 		 * 
 		 */		
-		public static function createSound($classname:String, $appDomainOrMc:Object):Sound
-		{
+		public static function createSound($classname:String, $appDomainOrMc:Object):Sound{
 			return Sound(createAsset($classname, $appDomainOrMc));		
 		}
 		
@@ -98,8 +95,7 @@ package com.bigspaceship.utils
 		 * @return 					BitmapData
 		 * 
 		 */		
-		public static function createBitmapData($classname:String, $appDomainOrMc:Object):BitmapData
-		{
+		public static function createBitmapData($classname:String, $appDomainOrMc:Object):BitmapData{
 			var c:Class = _getClassDefinition($classname, $appDomainOrMc);
 			// width and height parameters that get passed to the constructor 
 			// have no influence on the size of bitmap. 
@@ -114,8 +110,7 @@ package com.bigspaceship.utils
 		 * @return 
 		 * 
 		 */		
-		public static function createClassObject($classname:String):*
-		{
+		public static function createClassObject($classname:String):*{
 			var c:Class = Class(getDefinitionByName($classname));
 			return new c();
 		}
@@ -131,13 +126,12 @@ package com.bigspaceship.utils
 			}else{
 				appDomain = $appDomainOrMc.loaderInfo.applicationDomain;
 			}
-			//if(applicationDomain.hasDefinition($classname)){
 			var c:Class;
 			try{
 				c = Class(appDomain.getDefinition($classname));
 			}catch($error:Error){
 				//trace($error.errorID+' || '+$error.name+' || '+$error.message);
-				throw new Error("#1065: Flash Library Error. || Variable "+$classname+" is not defined in ApplicationDomain/MovieClip", $error.errorID);	
+				throw new Error("#1065: Big Spaceship Lib - Flash Library Error. || Variable "+$classname+" is not defined in ApplicationDomain/MovieClip", $error.errorID);	
 			}
 			return c;
 		}

@@ -38,8 +38,8 @@ package com.bigspaceship.display
 	 *
 	 * @param			(classes, interfaces, methods and constructors only)
 	 * @return			(methods only)
-	 * @copyright 		2009 Big Spaceship, LLC 	(classes and interfaces only, required)
-	 * @author			Daniel Scheibel(classes and interfaces only, required)
+	 * @copyright 		2010 Big Spaceship, LLC 	(classes and interfaces only, required)
+	 * @author			Daniel Scheibel (classes and interfaces only, required)
 	 * @version			1.0 (classes and interfaces only, required)
 	 * @see         
 	 * @since       		
@@ -51,22 +51,29 @@ package com.bigspaceship.display
 	public class Standard extends EventDispatcher implements IStandard
 	{
 		
-		public var id:String;
-		
+		protected var _curState:String;
+		protected var _id:String;
 		protected var _mc:MovieClip;
 		protected var _useWeakReference:Boolean;
-		protected var _curState:String;
 		
+		public function get id():String{ 
+			return _id; 
+		}
+		public function set id($val:String):void{
+			_id = $val;
+		}
 		public function get mc():MovieClip{ 
 			return _mc; 
+		}
+		public function get curState():String{ 
+			return _curState; 
+		}
+		public function get state():String{ 
+			return _curState; 
 		}
 		public function get useWeakReference():Boolean{ 
 			return _useWeakReference; 
 		}
-		
-		public function get state():String{ 
-			return _curState; 
-		}		
 		
 		public function Standard($mc:MovieClip, $useWeakReference:Boolean = false){
 			_mc = $mc;
@@ -75,7 +82,7 @@ package com.bigspaceship.display
 		
 		public function destroy():void{
 			_mc = null;
-			id = null;
+			_id = null;
 		}
 	}
 }

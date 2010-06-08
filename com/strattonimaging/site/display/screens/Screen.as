@@ -71,5 +71,8 @@ package com.strattonimaging.site.display.screens
 			_loader.removeEventListener(Event.COMPLETE, _loadComplete);
 			dispatchEvent($evt);
 		}//end function
+		override protected function _onAnimateOut():void{
+			_mc.gotoAndStop("INIT");
+		}//end function
 	}//end class
 }//end package

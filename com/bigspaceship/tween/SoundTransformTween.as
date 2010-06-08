@@ -1,5 +1,5 @@
 /**
- * SoundTransformTween by Big Spaceship. 2006
+ * SoundTransformTween by Big Spaceship. 2006-2009
  *
  * To contact Big Spaceship, email info@bigspaceship.com or write to us at 45 Main Street #716, Brooklyn, NY, 11201.
  * Visit http://labs.bigspaceship.com for documentation, updates and more free code.
@@ -64,19 +64,19 @@ package com.bigspaceship.tween{
 			_duration = $dur;
 			
 			start();
-		};
+		}
 		
 		public function start():void{
 			__sp.addEventListener(Event.ENTER_FRAME, _nextStep)
-		};
+		}
 		
 		public function stop():void{
 			__sp.removeEventListener(Event.ENTER_FRAME, _nextStep);
 			dispatchEvent(new Event(Event.CANCEL));
-		};
+		}
 		public function cancel():void{
 			stop();
-		};
+		}
 
 		private function _nextStep($evt:Event = null):void{
 			_time ++;
@@ -87,7 +87,7 @@ package com.bigspaceship.tween{
 			}else{
 				(_channel) ? _channel.soundTransform = _getNextTransform() : SoundMixer.soundTransform = _getNextTransform();
 			}
-		};
+		}
 		
 		private function _getNextTransform():SoundTransform{
 			var st:SoundTransform = new SoundTransform(
@@ -96,8 +96,6 @@ package com.bigspaceship.tween{
 			);
 			
 			return st;
-		};
-		
-		
+		}
 	}
 }

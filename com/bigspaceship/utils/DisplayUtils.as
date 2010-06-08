@@ -1,5 +1,5 @@
 /**
- * DisplayUtils by Big Spaceship. 2006
+ * DisplayUtils by Big Spaceship. 2006-2009
  *
  * To contact Big Spaceship, email info@bigspaceship.com or write to us at 45 Main Street #716, Brooklyn, NY, 11201.
  * Visit http://labs.bigspaceship.com for documentation, updates and more free code.
@@ -42,8 +42,7 @@ package com.bigspaceship.utils
 	 * @playerversion 	Flash 9.0.0
 	 *
 	 */
-	public class DisplayUtils
-	{
+	public class DisplayUtils{
 		
 		/**
 		 * The <code>ignoreMouse()</code> method sets the <code>mouseEnabled</code> and <code>mouseChildren</code> properties 
@@ -52,8 +51,7 @@ package com.bigspaceship.utils
 		 * @param	$do	DisplayObject
 		 * 
 		 */		
-		public static function ignoreMouse($do:DisplayObjectContainer):void
-		{
+		public static function ignoreMouse($do:DisplayObjectContainer):void{
            if($do.mouseEnabled) $do.mouseEnabled = false;
            if($do.mouseChildren) $do.mouseChildren = false;
 
@@ -64,7 +62,7 @@ package com.bigspaceship.utils
                    if($do.mouseEnabled) DisplayUtils.ignoreMouse(($do.getChildAt(i) as DisplayObjectContainer));
                }
 			}	
-		};
+		}
 		
 		/**
 		 * The <code>ignoreMouse()</code> method sets the <code>mouseEnabled</code> and <code>mouseChildren</code> properties 
@@ -73,8 +71,7 @@ package com.bigspaceship.utils
 		 * @param	$do	DisplayObject 
 		 * 
 		 */		
-		public static function respondToMouse($do:DisplayObjectContainer):void
-		{
+		public static function respondToMouse($do:DisplayObjectContainer):void{
 			if(!$do.mouseEnabled) $do.mouseEnabled = true;
 			if(!$do.mouseChildren) $do.mouseChildren = true;
 
@@ -85,7 +82,7 @@ package com.bigspaceship.utils
 					if(!$do.mouseEnabled) DisplayUtils.respondToMouse(($do.getChildAt(i) as DisplayObjectContainer));
 				}
 			}
-		};
+		}
 		
 		
 		
@@ -148,5 +145,21 @@ package com.bigspaceship.utils
 			}
 			return frameLabelObj;
 		}
-	};
-};
+		
+		
+		/**
+		 *  The <code>removeAllChildren()</code> method returns an Boolean whether or not all the children of a DisplayObjectContainer have been removed
+		 *	
+		 *  @param $do	DisplayObject
+		 *	
+		 *	@return	Boolean whether or not all the children of a DisplayObjectContainer have been removed
+		 *
+		*/
+		public static function removeAllChildren($do:DisplayObjectContainer):Boolean{
+			while($do.numChildren) $do.removeChildAt(0);
+			if($do.numChildren == 0) return true;
+			return false;
+		}
+		
+	}
+}

@@ -7,7 +7,9 @@ package com.strattonimaging.site.display.components
 	import com.strattonimaging.site.display.screens.Screen;
 	
 	import flash.display.MovieClip;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.text.TextField;
 	import flash.utils.Dictionary;
 	
 	import net.ored.util.Resize;
@@ -20,13 +22,14 @@ package com.strattonimaging.site.display.components
 		
 		private var _currentActive		:String;
 		
+		
+		
 		public function Header($mc:MovieClip, $xml:*, $useWeakReference:Boolean=false)
 		{
 			super($mc, $xml, $useWeakReference);
 			
 			_setupNav();
 			_setupResize();
-			
 		}//end constructor
 		
 		private function _setupNav():void{
@@ -39,13 +42,16 @@ package com.strattonimaging.site.display.components
 				var id:String = _xml.menu[i].@id.toString();
 				Out.info(this, "the id of this button is: "+ id);
 				//setup nav btns
-				_navIdsToItems[id] = new StandardButton(_mc.tabs_mc[id + "_mc"], _mc.tabs_mc[id + "_mc"].btn);					
+				_navIdsToItems[id] = new StandardButton(_mc.tabs_mc[id + "_mc"]);					
 				_navIdsToItems[id].addEventListener(MouseEvent.CLICK,_navOnClick,false,0,true);
-				//_navIdsToItems[id].addEventListener(MouseEvent.ROLL_OVER,_navOnRoll,false,0,true);
+				_navIdsToItems[id].addEventListener(MouseEvent.ROLL_OVER,_navOnRollOver,false,0,true);
+				_navIdsToItems[id].addEventListener(MouseEvent.ROLL_OUT,_navOnRollOut,false,0,true);
 				_navItemsToIds[_navIdsToItems[id]] = id;
 			}//end for
-			
 		}//end function
+		private function oef(e:Event):void{
+			Out.debug(this, "frame: "+ MovieClip(_navIdsToItems['craft'].mc).currentFrame);
+		}
 		
 		private function _setupResize():void{
 			Resize.add(
@@ -63,7 +69,12 @@ package com.strattonimaging.site.display.components
 			);//end btns center
 		
 		}//end function
-		
+		private function _navOnRollOver($me:MouseEvent):void{
+			Out.debug(this, "over: "+$me.localY);
+		}
+		private function _navOnRollOut($me:MouseEvent):void{
+			Out.debug(this, "out: "+$me.localY);
+		}
 		
 		private function _navOnClick($evt:MouseEvent):void {
 			Out.debug(this, "just clicked: "+ $evt.target);

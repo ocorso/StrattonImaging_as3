@@ -48,8 +48,7 @@ package com.bigspaceship.utils
 		 * @return 				int		Random int between 
 		 * 
 		 */		
-		public static function getRandomInt($min_num:Number, $max_num:Number):int
-		{
+		public static function getRandomInt($min_num:Number, $max_num:Number):int{
 			$min_num = Math.ceil($min_num);
 			$max_num = Math.floor($max_num);
 			return $min_num + Math.floor(Math.random() * ($max_num + 1 - $min_num));
@@ -63,8 +62,7 @@ package com.bigspaceship.utils
 		 * @return				Number
 		 * 
 		 */		
-		public static function getRandomNumber(min_num:Number, max_num:Number):Number
-		{
+		public static function getRandomNumber(min_num:Number, max_num:Number):Number{
 			return min_num + (Math.random() * (max_num - min_num));
 		}		
 		
@@ -77,8 +75,7 @@ package com.bigspaceship.utils
 		 * @return 			Number 
 		 * 
 		 */		
-		public static function normalize($value:Number, $min:Number, $max:Number):Number
-		{
+		public static function normalize($value:Number, $min:Number, $max:Number):Number{
 			return ($value - $min) / ($max - $min);
 		}
 		
@@ -91,8 +88,7 @@ package com.bigspaceship.utils
 		 * @return 				Number
 		 * 
 		 */		
-		public static function interpolate($normValue:Number, $min:Number, $max:Number):Number
-		{
+		public static function interpolate($normValue:Number, $min:Number, $max:Number):Number{
 			return $min + ($max - $min) * $normValue;
 		}
 		
@@ -107,8 +103,7 @@ package com.bigspaceship.utils
 		 * @return 			Number
 		 * 
 		 */		
-		public static function map($value:Number, $min1:Number, $max1:Number, $min2:Number, $max2:Number):Number
-		{
+		public static function map($value:Number, $min1:Number, $max1:Number, $min2:Number, $max2:Number):Number{
 			return interpolate( normalize($value, $min1, $max1), $min2, $max2);
 		}
 		
@@ -122,8 +117,7 @@ package com.bigspaceship.utils
 		 * @return 
 		 * 
 		 */
-		public static function findPreferredRatio($width:Number, $height:Number, $maxWidth:Number, $maxHeight:Number):Number
-		{
+		public static function findPreferredRatio($width:Number, $height:Number, $maxWidth:Number, $maxHeight:Number):Number{
 			var dw:Number = $maxWidth/$width;
 			var dh:Number = $maxHeight/$height;
 			return dw < dh ? dw : dh;
@@ -139,8 +133,7 @@ package com.bigspaceship.utils
 	     *  @param		max 	Number	Specifies the maximum value.
 	     *  @return				Number 	within the given range.
 	     */
-		public static function limit($value:Number, $min:Number, $max:Number):Number
-		{
+		public static function limit($value:Number, $min:Number, $max:Number):Number{
 			return Math.min(Math.max($min, $value), $max);
 		}
 		
@@ -162,8 +155,7 @@ package com.bigspaceship.utils
 	     *  @param	degrees	Number	Specifies degrees to be converted.
 	     *  @return 		Number	Radians.
 	     */  
-		public static function degreesToRadians($degrees:Number):Number
-		{
+		public static function degreesToRadians($degrees:Number):Number{
 			return $degrees*(Math.PI/180);
 		}
 		
@@ -173,9 +165,8 @@ package com.bigspaceship.utils
 	     *  @param	radians	Number	Specifies radians to be converted.
 	     *  @return 		Number	Degrees.
 	     */  
-		public static function radiansToDegrees(radians:Number):Number
-		{
+		public static function radiansToDegrees(radians:Number):Number{
 			return radians*(180/Math.PI);
 		}
-	};
-};
+	}
+}

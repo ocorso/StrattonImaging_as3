@@ -1,11 +1,11 @@
 /**
- * StandardButton by Big Spaceship. 2008
+ * StandardButton by Big Spaceship. 2008-2010
  *
  * To contact Big Spaceship, email info@bigspaceship.com or write to us at 45 Main Street #716, Brooklyn, NY, 11201.
  * Visit http://labs.bigspaceship.com for documentation, updates and more free code.
  *
  *
- * Copyright (c) 2008 Big Spaceship, LLC
+ * Copyright (c) 2008-2010 Big Spaceship, LLC
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +30,7 @@
 package com.bigspaceship.display
 {
 	import com.bigspaceship.events.AnimationEvent;
+	import com.bigspaceship.utils.MathUtils;
 	
 	import flash.display.DisplayObject;
 	import flash.display.FrameLabel;
@@ -64,7 +65,7 @@ package com.bigspaceship.display
 	/**
 	 * The <code>StandardButton</code> Class
 	 * 
-	 * @copyright 		2009 Big Spaceship, LLC
+	 * @copyright 		2010 Big Spaceship, LLC
 	 * @author			Jamie Kosoy, Daniel Scheibel
 	 * @version			1.0 
 	 * @langversion		ActionScript 3.0 			
@@ -73,18 +74,33 @@ package com.bigspaceship.display
 	 */
 	public class StandardButton extends Standard{
 		
-		public var rollOutIsRollOverInversed:Boolean = false;
+		public var mirrorOverOutAnimations:Boolean = false;
+		
+		protected var _labels_obj:Object;
 		
 		protected var _active:Boolean = true;
 		protected var _btn:DisplayObject;
 		
-		protected var _selectAnimStartLabel:String = 'SELECT_START';
-		protected var _deselectAnimStartLabel:String = 'DESELECT_START';
+		protected var _selectAnimStartLabel:String = 'ROLL_OVER_START';
+		protected var _deselectAnimStartLabel:String = 'ROLL_OUT_START';
+		
+		
 		
 		public function get btn():DisplayObject{
 			return _btn;
 		}
-		
+		public function get selectAnimStartLabel():String{
+			return _selectAnimStartLabel;
+		}
+		public function set selectAnimStartLabel($val:String):void{
+			_selectAnimStartLabel = $val;
+		}
+		public function get deselectAnimStartLabel():String{
+			return _deselectAnimStartLabel;
+		}
+		public function set deselectAnimStartLabel($val:String):void{
+			_deselectAnimStartLabel = $val;
+		}
 		public function get active():Boolean{
 			return _active;
 		}
@@ -105,48 +121,50 @@ package com.bigspaceship.display
 			}else{
 				_btn = _mc;
 			}
+			_curState = AnimationState.INIT;
 			
 			//ds: add Listeners
 			addBtnEventListeners();
 			var labels:Array = _mc.currentLabels;
+			_labels_obj = new Object();
 			for (var i:uint = 0; i < labels.length; i++) {
-			    var label:FrameLabel = labels[i];
-			   
-			    switch(label.name){
-			    	case 'ROLL_OVER':
-			    		_mc.addEventListener(AnimationEvent.ROLL_OVER_START, _onTimelineEvent_handler, false, 0, _useWeakReference);
+				var label:FrameLabel = labels[i];
+				_labels_obj[label.name] = label.frame;
+				switch(label.name){
+					case 'ROLL_OVER':
+						_mc.addEventListener(AnimationEvent.ROLL_OVER_START, _onTimelineEvent_handler, false, 0, _useWeakReference);
 						_mc.addEventListener(AnimationEvent.ROLL_OVER, _onTimelineEvent_handler, false, 0, _useWeakReference);
-			    		break;
-			    	case 'ROLL_OUT':
-			    		_mc.addEventListener(AnimationEvent.ROLL_OUT_START, _onTimelineEvent_handler, false, 0, _useWeakReference);
+						break;
+					case 'ROLL_OUT':
+						_mc.addEventListener(AnimationEvent.ROLL_OUT_START, _onTimelineEvent_handler, false, 0, _useWeakReference);
 						_mc.addEventListener(AnimationEvent.ROLL_OUT, _onTimelineEvent_handler, false, 0, _useWeakReference);
-			    		break;
-			    	case 'CLICK':
-			    		_mc.addEventListener(AnimationEvent.CLICK_START, _onTimelineEvent_handler, false, 0, _useWeakReference);
+						break;
+					case 'CLICK':
+						_mc.addEventListener(AnimationEvent.CLICK_START, _onTimelineEvent_handler, false, 0, _useWeakReference);
 						_mc.addEventListener(AnimationEvent.CLICK, _onTimelineEvent_handler, false, 0, _useWeakReference);
-			    		break;
-			    	case 'MOUSE_UP':
-			    		_mc.addEventListener(AnimationEvent.MOUSE_UP_START, _onTimelineEvent_handler, false, 0, _useWeakReference);
+						break;
+					case 'MOUSE_UP':
+						_mc.addEventListener(AnimationEvent.MOUSE_UP_START, _onTimelineEvent_handler, false, 0, _useWeakReference);
 						_mc.addEventListener(AnimationEvent.MOUSE_UP, _onTimelineEvent_handler, false, 0, _useWeakReference);
-			    		break;
-			    	case 'MOUSE_DOWN':
-			    		_mc.addEventListener(AnimationEvent.MOUSE_DOWN_START, _onTimelineEvent_handler, false, 0, _useWeakReference);
+						break;
+					case 'MOUSE_DOWN':
+						_mc.addEventListener(AnimationEvent.MOUSE_DOWN_START, _onTimelineEvent_handler, false, 0, _useWeakReference);
 						_mc.addEventListener(AnimationEvent.MOUSE_DOWN, _onTimelineEvent_handler, false, 0, _useWeakReference);
-			    		break;
-			    }
+						break;
+					case 'IN':
+						_mc.addEventListener(AnimationEvent.IN_START, _onTimelineEvent_handler, false, 0, _useWeakReference);
+						_mc.addEventListener(AnimationEvent.IN, _onTimelineEvent_handler, false, 0, _useWeakReference);
+					case 'IDLE':
+						_mc.addEventListener(AnimationEvent.IDLE, _onTimelineEvent_handler, false, 0, _useWeakReference);
+				}
 			}
+			_mc.addEventListener(AnimationEvent.UPDATE, _onTimelineEvent_handler, false, 0, _useWeakReference);
 			
 			_btn.addEventListener(MouseEvent.ROLL_OVER, dispatchEvent, false, 0, _useWeakReference);
 			_btn.addEventListener(MouseEvent.ROLL_OUT, dispatchEvent, false, 0, _useWeakReference);
 			_btn.addEventListener(MouseEvent.MOUSE_UP, dispatchEvent, false, 0, _useWeakReference);
 			_btn.addEventListener(MouseEvent.MOUSE_DOWN, dispatchEvent, false, 0, _useWeakReference);
 			_btn.addEventListener(MouseEvent.CLICK, dispatchEvent, false, 0, _useWeakReference);
-			
-			//ds: add Timeline/AnimationEvent Listeners
-			_mc.addEventListener(AnimationEvent.IN, _onTimelineEvent_handler, false, 0, _useWeakReference);
-			_mc.addEventListener(AnimationEvent.IDLE, _onTimelineEvent_handler, false, 0, _useWeakReference);
-			
-			_mc.addEventListener(Event.REMOVED_FROM_STAGE, _onRemovedFromStage, false, 0, _useWeakReference);
 		}
 		
 		public function deselect():void{
@@ -179,6 +197,7 @@ package com.bigspaceship.display
 			_btn = null;
 			
 			_mc.removeEventListener(AnimationEvent.IN, _onTimelineEvent_handler);
+			_mc.removeEventListener(AnimationEvent.IN_START, _onTimelineEvent_handler);
 			_mc.removeEventListener(AnimationEvent.IDLE, _onTimelineEvent_handler);
 			_mc.removeEventListener(AnimationEvent.ROLL_OUT_START, _onTimelineEvent_handler);
 			_mc.removeEventListener(AnimationEvent.ROLL_OUT, _onTimelineEvent_handler);
@@ -191,7 +210,6 @@ package com.bigspaceship.display
 			_mc.removeEventListener(AnimationEvent.MOUSE_UP_START, _onTimelineEvent_handler);
 			_mc.removeEventListener(AnimationEvent.MOUSE_UP, _onTimelineEvent_handler);
 			
-			_mc.removeEventListener(Event.REMOVED_FROM_STAGE, _onRemovedFromStage);
 			super.destroy();
 		}
 		
@@ -202,10 +220,12 @@ package com.bigspaceship.display
 			   
 			    switch(label.name){
 			    	case 'ROLL_OVER':
+			    	case 'ROLLOVER':
 			    		_btn.addEventListener(MouseEvent.ROLL_OVER, _onMouseRollOver_handler, false, 0, _useWeakReference);
 			    		break;
 			    	case 'ROLL_OUT':
-			    		_btn.addEventListener(MouseEvent.ROLL_OUT, _onMouseRollOut_handler);
+			    	case 'ROLLOUT':
+			    		_btn.addEventListener(MouseEvent.ROLL_OUT, _onMouseRollOut_handler, false, 0, _useWeakReference);
 			    		break;
 			    	case 'CLICK':
 			    		_btn.addEventListener(MouseEvent.CLICK, _onMouseClick_handler, false, 0, _useWeakReference);
@@ -216,6 +236,12 @@ package com.bigspaceship.display
 			    	case 'MOUSE_DOWN':
 			    		_btn.addEventListener(MouseEvent.MOUSE_DOWN, _onMouseDown_handler, false, 0, _useWeakReference);
 			    		break;
+				case 'SELECT':
+					_selectAnimStartLabel = "SELECT";
+					break;
+				case 'DESELECT':
+					_deselectAnimStartLabel = "DESELECT";
+					break;
 			    }
 			}
 			// sk: active? at this point, we are
@@ -240,78 +266,58 @@ package com.bigspaceship.display
 				case AnimationEvent.IDLE:
 					_mc.stop();
 					break;
-					
-				case AnimationEvent.ROLL_OVER_START:
-					dispatchEvent(new AnimationEvent(AnimationEvent.ROLL_OVER_START));
-					break;
 				case AnimationEvent.ROLL_OVER:
 					_mc.stop();
-					dispatchEvent(new AnimationEvent(AnimationEvent.ROLL_OVER));
-					break;
-					
-				case AnimationEvent.ROLL_OUT_START:
-					dispatchEvent(new AnimationEvent(AnimationEvent.ROLL_OUT_START));
 					break;
 				case AnimationEvent.ROLL_OUT:
 					_mc.stop();
 					_mc.gotoAndStop("IDLE");
-					dispatchEvent(new AnimationEvent(AnimationEvent.ROLL_OUT));
-					break;
-					
-				case AnimationEvent.CLICK_START:
-					dispatchEvent(new AnimationEvent(AnimationEvent.CLICK_START));
 					break;
 				case AnimationEvent.CLICK:
 					_mc.stop();
-					dispatchEvent(new AnimationEvent(AnimationEvent.CLICK));
-					break;
-				
-				case AnimationEvent.MOUSE_DOWN_START:
-					dispatchEvent(new AnimationEvent(AnimationEvent.MOUSE_DOWN_START));
 					break;
 				case AnimationEvent.MOUSE_DOWN:
 					_mc.stop();
-					dispatchEvent(new AnimationEvent(AnimationEvent.MOUSE_DOWN));
-					break;
-				case AnimationEvent.MOUSE_UP_START:
-					dispatchEvent(new AnimationEvent(AnimationEvent.MOUSE_UP_START));
 					break;
 				case AnimationEvent.MOUSE_UP:
 					_mc.stop();
-					dispatchEvent(new AnimationEvent(AnimationEvent.MOUSE_UP));
 					break;
 			}
+			dispatchEvent($evt);
 		}
 		
-		//ds: MouseEvent Handler:
-		
 		private function _onMouseRollOver_handler($evt:MouseEvent):void{
-			_mc.gotoAndPlay('ROLL_OVER_START');
+			var shift:int = 0;
+			if( mirrorOverOutAnimations && _curState == AnimationState.ROLL_OUT_START){
+				var framesPlayed:int = _mc.currentFrame - _labels_obj['ROLL_OUT_START'];
+				var perc:Number = 1-(framesPlayed/(_labels_obj['ROLL_OUT']-_labels_obj['ROLL_OUT_START']));
+				shift = MathUtils.limit(Math.round(perc*(_labels_obj['ROLL_OVER']-_labels_obj['ROLL_OVER_START'])), 0, _labels_obj['ROLL_OVER']-_labels_obj['ROLL_OVER_START']);
+			}
+			_mc.gotoAndPlay(_labels_obj['ROLL_OVER_START']+shift);
 		}
 		
 		private function _onMouseRollOut_handler($evt:MouseEvent):void{
-			//trace('ROLLOUT');
 			if(_curState == AnimationState.ROLL_OVER_START || _curState == AnimationState.ROLL_OVER){
-				_mc.gotoAndPlay('ROLL_OUT_START');
+				var shift:int = 0;
+				if( mirrorOverOutAnimations && _curState == AnimationState.ROLL_OVER_START){
+					var framesPlayed:int = _mc.currentFrame - _labels_obj['ROLL_OVER_START'];
+					var perc:Number = 1-(framesPlayed/(_labels_obj['ROLL_OVER']-_labels_obj['ROLL_OVER_START']));
+					shift = MathUtils.limit(Math.round(perc*(_labels_obj['ROLL_OUT']-_labels_obj['ROLL_OUT_START'])), 0, _labels_obj['ROLL_OUT']-_labels_obj['ROLL_OUT_START']);
+				}
+				_mc.gotoAndPlay(_labels_obj['ROLL_OUT_START']+shift);
 			}
 		}
 		
-		protected function _onMouseClick_handler($evt:MouseEvent):void{
-			//trace('StandardBtn: CLICK');
+		private function _onMouseClick_handler($evt:MouseEvent):void{
 			_mc.gotoAndPlay('CLICK_START');
 		}
 		
 		private function _onMouseUp_handler($evt:MouseEvent):void{
-			//trace('StandardBtn: CLICK');
 			_mc.gotoAndPlay('MOUSE_UP_START');
 		}
-		private function _onMouseDown_handler($evt:MouseEvent):void{
-			//trace('StandardBtn: CLICK');
-			_mc.gotoAndPlay('MOUSE_DOWN_START');
-		}
 		
-		private function _onRemovedFromStage($evt:Event):void{
-			destroy();
+		private function _onMouseDown_handler($evt:MouseEvent):void{
+			_mc.gotoAndPlay('MOUSE_DOWN_START');
 		}
 		
 	}

@@ -5,6 +5,7 @@ package
 	import com.bigspaceship.loading.BigLoader;
 	import com.bigspaceship.utils.Environment;
 	import com.bigspaceship.utils.Out;
+	import com.bigspaceship.utils.out.adapters.ArthropodAdapter;
 	import com.strattonimaging.site.Constants;
 	import com.strattonimaging.site.display.MainView;
 	import com.strattonimaging.site.events.ScreenEvent;
@@ -14,7 +15,11 @@ package
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.events.ProgressEvent;
+	import flash.net.URLLoader;
+	import flash.net.URLRequest;
+	import flash.ui.Mouse;
 	
 	import net.ored.util.Resize;
 	
@@ -30,6 +35,7 @@ package
 		//demonster debugger
 		private var debugger:MonsterDebugger;
 		//master loader
+		private var _configLoader									:URLLoader;
 		private var _loader											:BigLoader;
 		private var _loadList										:XMLList;
 		private var _loadState										:String;
@@ -48,23 +54,24 @@ package
 						
 			removeEventListener(Event.ADDED_TO_STAGE,_initialize);
 			// Init the debuggers
+			_setMouseListeners();
 			debugger = new MonsterDebugger(this);
-			Out.enableAllLevels(true);
-			Out.silence(Resize);
-			Out.status(this,"_initialize(); Main the next generation ");
 			
 			//site wide config
 			_siteModel = SiteModel.getInstance();
 			_siteModel.initialize(stage.loaderInfo);
 			
-			if(!Environment.IS_IN_BROWSER){
+			if(!Environment.IS_IN_BROWSER || !Environment.IS_ON_SERVER){
+				_turnOnOut();
+				
+				Out.status(this,"_initialize(); Main the next generation ");
 				Out.warning(this, "!Environment.IS_IN_BROWSER");
 				stage.scaleMode = StageScaleMode.NO_SCALE;
 				stage.align = StageAlign.TOP_LEFT;
 				Resize.setStage(stage);
 			}else{
-				Out.error(this, "Environment.IS_IN_BROWSER "+SiteLoader(parent).preloader_mc);
-				_preloader = SiteLoader(parent).preloader_mc;
+				Out.warning(this, "Environment.IS_IN_BROWSER "+SiteLoader(parent).preloader.mc);
+				_preloader = SiteLoader(parent).preloader as IPreloader;
 			}
 			
 			
@@ -76,8 +83,8 @@ package
 			if(_preloader) {
 				_preloader.addEventListener(Event.INIT,_preloaderOnAnimateIn,false,0,true);
 				_preloader.addEventListener(Event.COMPLETE,_preloaderOnAnimateOut,false,0,true);
-				_mainview.addPreloader(_preloader as MovieClip);
-			}
+				_mainview.addPreloader(_preloader as IPreloader);
+			}else Out.warning(this, "NO PRELOADER");
 			
 			_loadState = Constants.LOAD_STATE_INIT;
 			_loadConfigXml();
@@ -90,21 +97,19 @@ package
 		//load config xml
 		
 		private function _loadConfigXml():void{
-			_loader = new BigLoader();
+			_configLoader = new URLLoader();
 			
 			var configURL:String = _siteModel.getBaseURL() + SiteModel.CONFIG_XML_PATH;
 			
 			Out.debug(this,"Config URL: " + configURL);
-			_loader.add(configURL, "config");
-			_loader.addEventListener(Event.COMPLETE, _onConfigXMLLoaded,false,0,true);			
-			_loader.start();			
+			_configLoader.addEventListener(Event.COMPLETE, _onConfigXMLLoaded,false,0,true);			
+			_configLoader.load(new URLRequest(configURL));			
 		}//end function
 		
 		private function _onConfigXMLLoaded($evt:Event):void{
-			_siteModel.configXml = new XML(_loader.getLoadedAssetById("config"));
-			
-			_loader.removeEventListener(Event.COMPLETE, _onConfigXMLLoaded);
-			_loaderCleanUp();
+			_siteModel.configXml = new XML($evt.target.data);
+			_configLoader.removeEventListener(Event.COMPLETE,_onConfigXMLLoaded);		
+			_configLoader = null;
 			
 			// initial load begins here
 			_loadState = Constants.LOAD_STATE_INITIAL_ASSETS_BEGIN;
@@ -115,6 +120,7 @@ package
 		}//end function
 		
 		private function _startLoad():void{
+			Out.debug(this, "_loadList[n].@id "+_loadList[n].@id);
 			_loaderCleanUp();
 			_loader = new BigLoader();
 			_loader.addEventListener(ProgressEvent.PROGRESS, _onLoadProgress, false, 0, true);
@@ -127,7 +133,6 @@ package
 				
 				if (swfPath != "") _loader.add(_siteModel.getFilePath(swfPath, "swf"), _loadList[n].@id + "_" + Constants.TYPE_SWF);//spits out an id that looks like this "header_swf"
 				if (xmlPath != "") _loader.add(_siteModel.getFilePath(xmlPath, "xml", true), _loadList[n].@id + "_" + Constants.TYPE_XML);//spits out an id that looks like this "header_swf"
-				Out.debug(this, "_loadList[n].@id "+_loadList[n].@id);
 			}//end for
 			
 			_loader.start();
@@ -179,8 +184,10 @@ package
 			Out.status(this,"_onLoadScreenSpecificComplete()");
 			_loadState = Constants.LOAD_STATE_SCREEN_COMPLETE;
 			
-			if(_preloader) _preloader.setComplete();
-			else _preloaderOnAnimateOut();
+			if(_preloader)
+			 	_preloader.setComplete();
+			else 
+				_preloaderOnAnimateOut();
 		}//end onLoadScreenSpecificComplete function
 		
 		private function _onFrontloadComplete():void {	
@@ -231,7 +238,7 @@ package
 				
 				case Constants.LOAD_STATE_SCREEN_BEGIN:
 				case Constants.LOAD_STATE_SCREEN_COMPLETE:
-					if(_preloader) _preloader.animatePreloaderIn();
+					if(_preloader) _preloader.animateIn();
 					else _preloaderOnAnimateIn();
 					break;
 				
@@ -255,7 +262,8 @@ package
 			if($evt != null) _loadState = Constants.LOAD_STATE_SCREEN_COMPLETE;
 			
 			_mainview.cancelLoadScreenSpecifics();
-			if(_preloader) _preloader.cancel();						
+			if(_preloader) _preloader.cancel();		
+							
 		}//end function
 		
 		/***********************************************************/
@@ -272,11 +280,11 @@ package
 					//_preloader = SectionLoader(Lib.createMovieClip("sectionLoader", "./swf/site/section_loader.swf"));
 					_preloader.addEventListener(Event.INIT,_preloaderOnAnimateIn,false,0,true);
 					_preloader.addEventListener(Event.COMPLETE,_preloaderOnAnimateOut,false,0,true);
-					_mainview.addPreloader(_preloader as MovieClip);
+					_mainview.addPreloader(_preloader);
 		}
 		private function _preloaderOnAnimateOut($evt:Event = null):void {
 			
-			Out.status(this,"we need to destroy the main preloader and make a section one;");
+			Out.status(this,"_preloaderOnAnimateOut");
 			
 			if(_preloader) {
 					_preloader.removeEventListener(Event.INIT,_preloaderOnAnimateIn);
@@ -290,10 +298,7 @@ package
 				Out.debug(this,"the next screen isn't loaded we need to load it;");
 				_loadScreen();
 			}
-			else _mainview.screenOnLoaded();	
-			
-		
-			
+			else _mainview.screenOnLoaded();		
 			
 		}//end function
 		
@@ -311,13 +316,19 @@ package
 			
 			switch(_loadState)
 			{
+				case Constants.LOAD_STATE_INITIAL_ASSETS_BEGIN:
+					itemsLoaded = 0;
+					itemsTotal = 3;
+					break;
+					
+				case Constants.LOAD_STATE_INITIAL_SCREEN_BEGIN:
+				case Constants.LOAD_STATE_INITIAL_ASSETS_COMPLETE:
+					itemsLoaded = 1;
+					itemsTotal = 3;
+					break;
+					
 				case Constants.LOAD_STATE_SCREEN_BEGIN:
 					itemsLoaded = 0;
-					itemsTotal = 2;
-					break;
-				
-				case Constants.LOAD_STATE_SCREEN_COMPLETE:
-					itemsLoaded = 2;
 					itemsTotal = 2;
 					break;
 				
@@ -325,25 +336,55 @@ package
 					itemsLoaded = 1;
 					itemsTotal = 2;
 					break;
-				
-				case Constants.LOAD_STATE_INITIAL_SCREEN_BEGIN:
-				case Constants.LOAD_STATE_INITIAL_ASSETS_COMPLETE:
-					itemsLoaded = 1;
-					itemsTotal = 3;
-					break;
-				
-				case Constants.LOAD_STATE_INITIAL_ASSETS_BEGIN:
-					itemsLoaded = 0;
-					itemsTotal = 3;
+					
+				case Constants.LOAD_STATE_SCREEN_COMPLETE:
+					itemsLoaded = 2;
+					itemsTotal = 2;
 					break;
 			}
 			
 			if(_preloader) {
-				Out.debug(this, "somehow we're here even when _preloader = "+_preloader);
 				_preloader.updateProgress($evt.bytesLoaded,$evt.bytesTotal,itemsLoaded,itemsTotal);
-	
 			}
 		}//end function
+// =================================================
+// ================ Debug Stuff
+// =================================================
+		private function _turnOnOut():void{
+			
+				Out.enableAllLevels();
+				Out.registerDebugger(new ArthropodAdapter(true));
+				Out.silence(Resize);
+		
+		}
+		private function _setMouseListeners():void{		
+				
+			addEventListener( MouseEvent.MOUSE_UP,     _mouse_MOUSEUP_handler );
+			addEventListener( MouseEvent.MOUSE_DOWN,   _mouse_MOUSEDOWN_handler );
+			addEventListener( MouseEvent.MOUSE_OVER,   _mouse_MOUSEOVER_handler );
+			addEventListener( MouseEvent.CLICK, _checkMouseEventTrail );			
+		
+		}
+		
+		private function _checkMouseEventTrail($e:MouseEvent):void{
+			var p:* = $e.target;
+			while(p){
+				Out.debug( this, ">> " + p.name +" : " + p);
+				p = p.parent;
+			}
+			Out.debug( this, " " );
+		}
+		private function _mouse_MOUSEDOWN_handler($me:MouseEvent):void{
+			Mouse.prototype.isDown		=	true;
+		}
+		
+		private function _mouse_MOUSEUP_handler($me:MouseEvent):void{
+			Mouse.prototype.isDown		=	false;			
+		}
+		
+		private function _mouse_MOUSEOVER_handler($me:MouseEvent):void{
+			Mouse.prototype.currentItem	=	$me.target;
+		};
 
 
 	}//end class

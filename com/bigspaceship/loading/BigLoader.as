@@ -1,3 +1,31 @@
+/**
+ * Standard by Big Spaceship. 2009-2010
+ *
+ * To contact Big Spaceship, email info@bigspaceship.com or write to us at 45 Main Street #716, Brooklyn, NY, 11201.
+ * Visit http://labs.bigspaceship.com for documentation, updates and more free code.
+ *
+ *
+ * Copyright (c) 2009 Big Spaceship, LLC
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ **/
 package com.bigspaceship.loading
 {
 	import flash.display.Loader;
@@ -13,7 +41,6 @@ package com.bigspaceship.loading
 	import flash.utils.Dictionary;
 	
 	import com.bigspaceship.utils.Out;
-	import com.bigspaceship.loading.BigLoadItem;
 	
 	/**
 	 *  Multiple file loader.
@@ -34,8 +61,8 @@ package com.bigspaceship.loading
 	 *  @langversion ActionScript 3
 	 *  @playerversion Flash 10.0.0
 	 *
-	 *  @author Charlie Whitney
-	 *  @since  18.08.2009
+	 *  @author Charlie Whitney, Jamie Kosoy
+	 *  @since  25.05.2010
 	 */
 	public class BigLoader extends EventDispatcher {
 		public static var verbose		:Boolean = true;
@@ -57,14 +84,14 @@ package com.bigspaceship.loading
 			_itemsToLoad = new Vector.<BigLoadItem>();
 		};
 
-		public function add($url:*, $id:String=null, $weight:int=1):BigLoadItem {
+		public function add($url:*, $id:String=null, $weight:int=1, $type:String = null):BigLoadItem {
 			if(_loaderActive){ _log("You can't add anything after the loader is started.");	return null; }
 			if($id == null) $id = $url;
 			
-			var _loadItem:BigLoadItem = new BigLoadItem($url, $id, $weight);
+			var _loadItem:BigLoadItem = new BigLoadItem($url, $id, $weight,$type);
 			_loadItem.addEventListener(ProgressEvent.PROGRESS, _onItemProgress, false, 999, true);
 			_loadItem.addEventListener(IOErrorEvent.IO_ERROR, _onItemLoadError, false, 999, true);
-			_loadItem.addEventListener(Event.COMPLETE, _onItemLoadComplete, false, 999, true);
+			_loadItem.addEventListener('bigloaditemcomplete', _onItemLoadComplete, false, 999, true);
 			
 			_itemsToLoad.push(_loadItem);
 			

@@ -1,11 +1,11 @@
 /**
- * Environment by Big Spaceship. 2006-2010
+ * FirebugAdapter by Big Spaceship. 2010
  *
  * To contact Big Spaceship, email info@bigspaceship.com or write to us at 45 Main Street #716, Brooklyn, NY, 11201.
  * Visit http://labs.bigspaceship.com for documentation, updates and more free code.
  *
  *
- * Copyright (c) 2006-2010 Big Spaceship, LLC
+ * Copyright (c) 2010 Big Spaceship, LLC
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,50 +26,59 @@
  * THE SOFTWARE.
  *
  **/
- 
-package com.bigspaceship.utils{
-
-	import flash.display.MovieClip;
-	import flash.net.LocalConnection;
-	import flash.system.Capabilities;
-	import flash.system.Security;
+package com.bigspaceship.utils.out.adapters
+{
+	
+	import flash.external.ExternalInterface;
 	
 	/**
-	 * Environment
-	 *
+	 * A bridge for the Out class with the Firebug extension for Firefox (http://getfirebug.com/)
+	 * 
 	 * @copyright 		2010 Big Spaceship, LLC
-	 * @author			Jamie Kosoy, Daniel Scheibel
-	 * @version			1.1
+	 * @author			Charlie Whitney
+	 * @version			1.0
 	 * @langversion		ActionScript 3.0 			
 	 * @playerversion 	Flash 9.0.0
-	 *
-	 */
-	public class Environment{
-			
-		public static function get IS_IN_BROWSER():Boolean {
-			return (Capabilities.playerType == "PlugIn" || Capabilities.playerType == "ActiveX");
-		}
-	
-		public static function get DOMAIN():String{
-			return new LocalConnection().domain;
-		}
-	
-		public static function get IS_AREA51():Boolean{
-			return (DOMAIN == "area51.bigspaceship.com");
-		}
-	
-		public static function get IS_BIGSPACESHIP():Boolean{
-			return(DOMAIN == "www.bigspaceship.com" || DOMAIN == "bigspaceship.com");
+	 */	
+	public class FirebugAdapter implements IOutAdapter
+	{
+		public function FirebugAdapter(){
 		}
 		
-		public static function get IS_IN_AIR():Boolean {
-			return Capabilities.playerType == "Desktop";
-		}
-		public static function get IS_ON_SERVER():Boolean {
-			var ios:Boolean = Security.sandboxType == Security.REMOTE ? "yes" : "no";
-			Out.status(new MovieClip(), "ARE WE ON SERVER? "+ ios);
-			//ds: 'remote' (Security.REMOTE) — This file is from an Internet URL and operates under domain-based sandbox rules.
-			return Security.sandboxType == Security.REMOTE;
-		}
+		public function output($prefix:String, $level:String, ...$objects):void {
+			if(!ExternalInterface.available) return;
+
+			var output:String = $prefix;
+			for(var k:String in $objects){	output += " "+$objects[k].toString();	}
+			
+			switch($level)
+			{
+				case "ERROR" :
+					ExternalInterface.call("console.error",output);
+					break;
+				case "WARNING" :
+					ExternalInterface.call("console.warn",output);
+					break;
+				case "FATAL" :
+					ExternalInterface.call("console.error",output);
+					break;
+				case "DEBUG" :
+					ExternalInterface.call("console.debug",output);
+					break;
+				case "STATUS" :
+					ExternalInterface.call("console.log",output);
+					break;
+				case "INFO" :
+					ExternalInterface.call("console.info",output);
+					break;
+				default:
+					ExternalInterface.call("console.log",output);
+					break;
+			}
+		};
+		
+		public function clear():void{
+			if(ExternalInterface.available) ExternalInterface.call("console.clear");
+		};
 	}
 }

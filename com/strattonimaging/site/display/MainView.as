@@ -16,7 +16,9 @@ package com.strattonimaging.site.display
 	import com.strattonimaging.site.display.components.Footer;
 	import com.strattonimaging.site.display.components.Header;
 	import com.strattonimaging.site.display.components.ftp.FtpClient;
+	import com.strattonimaging.site.display.screens.Connect;
 	import com.strattonimaging.site.display.screens.Craft;
+	import com.strattonimaging.site.display.screens.Credits;
 	import com.strattonimaging.site.display.screens.Home;
 	import com.strattonimaging.site.display.screens.Learn;
 	import com.strattonimaging.site.display.screens.Screen;
@@ -131,9 +133,10 @@ package com.strattonimaging.site.display
 					break;	*/			
 			}
 		}//end function add components 
-		public function addPreloader($preloader:MovieClip):void { 
+		public function addPreloader($preloader:IPreloader):void { 
 			Out.status(this, "addPreloader():");
-			_layers[Constants.LAYERS_LOADER_2].addChild($preloader);
+			
+			_layers[Constants.LAYERS_LOADER_2].addChild($preloader.mc);
 		}
 		public function getSectionLoader():IPreloader { return _sl as IPreloader; }
 		public function addScreen($id:String,$swf:MovieClip,$xml:XML):void
@@ -148,6 +151,12 @@ package com.strattonimaging.site.display
 					break;
 				case Constants.SCREEN_CRAFT:
 					_screens[$id] = new Craft($swf,$xml);
+					break;
+				case Constants.SCREEN_CREDITS:
+					_screens[$id] = new Credits($swf,$xml);
+					break;
+				case Constants.SCREEN_CONNECT:
+					_screens[$id] = new Connect($swf,$xml);
 					break;
 			
 				

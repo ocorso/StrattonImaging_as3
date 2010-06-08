@@ -2,14 +2,14 @@ package com.strattonimaging.site.display.components.ftp
 {
 	import com.bigspaceship.display.AnimationState;
 	import com.bigspaceship.display.StandardButton;
+	import com.bigspaceship.display.StandardCover;
 	import com.bigspaceship.display.StandardInOut;
 	import com.bigspaceship.events.AnimationEvent;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.SimpleSequencer;
+	import com.strattonimaging.site.Constants;
 	import com.strattonimaging.site.display.screens.Screen;
 	import com.strattonimaging.site.model.SiteModel;
-	import mx.controls.dataGridClasses.MXDataGridItemRenderer;
-	//import fl.controls.DataGrid;
 	
 	import flash.display.MovieClip;
 	import flash.events.Event;
@@ -27,6 +27,7 @@ package com.strattonimaging.site.display.components.ftp
 		
 		protected var ftpBtn		:StandardButton;
 		protected var ftp			:StandardInOut;
+		protected var _cover		:StandardCover;
 		protected var login			:StandardInOut;
 		protected var loginBtn		:StandardButton;
 		private const LOGIN_ROUTE	:String 		= "/ftp/login.xml";
@@ -42,12 +43,10 @@ package com.strattonimaging.site.display.components.ftp
 			
 			_model 	= SiteModel.getInstance();
 			
-			ftpBtn 	= new StandardButton(_mc.ftpClient.ftp_btn_mc);
+			ftpBtn 	= new StandardButton(_mc.ftpClient.ftpBtn_mc);
 			ftp 	= new StandardInOut(_mc.ftpClient);
 			
-			login 	= new StandardInOut(_mc.ftpClient.login_mc);
-			loginBtn= new StandardButton(_mc.ftpClient.login_mc.submit_mc);
-			login.mc.visible = false;
+			//_cover = new StandardCover(_mc.ftpClient.cover_mc);
 			
 			ftp.addEventListener(AnimationEvent.IN, _showLogin);
 			ftpBtn.addEventListener(MouseEvent.CLICK, _toggleFtp); 	
@@ -59,14 +58,16 @@ package com.strattonimaging.site.display.components.ftp
 		private function _setupResize():void{
 			Resize.add(
 				"@ftp",
-				_mc,
+				_mc.ftpClient,
 				[Resize.BOTTOM, Resize.CENTER_X, Resize.CUSTOM],
 				{
 					 custom:				function($target, $params, $stage):void{
-						if ($stage.stageHeight > 643){
-							_mc.y = $stage.stageHeight-643;
+						if ($stage.stageHeight > Constants.STAGE_HEIGHT){
+							_mc.y = $stage.stageHeight-Constants.STAGE_HEIGHT;
 						}else _mc.y = 0;
-						 
+						Out.warning(this, "ftp x: "+ftpBtn.mc.x);
+						Out.warning(this, "ftp y: "+ftpBtn.mc.y);
+						Out.warning(this, "ftp a: "+ftpBtn.mc.alpha);
 					}
 				}
 			);//end btns center
@@ -89,12 +90,12 @@ package com.strattonimaging.site.display.components.ftp
 		}
 		override protected function _onAnimateInStart():void{
 			Out.status(this, "starting to animate in"); 
-			login.mc.visible = true;
+			login 	= new StandardInOut(_mc.ftpClient.views_mc.login_mc);
+			loginBtn= new StandardButton(_mc.ftpClient.views_mc.login_mc.submit_mc);
 		}//end function onAnimateInStart
 		
 		override protected function _onAnimateOutStart():void{
 			Out.status(this, "starting to animate out"); 
-			login.mc.visible = false;
 		}//end function onAnimateInStart
 		override protected function _onAnimateIn():void{
 			loginBtn.addEventListener(MouseEvent.CLICK, _submitLoginHandler);

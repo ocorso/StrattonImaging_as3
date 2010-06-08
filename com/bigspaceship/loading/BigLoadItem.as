@@ -1,5 +1,34 @@
+/**
+ * Standard by Big Spaceship. 2009-2010
+ *
+ * To contact Big Spaceship, email info@bigspaceship.com or write to us at 45 Main Street #716, Brooklyn, NY, 11201.
+ * Visit http://labs.bigspaceship.com for documentation, updates and more free code.
+ *
+ *
+ * Copyright (c) 2009 Big Spaceship, LLC
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ *
+ **/
 package com.bigspaceship.loading
 {
+    import com.bigspaceship.utils.Environment;
     import com.bigspaceship.utils.Out;
     
     import flash.display.Loader;
@@ -10,7 +39,6 @@ package com.bigspaceship.loading
     import flash.net.URLLoader;
     import flash.net.URLRequest;
     import flash.system.LoaderContext;
-    import flash.system.Security;
     import flash.system.SecurityDomain;
 
 	/**
@@ -26,7 +54,7 @@ package com.bigspaceship.loading
 	 *  @playerversion Flash 9.0.0
 	 *
 	 *  @author Charlie Whitney, Stephen Koch, Jamie Kosoy
-	 *  @since  20.11.2009
+	 *  @since  25.05.2010
 	 */
     public class BigLoadItem extends EventDispatcher {
 
@@ -88,8 +116,13 @@ package com.bigspaceship.loading
                 _state = LOADING;
 				
 				var req:URLRequest = (_url is URLRequest) ? _url : new URLRequest(_url);
-	        	 _loader.load(req);
-				
+	  			if(Environment.IS_ON_SERVER && _type!=DATA){
+					var context:LoaderContext = new LoaderContext();
+ 					context.securityDomain = SecurityDomain.currentDomain;
+ 					_loader.load(req, context);
+ 				}else{
+ 					_loader.load(req);
+ 				}
             }
             else if(_state == LOADED) _onComplete();
             else Out.warning(this,"Item is currently loading.");
@@ -117,7 +150,6 @@ package com.bigspaceship.loading
         // PRIVATE
         // ===================================================================
         private function _setupLoader():void {
-            
             if(_type == BigLoadItem.DATA){
                 _loader = new URLLoader();
                 _loader.addEventListener(IOErrorEvent.IO_ERROR,     _onFail,     false, 0, true);
@@ -142,6 +174,7 @@ package com.bigspaceship.loading
             _state      = LOADED;
             _pctLoaded  = 1;
             dispatchEvent(new Event(Event.COMPLETE));
+			dispatchEvent(new Event('bigloaditemcomplete'));
         };
 
         private function _onFail($evt:Event):void {

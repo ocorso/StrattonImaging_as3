@@ -1,11 +1,11 @@
 /**
- * OutEvent by Big Spaceship. 2006
+ * FacebookEnvironment by Big Spaceship. 2010
  *
  * To contact Big Spaceship, email info@bigspaceship.com or write to us at 45 Main Street #716, Brooklyn, NY, 11201.
  * Visit http://labs.bigspaceship.com for documentation, updates and more free code.
  *
  *
- * Copyright (c) 2006 Big Spaceship, LLC
+ * Copyright (c) 2010 Big Spaceship, LLC
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,31 +26,23 @@
  * THE SOFTWARE.
  *
  **/
- 
- 
-package com.bigspaceship.events{
-	
-	import flash.events.Event;
-	
-	public class OutEvent extends Event{
-		
-		public static const ALL			: String = "all";
-		public static const INFO		: String = "info";
-		public static const STATUS		: String = "status";
-		public static const DEBUG		: String = "debug";
-		public static const WARNING		: String = "warning";
-		public static const ERROR		: String = "error";
-		public static const FATAL		: String = "fatal";
-		
-		public var output				: String;
-		
-		public function OutEvent($type:String, $out:String){
-			super($type);
-			output = $out;
-		}
-
-		public override function clone():Event{
-			return new OutEvent(type, output);
-		}
+package com.bigspaceship.api.facebook
+{
+	/**
+	 * FacebookEnvironment
+	 *
+	 * @copyright 		2010 Big Spaceship, LLC
+	 * @author			Jamie Kosoy
+	 * @version			1.0
+	 * @langversion		ActionScript 3.0 			
+	 * @playerversion 	Flash 9.0.0
+	 *
+	 */	
+	public class FacebookEnvironment
+	{
+		public static const ON_FB_NOT_LOGGED_IN			:String = "fbUserNotLoggedIn";
+		public static const ON_FB_AUTHORIZED			:String = "fbUserAuthenticated";
+		public static const ON_FB_NOT_AUTHORIZED		:String = "fbUserNotAuthenticated";		
+		public static const CONNECT						:String = "fbConnect";
 	}
 }

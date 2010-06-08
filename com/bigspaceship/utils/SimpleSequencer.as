@@ -1,11 +1,11 @@
 /**
- * SimpleSequencer by Big Spaceship. 2008
+ * SimpleSequencer by Big Spaceship. 2008-2010
  *
  * To contact Big Spaceship, email info@bigspaceship.com or write to us at 45 Main Street #716, Brooklyn, NY, 11201.
  * Visit http://labs.bigspaceship.com for documentation, updates and more free code.
  *
  *
- * Copyright (c) 2009 Big Spaceship, LLC
+ * Copyright (c) 2008-2010 Big Spaceship, LLC
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -45,7 +45,7 @@ package com.bigspaceship.utils{
 	/**
 	 * SimpleSequencer
 	 *
-	 * @copyright 		2008 Big Spaceship, LLC
+	 * @copyright 		2010 Big Spaceship, LLC
 	 * @author			Daniel Scheibel, Stephen Koch
 	 * @version			1.0 
 	 * @langversion		ActionScript 3.0 			
@@ -117,7 +117,6 @@ package com.bigspaceship.utils{
 		 * 
 		 */		
 		public function start():void{
-			
 			if(_animationSteps_array.length > 0){
 				//sort array by stepId:
 				_animationSteps_array.sortOn('stepId', Array.NUMERIC);

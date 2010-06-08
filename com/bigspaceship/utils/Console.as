@@ -1,5 +1,5 @@
 /**
- * Console by Big Spaceship. 2006
+ * Console by Big Spaceship. 2006-2009
  *
  * To contact Big Spaceship, email info@bigspaceship.com or write to us at 45 Main Street #716, Brooklyn, NY, 11201.
  * Visit http://labs.bigspaceship.com for documentation, updates and more free code.

@@ -1,11 +1,11 @@
 /**
- * AudioManager by Big Spaceship. 2009
+ * AudioManager by Big Spaceship. 2007-2010
  *
  * To contact Big Spaceship, email info@bigspaceship.com or write to us at 45 Main Street #716, Brooklyn, NY, 11201.
  * Visit http://labs.bigspaceship.com for documentation, updates and more free code.
  *
  *
- * Copyright (c) 2009 Big Spaceship, LLC
+ * Copyright (c) 2007-2010 Big Spaceship, LLC
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -47,11 +47,11 @@ package com.bigspaceship.audio{
 	/**
 	* The <code>AudioManager()</code> Class is a Singleton and handles all Audio-Effect calls except Transition videos.
 	* 
-	* @copyright 		2009 Big Spaceship, LLC
+	* @copyright 		2010 Big Spaceship, LLC
 	* @author			Daniel Scheibel 
-	* @version			1.0
+	* @version			1.1
 	* @langversion		ActionScript 3.0 			
-	* @playerversion 	Flash 9.0.41
+	* @playerversion 	Flash 9.0.0
 	*/
 	
 	public class AudioManager extends EventDispatcher{
@@ -220,7 +220,6 @@ package com.bigspaceship.audio{
 	     *  @return SoundChannel 
      	*/  
 		public function playRandomEffectSound($set:Array, $nonStandard:int = 2, $vol:Number = 1, $loops:Number = 1):SoundChannel{
-			
 			 if(!_mute){
 				var random:int = int(Math.random()*($set.length-$nonStandard));
 				var id:String = $set[random];
@@ -228,10 +227,8 @@ package com.bigspaceship.audio{
 				$set.push(id);
 				if(_getSoundInstance(id)){
 					_effectsChannels[id] = _getSoundInstance(id).play(0, $loops, new SoundTransform($vol*_masterVolume));
-					//trace('played: '+id);
 				}
 			}
-			//
 			return _effectsChannels[$set];
 		};
 		
@@ -256,7 +253,6 @@ package com.bigspaceship.audio{
 				var libId:String = $id+'_'+(_sequenceDic[$id]%($range));
 				if(_getSoundInstance(libId)){
 					_effectsChannels[libId] = _getSoundInstance(libId).play(0, $loops, new SoundTransform($vol*_masterVolume));
-					//trace('played: '+libId);
 				}
 			}
 			return _effectsChannels[libId];
@@ -288,7 +284,6 @@ package com.bigspaceship.audio{
 		
 		public function setVolume($id:String, $volume:Number):void{
 			if(!_mute && _effectsChannels[$id]){
-				//trace('set Volume called: '+_effectsChannels[$id]);
 				var st:SoundTransform = new SoundTransform();
 				st.volume = $volume*_masterVolume;
 				SoundChannel(_effectsChannels[$id]).soundTransform = st;
@@ -298,7 +293,6 @@ package com.bigspaceship.audio{
 		
 		public function fadeVolume ($id:String, $volume:Number, $speed:int = 100, $stopIfFadeToZero:Boolean = true ):void{
 			if(!_mute){
-				//trace('set Volume called: '+_effectsChannels[$id]);
 				if(_effectsChannels[$id]){
 					if(_soundTweens.hasOwnProperty($id)){
 						_soundTweens[$id].stop();
@@ -339,7 +333,6 @@ package com.bigspaceship.audio{
 			if(_mute){
 				_mute = false;
 				SoundMixer.soundTransform = new SoundTransform();
-								
 				/* for (var id:String in _effectsChannels){
 					fadeVolume(id, _masterVolume);
 				} */

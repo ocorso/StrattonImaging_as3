@@ -1,11 +1,11 @@
 /**
- * ArrayUtils by Big Spaceship. 2006
+ * ArrayUtils by Big Spaceship. 2009
  *
  * To contact Big Spaceship, email info@bigspaceship.com or write to us at 45 Main Street #716, Brooklyn, NY, 11201.
  * Visit http://labs.bigspaceship.com for documentation, updates and more free code.
  *
  *
- * Copyright (c) 2006-2009 Big Spaceship, LLC
+ * Copyright (c) 2009 Big Spaceship, LLC
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,14 +28,9 @@
  **/
 package com.bigspaceship.utils
 {
-	
-	
+		
 	/**
 	 * The <code>ArrayUtils</code> Class
-	 *
-	 * Removed following methods from this class because they did not work: 
-	 * public static function removeAllWithValue($array:Array,$value:*):Array{}
-	 * public static function removeFirstWithValue($array:Array,$value:*):Array{}
 	 * 
 	 * 
 	 * @copyright 		2009 Big Spaceship, LLC
@@ -45,8 +40,7 @@ package com.bigspaceship.utils
 	 * @playerversion 	Flash 9.0.0
 	 *
 	 */
-	public class ArrayUtils
-	{
+	public class ArrayUtils{
 
 		/**
 		 * The <code>shuffle</code> returns a shuffled array. The passed array itself does not change.
@@ -55,16 +49,14 @@ package com.bigspaceship.utils
 		 * @return 			Array A new Array that contains the original values in a random order.
 		 * 
 		 */		
-		public static function shuffle($array:Array):Array
-		{
+		public static function shuffle($array:Array):Array{
 			//copy array:
 			var a:Array = [].concat($array)
 			//return shuffled array:
 			return a.sort(__shuffleSort);;
-		};
+		}
 		
-		private static function __shuffleSort($a:*,$b:*):Number
-		{ 
+		private static function __shuffleSort($a:*,$b:*):Number{ 
 			var random:int;
 			while(random==0){
 				random = MathUtils.getRandomInt(-1,1);
@@ -82,8 +74,7 @@ package com.bigspaceship.utils
 	     *  @param	$b 		int 	Specifies the second index.
 	     *  @return 		Array 	Swapped Array.
 	     */
-		public static function swap($array:Array, $a:int, $b:int):Array
-		{
+		public static function swap($array:Array, $a:int, $b:int):Array{
 			var temp:int = $array[$a];
 			$array[$a] = $array[$b];
 			$array[$b] = temp;
@@ -99,15 +90,13 @@ package com.bigspaceship.utils
 	     *  @param $array 	Array	Specifies the Array from which to remove the duplicates.
 	     *  @return 		Array	unique Array.
 	     */
-		public static function unique($array:Array):Array
-		{
+		public static function unique($array:Array):Array{
 			var obj:Object = new Object;
 			var i:Number = $array.length;
 			var a:Array = new Array();
 			var t:*;
 			
-			while(i--)
-			{
+			while(i--){
 				t = $array[i];
 				obj[t] = t;
 			}
