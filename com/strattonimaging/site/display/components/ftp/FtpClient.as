@@ -65,9 +65,9 @@ package com.strattonimaging.site.display.components.ftp
 						if ($stage.stageHeight > Constants.STAGE_HEIGHT){
 							_mc.y = $stage.stageHeight-Constants.STAGE_HEIGHT;
 						}else _mc.y = 0;
-						Out.warning(this, "ftp x: "+ftpBtn.mc.x);
-						Out.warning(this, "ftp y: "+ftpBtn.mc.y);
-						Out.warning(this, "ftp a: "+ftpBtn.mc.alpha);
+						//Out.warning(this, "ftp x: "+ftpBtn.mc.x);
+						//Out.warning(this, "ftp y: "+ftpBtn.mc.y);
+						//Out.warning(this, "ftp a: "+ftpBtn.mc.alpha);
 					}
 				}
 			);//end btns center

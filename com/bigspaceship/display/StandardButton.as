@@ -35,7 +35,6 @@ package com.bigspaceship.display
 	import flash.display.DisplayObject;
 	import flash.display.FrameLabel;
 	import flash.display.MovieClip;
-	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
 	/**

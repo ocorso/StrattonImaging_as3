@@ -27,7 +27,7 @@ package com.strattonimaging.site.display.components
 		private function _init():void{
 			
 			_setupText();
-			_mc.ored_mc.addEventListener(MouseEvent.CLICK, _oredClickHander);
+			_mc.ored_mc.btn.addEventListener(MouseEvent.CLICK, _oredClickHander);
 		}
 		private function _setupText():void{
 			

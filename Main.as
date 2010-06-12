@@ -351,9 +351,9 @@ package
 // ================ Debug Stuff
 // =================================================
 		private function _turnOnOut():void{
-			
 				Out.enableAllLevels();
 				Out.registerDebugger(new ArthropodAdapter(true));
+				Out.clear();
 				Out.silence(Resize);
 		
 		}

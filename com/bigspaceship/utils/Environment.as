@@ -66,8 +66,6 @@ package com.bigspaceship.utils{
 			return Capabilities.playerType == "Desktop";
 		}
 		public static function get IS_ON_SERVER():Boolean {
-			var ios:Boolean = Security.sandboxType == Security.REMOTE ? "yes" : "no";
-			Out.status(new MovieClip(), "ARE WE ON SERVER? "+ ios);
 			//ds: 'remote' (Security.REMOTE) — This file is from an Internet URL and operates under domain-based sandbox rules.
 			return Security.sandboxType == Security.REMOTE;
 		}

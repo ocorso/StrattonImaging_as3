@@ -76,6 +76,8 @@ package com.bigspaceship.display
 			_btn = $btn;
 			_standardInOut = new StandardInOut($mc);
 			_standardInOut.addEventListener(AnimationEvent.IN, _onAnimateIn_handler);
+			_standardInOut.addEventListener(MouseEvent.CLICK, dispatchEvent);
+			
 			//_standardBtn = new StandardButton($mc, $btn);
 			_currentStateKeeper = _standardInOut;
 		}
@@ -87,6 +89,7 @@ package com.bigspaceship.display
 		 * Starts the in animation.
 		 */	
 		public function animateIn():void{
+			dispatchEvent(new AnimationEvent(AnimationEvent.IN));
 			_standardInOut.animateIn();
 		}
 		
@@ -95,8 +98,10 @@ package com.bigspaceship.display
 		 */		
 		public function animateOut():void{
 			_standardInOut.animateOut();
-			_standardBtn.destroy();
-			_standardBtn = null;
+			if(_standardBtn){
+				_standardBtn.destroy();
+				_standardBtn = null;
+			}
 			_currentStateKeeper = _standardInOut;
 		};
 		

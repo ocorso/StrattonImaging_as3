@@ -26,8 +26,13 @@ package com.strattonimaging.site.display.screens
 			_siteModel = SiteModel.getInstance();
 		}//end constructor
 		
+		/*******************************************/
+		//getter setters
+		/*******************************************/
 		public function get xml():XML { return _xml; }
 		public function onURLChange():void {};
+		public function getNodeByType($node:String, $att:String):XMLList{ return _xml.child($node).(@type == $att);}
+		
 		
 		/***********************************************************/
 		//loading functions
