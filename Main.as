@@ -114,6 +114,7 @@ package
 			// initial load begins here
 			_loadState = Constants.LOAD_STATE_INITIAL_ASSETS_BEGIN;
 			_loadList = _siteModel.getNodeByType(SiteModel.CONFIG_LOADABLES, SiteModel.CONFIG_COMPONENTS).component;
+			Out.debug(this,"LOAD_STATE_INITIAL_ASSETS_BEGIN");
 			Out.status(this, "_onConfigXMLLoaded :: loadlist.length = "+ _loadList.length());
 			if(_loadList.length() > 0) _startLoad();
 			else _onFrontloadComplete();
@@ -171,7 +172,7 @@ package
 		
 		private function _onScreenloadComplete():void
 		{
-			Out.status(this,"_onScreenloadComplete();");
+			Out.status(this,"_onScreenloadComplete(); LOAD_STATE_SCREEN_COMPONENT_BEGIN");
 			var lastLoadState:String = _loadState;
 			_loadState = Constants.LOAD_STATE_SCREEN_COMPONENT_BEGIN;
 			
@@ -181,7 +182,7 @@ package
 		}//end function
 		
 		private function _onLoadScreenSpecificComplete($evt:Event):void {
-			Out.status(this,"_onLoadScreenSpecificComplete()");
+			Out.status(this,"_onLoadScreenSpecificComplete() LOAD_STATE_SCREEN_COMPLETE");
 			_loadState = Constants.LOAD_STATE_SCREEN_COMPLETE;
 			
 			if(_preloader)
@@ -191,11 +192,11 @@ package
 		}//end onLoadScreenSpecificComplete function
 		
 		private function _onFrontloadComplete():void {	
-			Out.status(this,"_onFrontloadComplete();");
+			Out.status(this,"_onFrontloadComplete(); LOAD_STATE_INITIAL_ASSETS_COMPLETE");
 			
 			_loadState = Constants.LOAD_STATE_INITIAL_ASSETS_COMPLETE;
 			
-			// jk: force the first screen to load.
+			// force the first screen to load.
 			_siteModel.getInitialPath();
 		}
 		/**our master loading tidy up function**/
@@ -258,7 +259,7 @@ package
 		 * 
 		 */		
 		private function _loadScreenCancel($evt:ScreenEvent = null):void {
-			Out.status(this,"_loadScreenCancel();");
+			Out.status(this,"_loadScreenCancel(); LOAD_STATE_SCREEN_COMPLETE");
 			if($evt != null) _loadState = Constants.LOAD_STATE_SCREEN_COMPLETE;
 			
 			_mainview.cancelLoadScreenSpecifics();
@@ -316,9 +317,17 @@ package
 			
 			switch(_loadState)
 			{
-				case Constants.LOAD_STATE_INITIAL_ASSETS_BEGIN:
+				case Constants.LOAD_STATE_SCREEN_BEGIN:
 					itemsLoaded = 0;
-					itemsTotal = 3;
+					itemsTotal = 2;
+					break;
+				case Constants.LOAD_STATE_SCREEN_COMPLETE:
+					itemsLoaded = 2;
+					itemsTotal = 2;
+					break;
+				case Constants.LOAD_STATE_SCREEN_COMPONENT_BEGIN:
+					itemsLoaded = 1;
+					itemsTotal = 2;
 					break;
 					
 				case Constants.LOAD_STATE_INITIAL_SCREEN_BEGIN:
@@ -327,23 +336,16 @@ package
 					itemsTotal = 3;
 					break;
 					
-				case Constants.LOAD_STATE_SCREEN_BEGIN:
+				case Constants.LOAD_STATE_INITIAL_ASSETS_BEGIN:
 					itemsLoaded = 0;
-					itemsTotal = 2;
-					break;
-				
-				case Constants.LOAD_STATE_SCREEN_COMPONENT_BEGIN:
-					itemsLoaded = 1;
-					itemsTotal = 2;
+					itemsTotal = 3;
 					break;
 					
-				case Constants.LOAD_STATE_SCREEN_COMPLETE:
-					itemsLoaded = 2;
-					itemsTotal = 2;
-					break;
+				
 			}
 			
 			if(_preloader) {
+				Out.debug(this, " bl="+$evt.bytesLoaded+" bt="+$evt.bytesTotal+" il="+itemsLoaded+" it="+itemsTotal);
 				_preloader.updateProgress($evt.bytesLoaded,$evt.bytesTotal,itemsLoaded,itemsTotal);
 			}
 		}//end function

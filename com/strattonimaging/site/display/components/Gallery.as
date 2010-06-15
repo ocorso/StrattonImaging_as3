@@ -25,5 +25,11 @@ package com.strattonimaging.site.display.components
 			Out.status(this, "init:: label = "+_xml.label.toString());
 			mc.tf.txt.text = _xml.label.toString();
 		}//end function
+		// =================================================
+		// ================ Overrides
+		// =================================================
+		override protected function _onAnimateOut():void{
+			Out.status(this, "_onAnimateOut");
+		}//end function 
 	}//end class
 }//end package

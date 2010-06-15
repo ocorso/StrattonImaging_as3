@@ -63,8 +63,8 @@ package com.bigspaceship.display
 		public function SiteLoader(){
 			Out.enableAllLevels();
 			Out.silence(Resize);
-			Out.clear();
 			Out.registerDebugger(new ArthropodAdapter(true));
+			Out.clear();
 			//Out.registerDebugger(new FirebugAdapter());
 			//Out.disableAllLevels();
 			

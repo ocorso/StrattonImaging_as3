@@ -83,19 +83,21 @@ package com.strattonimaging.site.display.screens
 		//override protected function _onAnimateIn():void { _siteModel.track(); }
 		
 		override protected function _animateOut():void{
-		
+			Out.status(this, "_animateOut");
+			_bGalleryIn = false;
 			_destroySequencer();
 			_ss = new SimpleSequencer("out");
 			_ss.addEventListener(Event.COMPLETE, _animateOutSequencer_COMPLETE_handler, false, 0, true);
-			_ss.addStep(1, _title.mc, _title.animateOut, AnimationEvent.OUT);
 			// oc: services
-			if (_bGalleryIn){
+
+			if (!_bGalleryIn){
 				for each(var s:StandardButtonInOut in _serviceIdsToItems){
 					_ss.addStep(1, s.mc, s.animateOut, "NEXT_OUT");
 				}//end for each
 			}else{
-				//addStep -- gallery.animateOut
+				_ss.addStep(1, _gallery.mc, _gallery.animateOut, AnimationEvent.OUT);
 			}//end if gallery is In
+			_ss.addStep(2, _title.mc, _title.animateOut, AnimationEvent.OUT);
 			_ss.addStep(3, _bg.mc, _bg.animateOut, AnimationEvent.OUT);
 			
 			_ss.start();
@@ -213,6 +215,7 @@ package com.strattonimaging.site.display.screens
 		private function _onHideServices($evt:Event){
 			Out.status(this, "_onHideServices");
 			if(_gallery) _gallery.destroy();
+			_bGalleryIn = true;
 			_gallery	= new Gallery(_services.mc.gallery_mc, getNodeByType(SiteModel.CONFIG_LOADABLES, _currentService), _loader);
 			_gallery.animateIn();
 //			_serviceIdsToItems(_currentService).animateIn();
@@ -222,7 +225,7 @@ package com.strattonimaging.site.display.screens
 			if(_ss){
 				_ss.removeEventListener(Event.COMPLETE,_animateInSequencer_COMPLETE_handler);
 				_ss.removeEventListener(Event.COMPLETE,_animateOutSequencer_COMPLETE_handler);
-				_ss.removeEventListener(Event.COMPLETE,_serviceSwapped);
+				_ss.removeEventListener(Event.COMPLETE,_onHideServices);
 				_ss = null;
 			}
 		}
