@@ -1,5 +1,6 @@
 package com.strattonimaging.site.display.screens
 {
+	import com.asual.swfaddress.SWFAddress;
 	import com.bigspaceship.display.StandardButtonInOut;
 	import com.bigspaceship.display.StandardInOut;
 	import com.bigspaceship.events.AnimationEvent;
@@ -57,6 +58,25 @@ package com.strattonimaging.site.display.screens
 		// =================================================
 		// ================ Overrides
 		// =================================================
+		public override function onURLChange():void{
+			super.onURLChange();
+			
+			//if(!_bGalleryIn && _vidId!=null) _thumbDict[_vidId+"_btn"].deselect();
+			
+			//SWF ADDRESS STUFF
+			var swfArr:Array = SWFAddress.getPathNames(); // path should look something like this: contradictionary/top10/3453
+			if(swfArr.length > 1 && _xml.loadables.(@type==swfArr[2])){
+				_currentService = swfArr[2];
+			}
+				
+			//this is what we do as a defualt
+			else{
+				if(_currentService == null) _currentService = _xml.loadables[0].@type;
+			}
+			
+			//if(!_bGalleryIn) _gallery.swap();
+			//_thumbDict[_vidId+"_btn"].select();
+		}
 		
 		override protected function _animateIn():void{
 			//Out.status(this, "animateIn():: here is loadlist: "+_loadList);
@@ -83,24 +103,18 @@ package com.strattonimaging.site.display.screens
 		//override protected function _onAnimateIn():void { _siteModel.track(); }
 		
 		override protected function _animateOut():void{
-			Out.status(this, "_animateOut");
-			_bGalleryIn = false;
+			Out.status(this, "_animateOut, here is _bGalleryIn: "+ _bGalleryIn);
 			_destroySequencer();
 			_ss = new SimpleSequencer("out");
 			_ss.addEventListener(Event.COMPLETE, _animateOutSequencer_COMPLETE_handler, false, 0, true);
 			// oc: services
-
-			if (!_bGalleryIn){
-				for each(var s:StandardButtonInOut in _serviceIdsToItems){
-					_ss.addStep(1, s.mc, s.animateOut, "NEXT_OUT");
-				}//end for each
-			}else{
-				_ss.addStep(1, _gallery.mc, _gallery.animateOut, AnimationEvent.OUT);
-			}//end if gallery is In
+			if (_bGalleryIn)	_ss.addStep(1, _gallery, _gallery.animateOut, AnimationEvent.OUT);
+			else for each(var s:StandardButtonInOut in _serviceIdsToItems){_ss.addStep(1, s.mc, s.animateOut, "NEXT_OUT");}//end for each
 			_ss.addStep(2, _title.mc, _title.animateOut, AnimationEvent.OUT);
 			_ss.addStep(3, _bg.mc, _bg.animateOut, AnimationEvent.OUT);
 			
 			_ss.start();
+			_bGalleryIn = false;
 		
 		}//end function _animateOut
 		
@@ -188,18 +202,33 @@ package com.strattonimaging.site.display.screens
 		
 		private function _serviceOnClick($me:MouseEvent):void{
 			Out.status(this, "_serviceOnClick(): target: "+ $me.target);
+			
 			var tempS:StandardButtonInOut = $me.target as StandardButtonInOut;
 			_currentService = _serviceItemsToIds[tempS];
 			Out.debug(this, _currentService);
-			
 			//hide all 
 			_hideServices();
 			
 		}//end function 
-		private function _serviceSwapped($evt:Event):void{
-			Out.status(this, "_serviceSwapped(): show next gallery");
+		private function _showServices($evt:Event):void{
+			Out.status(this, "_showServices(): show next gallery");
+			_destroySequencer();
+			_ss = new SimpleSequencer("showServices");
+			_ss.addEventListener(Event.COMPLETE,_onShowServices,false,0,true);
+			// oc: services
+		 	var n:uint=0
+			for each(var s:StandardButtonInOut in _serviceIdsToItems){
+				_ss.addStep((n+1), s.mc, s.animateIn, "NEXT_IN");
+				n++;
+			}
+			_ss.start();
 			
-		}//end function serviceSwapped
+		}//end function showServices
+		private function _onShowServices($evt:Event):void{
+			Out.status(this, "_onShowServices()");
+			_bGalleryIn = false;
+			_destroyGallery();
+		}
 		private function _hideServices():void{
 			_destroySequencer();
 			_ss = new SimpleSequencer("hideServices");
@@ -217,15 +246,22 @@ package com.strattonimaging.site.display.screens
 			if(_gallery) _gallery.destroy();
 			_bGalleryIn = true;
 			_gallery	= new Gallery(_services.mc.gallery_mc, getNodeByType(SiteModel.CONFIG_LOADABLES, _currentService), _loader);
+			_gallery.addEventListener(AnimationEvent.OUT, _showServices);
 			_gallery.animateIn();
+			SWFAddress.setValue("craft/"+_currentService);
 //			_serviceIdsToItems(_currentService).animateIn();
 		}
-		private function _destroyGallery():void{}//end function destroy gallery
+		private function _destroyGallery():void{
+			_gallery.removeEventListener(AnimationEvent.OUT, _showServices);
+			_gallery = null;
+			
+		}//end function destroy gallery
 		private function _destroySequencer():void{
 			if(_ss){
 				_ss.removeEventListener(Event.COMPLETE,_animateInSequencer_COMPLETE_handler);
 				_ss.removeEventListener(Event.COMPLETE,_animateOutSequencer_COMPLETE_handler);
 				_ss.removeEventListener(Event.COMPLETE,_onHideServices);
+				_ss.removeEventListener(Event.COMPLETE,_onShowServices);
 				_ss = null;
 			}
 		}

@@ -345,7 +345,7 @@ package
 			}
 			
 			if(_preloader) {
-				Out.debug(this, " bl="+$evt.bytesLoaded+" bt="+$evt.bytesTotal+" il="+itemsLoaded+" it="+itemsTotal);
+				//Out.debug(this, " bl="+$evt.bytesLoaded+" bt="+$evt.bytesTotal+" il="+itemsLoaded+" it="+itemsTotal);
 				_preloader.updateProgress($evt.bytesLoaded,$evt.bytesTotal,itemsLoaded,itemsTotal);
 			}
 		}//end function
