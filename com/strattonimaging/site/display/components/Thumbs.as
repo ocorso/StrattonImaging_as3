@@ -1,5 +1,6 @@
 package com.strattonimaging.site.display.components
 {
+	import com.bigspaceship.display.StandardButton;
 	import com.bigspaceship.display.StandardInOut;
 	import com.bigspaceship.events.AnimationEvent;
 	import com.bigspaceship.utils.Out;
@@ -29,9 +30,9 @@ package com.strattonimaging.site.display.components
 			$asset.width = _THUMB_MAX_WIDTH;
 			
 			var id:String = "t"+_current;
-			mc[id].addChild($asset);
-			_thumbsDict[id] = new StandardInOut(mc[id]);
-			_thumbsDict[id].mc.btn.addEventListener(MouseEvent.CLICK, _thumbClickHandler);
+			mc[id].img.addChild($asset);
+			_thumbsDict[id] = new StandardButton(mc[id], mc[id].btn);
+			_thumbsDict[id].addEventListener(MouseEvent.CLICK, _thumbClickHandler);
 			
 			_current++;
 		}//end fucntion
@@ -52,6 +53,7 @@ package com.strattonimaging.site.display.components
 			Out.status(this, "_thumbClickHandler: "+ $me.target.parent.name);
 			
 		}//end function
+
 // =================================================
 // ================ Getters / Setters
 // =================================================
@@ -70,7 +72,6 @@ package com.strattonimaging.site.display.components
 		private function _animateOutSequencer_COMPLETE_handler($evt:Event = null):void{
 			Out.status(this,"_realAnimateOut_handler()");
 			_destroySequencer();
-			//_destroyGallery();
 			super._onAnimateOut_handler();
 		}
 		
@@ -79,17 +80,24 @@ package com.strattonimaging.site.display.components
 // =================================================
 		override protected function _animateIn():void{
 			Out.status(this, "animateIn");
-			_ss = new SimpleSequencer("In");
+			_ss = new SimpleSequencer("ThumbsIn");
 			_ss.addEventListener(Event.COMPLETE, _animateInSequencer_COMPLETE_handler);
-			_ss.addStep(1, _thumbsDict["t0"].mc, _thumbsDict["t0"].animateIn, AnimationEvent.IN);
-			//for each(var s:StandardInOut in _thumbsDict){_ss.addStep(1, s.mc, s.animateIn, "NEXT_IN");}//end for each
+			_ss.addStep(1, _thumbsDict["t0"].mc, _thumbsDict["t0"].select, AnimationEvent.ROLL_OVER);
+			_ss.start();
+		}//end function 
+		override protected function _animateOut():void{
+			Out.status(this, "animateOut");
+			_ss = new SimpleSequencer("ThumbsOut");
+			_ss.addEventListener(Event.COMPLETE, _animateOutSequencer_COMPLETE_handler);
+
+			for each(var s:StandardButton in _thumbsDict){_ss.addStep(1, s.mc, s.deselect, AnimationEvent.ROLL_OUT);}//end for each
 			_ss.start();
 		}//end function 
 // =================================================
 // ================ Constructor
 // =================================================
 
-		public function Thumbs($mc:MovieClip, $useWeakReference:Boolean=false)
+		public function Thumbs($mc:MovieClip, $useWeakReference:Boolean=true)
 		{
 			super($mc, $useWeakReference);
 			_thumbsDict = new Dictionary();

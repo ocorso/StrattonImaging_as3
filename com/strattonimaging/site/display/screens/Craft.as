@@ -42,101 +42,10 @@ package com.strattonimaging.site.display.screens
 		private var _currentService				:String;
 		private var _gallery					:Gallery;
 		private var _p							:Point // holds original x y position... do we need this? or just show new 
-		
-		public function Craft($mc:MovieClip, $xml:XML, $useWeakReference:Boolean=false){
-			super($mc, $xml, $useWeakReference);
-			
-			//here are all the StandardInOuts
-			_bg 		= new StandardInOut(mc.bg_mc);
-			_title 		= new StandardInOut(mc.title_mc);
-			_services	= new StandardInOut(mc.services_mc);
-			
-			setupButtons();
-			setupResize();
-		}//end constructor
-		
+
 		// =================================================
-		// ================ Overrides
+		// ================ Callable
 		// =================================================
-		public override function onURLChange():void{
-			super.onURLChange();
-			
-			//if(!_bGalleryIn && _vidId!=null) _thumbDict[_vidId+"_btn"].deselect();
-			
-			//SWF ADDRESS STUFF
-			var swfArr:Array = SWFAddress.getPathNames(); // path should look something like this: contradictionary/top10/3453
-			if(swfArr.length > 1 && _xml.loadables.(@type==swfArr[2])){
-				_currentService = swfArr[2];
-			}
-				
-			//this is what we do as a defualt
-			else{
-				if(_currentService == null) _currentService = _xml.loadables[0].@type;
-			}
-			
-			//if(!_bGalleryIn) _gallery.swap();
-			//_thumbDict[_vidId+"_btn"].select();
-		}
-		
-		override protected function _animateIn():void{
-			//Out.status(this, "animateIn():: here is loadlist: "+_loadList);
-			
-			mc.visible = true;
-			_destroySequencer();
-			_ss = new SimpleSequencer("in");
-			_ss.addEventListener(Event.COMPLETE,_animateInSequencer_COMPLETE_handler,false,0,true);
-			_ss.addStep(1,_bg,_bg.animateIn,AnimationEvent.IN);
-			_ss.addStep(2,_title,_title.animateIn,AnimationEvent.IN);
-			
-			// oc: services
-		 	var n:uint=0
-			for each(var s:StandardButtonInOut in _serviceIdsToItems){
-				_ss.addStep(2 + (n+1), s.mc, s.animateIn, "NEXT_IN");
-				n++;
-			}
-			//_ss.addStep(21,this,_crossBlur,_XBLUR_COMPLETE;
-			_ss.start();
-			
-		}//end function _animateIn
-		override protected function _onAnimateOut():void{
-		}//end function
-		//override protected function _onAnimateIn():void { _siteModel.track(); }
-		
-		override protected function _animateOut():void{
-			Out.status(this, "_animateOut, here is _bGalleryIn: "+ _bGalleryIn);
-			_destroySequencer();
-			_ss = new SimpleSequencer("out");
-			_ss.addEventListener(Event.COMPLETE, _animateOutSequencer_COMPLETE_handler, false, 0, true);
-			// oc: services
-			if (_bGalleryIn)	_ss.addStep(1, _gallery, _gallery.animateOut, AnimationEvent.OUT);
-			else for each(var s:StandardButtonInOut in _serviceIdsToItems){_ss.addStep(1, s.mc, s.animateOut, "NEXT_OUT");}//end for each
-			_ss.addStep(2, _title.mc, _title.animateOut, AnimationEvent.OUT);
-			_ss.addStep(3, _bg.mc, _bg.animateOut, AnimationEvent.OUT);
-			
-			_ss.start();
-			_bGalleryIn = false;
-		
-		}//end function _animateOut
-		
-		private function _serviceOnAnimateIn($evt:Event):void{
-			Out.status(this, "_serviceOnAnimateIn()::");
-		}
-		// =================================================
-		// ================ Core Handler
-		// =================================================
-		private function _animateInSequencer_COMPLETE_handler($evt:Event = null):void{
-			Out.status(this,"_realAnimateIn_handler()");
-			_destroySequencer();
-			//do other onAnimateIn stuff 
-			super._onAnimateIn_handler();
-		}
-		private function _animateOutSequencer_COMPLETE_handler($evt:Event = null):void{
-			Out.status(this,"_realAnimateOut_handler()");
-			_destroySequencer();
-			//_destroyGallery();
-			super._onAnimateOut_handler();
-		}
-		
 		public function setupButtons():void{
 			_serviceIdsToItems = new Dictionary(true);
 			_serviceItemsToIds = new Dictionary(true);
@@ -172,6 +81,7 @@ package com.strattonimaging.site.display.screens
 			Resize.add(
 				"@CraftTitle",
 				_title.mc,
+
 				[Resize.CENTER_X, Resize.CUSTOM],
 				{
 					custom:	function($target, $params, $stage):void{
@@ -196,9 +106,54 @@ package com.strattonimaging.site.display.screens
 		}//end function
 		
 		
+		
+		public override function onURLChange():void{
+			super.onURLChange();
+			
+			//if(!_bGalleryIn && _vidId!=null) _thumbDict[_vidId+"_btn"].deselect();
+			
+			//SWF ADDRESS STUFF
+			var swfArr:Array = SWFAddress.getPathNames(); // path should look something like this: contradictionary/top10/3453
+			if(swfArr.length > 1 && _xml.loadables.(@type==swfArr[2])){
+				_currentService = swfArr[2];
+			}
+				
+			//this is what we do as a defualt
+			else{
+				if(_currentService == null) _currentService = _xml.loadables[0].@type;
+			}
+			
+			//if(!_bGalleryIn) _gallery.swap();
+			//_thumbDict[_vidId+"_btn"].select();
+		}
+		
 		override public function get xml():XML{
 			return _xml;
 		}
+		// =================================================
+		// ================ Workers
+		// =================================================
+		
+		private function _serviceOnAnimateIn($evt:Event):void{
+			Out.status(this, "_serviceOnAnimateIn()::");
+		}
+		// =================================================
+		// ================ Core Handler
+		// =================================================
+		private function _animateInSequencer_COMPLETE_handler($evt:Event = null):void{
+			Out.status(this,"_realAnimateIn_handler()");
+			_destroySequencer();
+			//do other onAnimateIn stuff 
+			super._onAnimateIn_handler();
+		}
+		private function _animateOutSequencer_COMPLETE_handler($evt:Event = null):void{
+			Out.status(this,"_realAnimateOut_handler()");
+			_destroySequencer();
+			//_destroyGallery();
+			super._onAnimateOut_handler();
+		}
+		
+		
 		
 		private function _serviceOnClick($me:MouseEvent):void{
 			Out.status(this, "_serviceOnClick(): target: "+ $me.target);
@@ -264,6 +219,67 @@ package com.strattonimaging.site.display.screens
 				_ss.removeEventListener(Event.COMPLETE,_onShowServices);
 				_ss = null;
 			}
-		}
+		}//end function _destroySequencer
+		
+		// =================================================
+		// ================ Overrides
+		// =================================================
+		override protected function _animateIn():void{
+			//Out.status(this, "animateIn():: here is loadlist: "+_loadList);
+			
+			mc.visible = true;
+			_destroySequencer();
+			_ss = new SimpleSequencer("in");
+			_ss.addEventListener(Event.COMPLETE,_animateInSequencer_COMPLETE_handler,false,0,true);
+			_ss.addStep(1,_bg,_bg.animateIn,AnimationEvent.IN);
+			_ss.addStep(2,_title,_title.animateIn,AnimationEvent.IN);
+			
+			// oc: services
+			var n:uint=0
+			for each(var s:StandardButtonInOut in _serviceIdsToItems){
+				Out.debug(this, "animating "+s.mc +" in");
+				_ss.addStep(2 + (n+1), s.mc, s.animateIn, "NEXT_IN");
+				n++;
+			}
+			//_ss.addStep(21,this,_crossBlur,_XBLUR_COMPLETE;
+			_ss.start();
+			
+		}//end function _animateIn
+		override protected function _onAnimateOut():void{
+		}//end function
+		//override protected function _onAnimateIn():void { _siteModel.track(); }
+		
+		override protected function _animateOut():void{
+			Out.status(this, "_animateOut, here is _bGalleryIn: "+ _bGalleryIn);
+			_destroySequencer();
+			_ss = new SimpleSequencer("out");
+			_ss.addEventListener(Event.COMPLETE, _animateOutSequencer_COMPLETE_handler, false, 0, true);
+			// oc: services
+			if (_bGalleryIn)	_ss.addStep(1, _gallery, _gallery.animateOut, AnimationEvent.OUT);
+			else for each(var s:StandardButtonInOut in _serviceIdsToItems){_ss.addStep(1, s.mc, s.animateOut, "NEXT_OUT");}//end for each
+			_ss.addStep(2, _title.mc, _title.animateOut, AnimationEvent.OUT);
+			_ss.addStep(3, _bg.mc, _bg.animateOut, AnimationEvent.OUT);
+			
+			_ss.start();
+			_bGalleryIn = false;
+			
+		}//end function _animateOut
+		
+		// =================================================
+		// ================ Constructor
+		// =================================================		
+	
+		public function Craft($mc:MovieClip, $xml:XML, $useWeakReference:Boolean=false){
+			super($mc, $xml, $useWeakReference);
+			
+			//here are all the StandardInOuts
+			_bg 		= new StandardInOut(mc.bg_mc);
+			_title 		= new StandardInOut(mc.title_mc);
+			_services	= new StandardInOut(mc.services_mc);
+			_services.mc.gallery_mc.visible = false;
+			setupButtons();
+			setupResize();
+		}//end constructor
+		
 	}//end class
 }//end package
