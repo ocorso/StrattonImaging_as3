@@ -108,9 +108,9 @@ package com.strattonimaging.site.display.screens
 		
 		
 		public override function onURLChange():void{
+			Out.status(this, "onURLChange():: galleryIn? "+_bGalleryIn);
 			super.onURLChange();
 			
-			//if(!_bGalleryIn && _vidId!=null) _thumbDict[_vidId+"_btn"].deselect();
 			
 			//SWF ADDRESS STUFF
 			var swfArr:Array = SWFAddress.getPathNames(); // path should look something like this: contradictionary/top10/3453
@@ -121,6 +121,10 @@ package com.strattonimaging.site.display.screens
 			//this is what we do as a defualt
 			else{
 				if(_currentService == null) _currentService = _xml.loadables[0].@type;
+				if(_bGalleryIn) {
+					_gallery.animateOut();	
+					_showServices();
+				}
 			}
 			
 			//if(!_bGalleryIn) _gallery.swap();
@@ -165,7 +169,7 @@ package com.strattonimaging.site.display.screens
 			_hideServices();
 			
 		}//end function 
-		private function _showServices($evt:Event):void{
+		private function _showServices($evt:Event=null):void{
 			Out.status(this, "_showServices(): show next gallery");
 			_destroySequencer();
 			_ss = new SimpleSequencer("showServices");
@@ -201,7 +205,7 @@ package com.strattonimaging.site.display.screens
 			if(_gallery) _gallery.destroy();
 			_bGalleryIn = true;
 			_gallery	= new Gallery(_services.mc.gallery_mc, getNodeByType(SiteModel.CONFIG_LOADABLES, _currentService), _loader);
-			_gallery.addEventListener(AnimationEvent.OUT, _showServices);
+			//_gallery.addEventListener(AnimationEvent.OUT, _showServices);
 			_gallery.animateIn();
 			SWFAddress.setValue("craft/"+_currentService);
 //			_serviceIdsToItems(_currentService).animateIn();

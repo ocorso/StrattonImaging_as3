@@ -43,12 +43,15 @@ package com.strattonimaging.site.display.components
 			
 		}//end function 
 		private function _closeHandler($mc:MouseEvent):void{
+			_destroySequencer();
+			_ss = new SimpleSequencer("galleryOut");
+			
 			SWFAddress.setValue("craft");
 			//close img
 			//close thumbs
 			//hide arrows
 			//hide close
-			super._animateOut();
+			//animateOut();
 		}//end function
 		
 		// =================================================
@@ -80,11 +83,15 @@ package com.strattonimaging.site.display.components
 			//mc.image.addChild(_bl.getLoadedAssetById(_xml.loadable[0].@id.toString()));
 		}//end function
 		private function _changeMainImg($id:String):void{
-			
 			var asset:Bitmap = Bitmap(_bl.getLoadedAssetById($id));
+			var w:int = asset.bitmapData.width;
+			Out.status(this, "_changeMainImg:: asset width: "+ w);
 			asset.width = _MAIN_IMG_WIDTH;
 			asset.height= _MAIN_IMG_HEIGHT;
-			_mainImg.mc.img.ph.addChild( new Bitmap(asset.bitmapData));
+			if(_mainImg.mc.img.ph.numChildren>1)_mainImg.mc.img.ph.removeChildAt(_mainImg.mc.img.ph.numChildren-1);
+			var bm:Bitmap = new Bitmap(asset.bitmapData);
+			if(w<_MAIN_IMG_WIDTH) bm.x = (_MAIN_IMG_WIDTH-w)/2;
+			_mainImg.mc.img.ph.addChild(bm);
 			
 		}//end function
 		private function _destroySequencer():void{

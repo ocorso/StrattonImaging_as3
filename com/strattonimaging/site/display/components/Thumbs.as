@@ -50,7 +50,12 @@ package com.strattonimaging.site.display.components
 // ================ Handlers
 // =================================================
 		private function _thumbClickHandler($me:MouseEvent):void{
-			Out.status(this, "_thumbClickHandler: "+ $me.target.parent.name);
+			var s:String = StandardButton($me.target).mc.name;
+			Out.status(this, "_thumbClickHandler: "+ s);
+			_thumbsDict[s].select();
+			_thumbsDict["t"+current].deselect();
+			current = s.charAt(1);
+			Out.debug(this, "current = "+current);
 			
 		}//end function
 
