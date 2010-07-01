@@ -47,6 +47,7 @@ package com.strattonimaging.site.display.screens
 		// ================ Callable
 		// =================================================
 		public function setupButtons():void{
+			Out.status(this, "setupButtons()");
 			_serviceIdsToItems = new Dictionary(true);
 			_serviceItemsToIds = new Dictionary(true);
 			
