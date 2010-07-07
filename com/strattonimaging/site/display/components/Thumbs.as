@@ -36,6 +36,12 @@ package com.strattonimaging.site.display.components
 			
 			_current++;
 		}//end fucntion
+		
+		public function changeThumb():void{
+			for each(var s:StandardButton in _thumbsDict){s.deselect();}
+			_thumbsDict["t"+current].select();
+			dispatchEvent(new Event(Event.CHANGE));
+		}//end function
 // =================================================
 // ================ Workers
 // =================================================
@@ -56,7 +62,7 @@ package com.strattonimaging.site.display.components
 			_thumbsDict["t"+current].deselect();
 			current = s.charAt(1);
 			Out.debug(this, "current = "+current);
-			
+			dispatchEvent(new Event(Event.CHANGE));
 		}//end function
 
 // =================================================
@@ -83,21 +89,15 @@ package com.strattonimaging.site.display.components
 // =================================================
 // ================ Overrides
 // =================================================
-		override protected function _animateIn():void{
-			Out.status(this, "animateIn");
-			_ss = new SimpleSequencer("ThumbsIn");
-			_ss.addEventListener(Event.COMPLETE, _animateInSequencer_COMPLETE_handler);
-			_ss.addStep(1, _thumbsDict["t0"].mc, _thumbsDict["t0"].select, AnimationEvent.ROLL_OVER);
-			_ss.start();
-		}//end function 
-		override protected function _animateOut():void{
-			Out.status(this, "animateOut");
-			_ss = new SimpleSequencer("ThumbsOut");
-			_ss.addEventListener(Event.COMPLETE, _animateOutSequencer_COMPLETE_handler);
-
-			for each(var s:StandardButton in _thumbsDict){_ss.addStep(1, s.mc, s.deselect, AnimationEvent.ROLL_OUT);}//end for each
-			_ss.start();
-		}//end function 
+		override protected function _onAnimateIn():void{
+			//deselect all thumbs prior to showing the thumbs.
+			for each(var s:StandardButton in _thumbsDict){s.deselect();}
+			_thumbsDict["t0"].select();
+		}
+		override protected function _onAnimateOut():void{
+			for each(var s:StandardButton in _thumbsDict){s.deselect();}
+			
+		}
 // =================================================
 // ================ Constructor
 // =================================================

@@ -6,6 +6,8 @@ package
 	import com.bigspaceship.utils.Environment;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.out.adapters.ArthropodAdapter;
+	import com.greensock.plugins.BlurFilterPlugin;
+	import com.greensock.plugins.TweenPlugin;
 	import com.strattonimaging.site.Constants;
 	import com.strattonimaging.site.display.MainView;
 	import com.strattonimaging.site.events.ScreenEvent;
@@ -88,7 +90,9 @@ package
 			
 			_loadState = Constants.LOAD_STATE_INIT;
 			_loadConfigXml();
-			
+
+			TweenPlugin.activate([BlurFilterPlugin]);
+
 		}//end initialize function
 		
 		/***********************************************************/

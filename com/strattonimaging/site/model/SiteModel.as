@@ -30,7 +30,8 @@ package com.strattonimaging.site.model
 		private var _baseUrl								:String;
 		private var _flashvars								:Object;
 		private var _nextScreen								:String;
-		private var _currentScreen							:String;
+		private var _currentScreen							:String; // learn, craft, credits, connect
+		private var _currentSection							:String; // could be service, credit, which about ect
 		
 		public function SiteModel(target:IEventDispatcher=null)
 		{
@@ -136,6 +137,8 @@ package com.strattonimaging.site.model
 		public function get nextScreen():String { return _nextScreen; }
 		public function get currentScreen():String { return _currentScreen; }
 		public function set currentScreen($screenId:String):void { _currentScreen = $screenId; }
+		public function get currentSection():String { return _currentSection; }
+		public function set currentSection($screenId:String):void { _currentSection = $screenId; }
 		
 		//vars
 		public function getBaseURL():String{ return _baseUrl;}

@@ -174,6 +174,7 @@ package com.strattonimaging.site.display
 		/***********************************************************/
 		public function _goToNextScreen($evt:NavigationEvent = null):void {
 			Out.status(this, "_goToNextScreen");
+			//Out.debug(this, "current screen state: "+_screens[_siteModel.currentScreen].state);
 			if(!_sequencer) {
 				if(!_screens[_siteModel.currentScreen] || _screens[_siteModel.currentScreen].state == AnimationState.OUT) _screenOnAnimateOut();
 				else if(_screens[_siteModel.currentScreen].state == AnimationState.IN) _animateScreenOut();

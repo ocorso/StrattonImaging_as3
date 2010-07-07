@@ -4,18 +4,21 @@ package com.strattonimaging.site.display.components
 	import com.bigspaceship.display.StandardButton;
 	import com.bigspaceship.display.StandardInOut;
 	import com.bigspaceship.events.AnimationEvent;
-	import com.bigspaceship.events.NavigationEvent;
 	import com.bigspaceship.loading.BigLoader;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.SimpleSequencer;
+	import com.strattonimaging.site.model.SiteModel;
 	
 	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.MovieClip;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 
 	public class Gallery extends StandardInOut
 	{
+		private var _siteModel			:SiteModel;
+		
 		private var _xml				:XMLList;
 		private var _bl					:BigLoader;
 		private var _ss					:SimpleSequencer;
@@ -35,44 +38,30 @@ package com.strattonimaging.site.display.components
 		// ================ Callable
 		// =================================================		
 		
-		// =================================================
-		// ================ Handlers
-		// =================================================		
-		private function _thumbChanged($ne:NavigationEvent):void{
-			Out.status(this, "_thumbChanged: new id: "+$ne.info as String);
 			
-		}//end function 
-		private function _closeHandler($mc:MouseEvent):void{
-			_destroySequencer();
-			_ss = new SimpleSequencer("galleryOut");
-			
-			SWFAddress.setValue("craft");
-			//close img
-			//close thumbs
-			//hide arrows
-			//hide close
-			//animateOut();
-		}//end function
-		
 		// =================================================
 		// ================ Workers
 		// =================================================		
 		private function _init():void{
-			Out.status(this, "init:: mainImage ID = "+_xml.loadable[0].@id.toString());
+			Out.status(this, "init");
+			_curThumb = _xml.loadable[0].@id.toString();
 			mc.tf.txt.text = _xml.label.toString();
 			
 			//controls
 			_prev = new StandardButton(mc.prev_mc, mc.prev_mc.btn);	
-			_next = new StandardButton(mc.next_mc, mc.next_mc.btn);	
+			_prev.addEventListener(MouseEvent.CLICK, _prevHandler);
+			_next = new StandardButton(mc.next_mc, mc.next_mc.btn);
+			_next.addEventListener(MouseEvent.CLICK, _nextHandler);
+				
 			_close = new StandardButton(mc.close_mc, mc.close_mc.btn);	
 			_close.addEventListener(MouseEvent.CLICK, _closeHandler);
 			
 			//standardInOuts			
 			_mainImg = new StandardInOut(mc.mainImg_mc);
-			_changeMainImg(_xml.loadable[0].@id.toString());
+			_changeMainImg();
 			
 			_thumbs = new Thumbs(mc.thumbs_mc);
-			_thumbs.addEventListener(NavigationEvent.NAVIGATE, _thumbChanged);
+			_thumbs.addEventListener(Event.CHANGE, _thumbChanged);
 			
 			for(var e:String in _xml.loadable){
 				Out.debug(this, _xml.loadable[e].@id);
@@ -80,16 +69,16 @@ package com.strattonimaging.site.display.components
 			}//end for in
 			_thumbs.current = 0;
 			_curThumb = _xml.loadable[0].@id.toString();
-			//mc.image.addChild(_bl.getLoadedAssetById(_xml.loadable[0].@id.toString()));
 		}//end function
-		private function _changeMainImg($id:String):void{
-			var asset:Bitmap = Bitmap(_bl.getLoadedAssetById($id));
-			var w:int = asset.bitmapData.width;
+		
+		private function _changeMainImg():void{
+			var bmd:BitmapData = Bitmap(_bl.getLoadedAssetById(_curThumb)).bitmapData.clone();
+			var bm:Bitmap = new Bitmap(bmd);
+			var w:int = bmd.width;
 			Out.status(this, "_changeMainImg:: asset width: "+ w);
-			asset.width = _MAIN_IMG_WIDTH;
-			asset.height= _MAIN_IMG_HEIGHT;
+			//bm.width = _MAIN_IMG_WIDTH;
+			bm.height= _MAIN_IMG_HEIGHT;
 			if(_mainImg.mc.img.ph.numChildren>1)_mainImg.mc.img.ph.removeChildAt(_mainImg.mc.img.ph.numChildren-1);
-			var bm:Bitmap = new Bitmap(asset.bitmapData);
 			if(w<_MAIN_IMG_WIDTH) bm.x = (_MAIN_IMG_WIDTH-w)/2;
 			_mainImg.mc.img.ph.addChild(bm);
 			
@@ -102,15 +91,48 @@ package com.strattonimaging.site.display.components
 			}
 		}//end function
 		// =================================================
+		// ================ Handlers
+		// =================================================
+		private function _thumbChanged($evt:Event):void{
+			var c:int = _thumbs.current +1;
+			_curThumb = _xml.@type+"_"+c;
+			Out.status(this, "_thumbChanged: new id: "+ _curThumb);
+			_changeMainImg();
+			SWFAddress.setValue(_siteModel.currentScreen+"/"+_siteModel.currentSection+"/"+c);
+			
+		}//end function 
+		private function _closeHandler($evt:Event=null):void{
+			
+			SWFAddress.setValue("craft");
+	
+		}//end function
+		
+		private function _prevHandler($me:MouseEvent):void{
+			var c:int = _thumbs.current;
+			Out.status(this, "prevHandler:: current = "+c);
+			if (c>0){
+				_thumbs.current--;
+				_thumbs.changeThumb();				
+			}
+		}//end function
+		private function _nextHandler($me:MouseEvent):void{
+			var c:int = _thumbs.current;
+			Out.status(this, "nextHandler:: current = "+c);
+			if (c<_xml.loadable.length()-1){
+				_thumbs.current++;
+				_thumbs.changeThumb();
+				_changeMainImg();				
+			}
+		}//end function
+		// =================================================
 		// ================ Animation
 		// =================================================
 		private function _animateThumbsIn($evt:Event):void{
 			Out.status(this, "WTF");
 			_thumbs.animateIn();
 		}
-		private function _animateThumbsOut($evt:Event):void{
-			Out.status(this, "WTF");
-			_thumbs.animateOut();
+		private function _animateOutCompleteHandler($evt:Event):void{
+			dispatchEvent(new Event(Event.CHANGE));		
 		}
 		private function _animateControlsIn($evt:Event=null):void{
 			super._animateIn();
@@ -133,9 +155,10 @@ package com.strattonimaging.site.display.components
 			
 			_destroySequencer();
 			_ss = new SimpleSequencer("Out");
-			_ss.addEventListener(Event.COMPLETE, _animateThumbsOut,false,0,true);
-			_ss.addStep(1, _mainImg.mc, _mainImg.animateOut, AnimationEvent.OUT);
-			_ss.addStep(2, _thumbs.mc, super._animateOut, AnimationEvent.OUT);
+			_ss.addEventListener(Event.COMPLETE, _animateOutCompleteHandler,false,0,true);
+			_ss.addStep(1, _thumbs.mc, _thumbs.animateOut, AnimationEvent.OUT);
+			_ss.addStep(2, _mainImg.mc, _mainImg.animateOut, AnimationEvent.OUT);
+			_ss.addStep(3, this, super._animateOut, AnimationEvent.OUT);
 			_ss.start();
 			
 		}//end function
@@ -153,7 +176,8 @@ package com.strattonimaging.site.display.components
 			super($mc);
 			_xml 	= $imgList;
 			_bl		= $bigLoader;
-			Out.status(this, "new gallery, length = "+ _xml.length());
+			_siteModel = SiteModel.getInstance();
+			Out.status(this, "new gallery, length = "+ _xml.loadable.length());
 			_init();
 						
 		}//end constructor
