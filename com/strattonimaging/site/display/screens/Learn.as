@@ -14,7 +14,6 @@ package com.strattonimaging.site.display.screens
 	public class Learn extends Screen implements IScreen
 	{
 		
-		private var _ss				:SimpleSequencer;
 		private var _bg				:StandardInOut;
 		private var _sections		:StandardInOut;
 		private var _si				:StandardInOut;
@@ -37,13 +36,7 @@ package com.strattonimaging.site.display.screens
 			
 		}//end function
 		
-		private function _destroySequencer():void{
-			if(_ss){
-				_ss.removeEventListener(Event.COMPLETE,_animateInSequencer_COMPLETE_handler);
-				_ss.removeEventListener(Event.COMPLETE,_animateOutSequencer_COMPLETE_handler);
-				_ss = null;
-			}
-		}//end function _destroySequencer
+
 // =================================================
 // ================ Handlers
 // =================================================
@@ -94,22 +87,12 @@ package com.strattonimaging.site.display.screens
 		}//end function
         
 		public function setupButtons():void{
-			_
 		}//end function
         
 // =================================================
 // ================ Core Handler
 // =================================================
-        private function _animateInSequencer_COMPLETE_handler($evt:Event = null):void{
-			Out.status(this,"_realAnimateIn_handler()");
-			_destroySequencer();
-			super._onAnimateIn_handler();
-		}
-		private function _animateOutSequencer_COMPLETE_handler($evt:Event = null):void{
-			Out.status(this,"_realAnimateOut_handler()");
-			_destroySequencer();
-			super._onAnimateOut_handler();
-		}
+
 // =================================================
 // ================ Overrides
 // =================================================
@@ -143,9 +126,8 @@ package com.strattonimaging.site.display.screens
 			_ss.start();
 			
 		}//end function _animateOut
-		override protected function _onAnimateOut():void{
-			//_mc.gotoAndStop("INIT");
-		}//end function
+		
+		override protected function _onAnimateOut():void{}//end function
 // =================================================
 // ================ Constructor
 // =================================================

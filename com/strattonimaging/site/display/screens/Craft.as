@@ -26,8 +26,6 @@ package com.strattonimaging.site.display.screens
 		private var _serviceItemsToIds			:Dictionary;
 		private var _serviceIds					:Array;
 		
-		private var _ss							:SimpleSequencer;
-
 		private const _IMAGE_HEIGHT				:Number = 255;
 		private const _IMAGE_MAX_WIDTH			:Number = 400;
 		private const _sX						:Number = 150;
@@ -198,7 +196,7 @@ package com.strattonimaging.site.display.screens
 			}
 			
 		}//end function destroy gallery
-		private function _destroySequencer():void{
+		override protected function _destroySequencer():void{
 			if(_ss){
 				_ss.removeEventListener(Event.COMPLETE,_animateInSequencer_COMPLETE_handler);
 				_ss.removeEventListener(Event.COMPLETE,_animateOutSequencer_COMPLETE_handler);
@@ -222,20 +220,6 @@ package com.strattonimaging.site.display.screens
 		// =================================================
 		// ================ Core Handler
 		// =================================================
-		private function _animateInSequencer_COMPLETE_handler($evt:Event = null):void{
-			Out.status(this,"_realAnimateIn_handler()");
-			_destroySequencer();
-			//do other onAnimateIn stuff 
-			super._onAnimateIn_handler();
-		}
-		private function _animateOutSequencer_COMPLETE_handler($evt:Event = null):void{
-			Out.status(this,"_realAnimateOut_handler()");
-			_destroySequencer();
-			//_blur();
-			super._onAnimateOut_handler();
-		}
-		
-		
 		
 		private function _serviceOnClick($me:MouseEvent):void{
 			Out.status(this, "_serviceOnClick(): target: "+ $me.target);

@@ -2,6 +2,8 @@ package com.strattonimaging.site.display.screens
 {
 	import com.bigspaceship.display.StandardInOut;
 	import com.bigspaceship.loading.BigLoader;
+	import com.bigspaceship.utils.Out;
+	import com.bigspaceship.utils.SimpleSequencer;
 	import com.strattonimaging.site.Constants;
 	import com.strattonimaging.site.model.SiteModel;
 	
@@ -17,6 +19,7 @@ package com.strattonimaging.site.display.screens
 		
 		protected var _loader				:BigLoader;
 		protected var _siteModel			:SiteModel;
+		protected var _ss					:SimpleSequencer;
 		
 		public function Screen($mc:MovieClip, $xml:XML, $useWeakReference:Boolean=false)
 		{
@@ -26,6 +29,13 @@ package com.strattonimaging.site.display.screens
 			_siteModel = SiteModel.getInstance();
 		}//end constructor
 		
+		protected function _destroySequencer():void{
+			if(_ss){
+				_ss.removeEventListener(Event.COMPLETE,_animateInSequencer_COMPLETE_handler);
+				_ss.removeEventListener(Event.COMPLETE,_animateOutSequencer_COMPLETE_handler);
+				_ss = null;
+			}
+		}//end function _destroySequencer
 		/*******************************************/
 		//getter setters
 		/*******************************************/
@@ -79,5 +89,15 @@ package com.strattonimaging.site.display.screens
 		override protected function _onAnimateOut():void{
 			_mc.gotoAndStop("INIT");
 		}//end function
+		protected function _animateInSequencer_COMPLETE_handler($evt:Event = null):void{
+			Out.status(this,"_realAnimateIn_handler()");
+			_destroySequencer();
+			super._onAnimateIn_handler();
+		}
+		protected function _animateOutSequencer_COMPLETE_handler($evt:Event = null):void{
+			Out.status(this,"_realAnimateOut_handler()");
+			_destroySequencer();
+			super._onAnimateOut_handler();
+		}     
 	}//end class
 }//end package

@@ -32,7 +32,6 @@ package com.strattonimaging.site.display.components.ftp
 		protected var loginBtn		:StandardButton;
 		private const LOGIN_ROUTE	:String 		= "/ftp/login.xml";
 		private var _submitLoader	:URLLoader;
-		private var _ss				:SimpleSequencer;
 
 		
 		//private var dataGrid	:Comx
