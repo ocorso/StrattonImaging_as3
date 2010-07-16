@@ -70,7 +70,7 @@ package com.bigspaceship.loading
 		private const MAX_CONNECTIONS	:int = 2;
 
 		private var _itemsToLoad	:Vector.<BigLoadItem>;
-		private var _itemsComplete	:Dictionary = new Dictionary(true);
+		public var _itemsComplete	:Dictionary = new Dictionary(true);
 		private var _curLoadIndex	:int = 0;
 		private var _activeLoads	:int = 0;
 		private var _numComplete	:int = 0;

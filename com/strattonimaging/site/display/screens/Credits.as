@@ -1,17 +1,21 @@
 package com.strattonimaging.site.display.screens
 {
+	import __AS3__.vec.Vector;
+	
+	import com.bigspaceship.display.StandardButton;
 	import com.bigspaceship.display.StandardInOut;
 	import com.bigspaceship.events.AnimationEvent;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.SimpleSequencer;
 	import com.strattonimaging.site.Constants;
+	import com.strattonimaging.site.display.screens.credits.Carousel;
+	import com.strattonimaging.site.display.screens.credits.Credit;
+	import com.strattonimaging.site.display.screens.credits.CreditFactory;
+	import com.strattonimaging.site.display.screens.credits.ICredit;
 	
 	import flash.display.MovieClip;
 	import flash.events.Event;
-	import flash.events.NetStatusEvent;
-	import flash.media.Video;
-	import flash.net.NetConnection;
-	import flash.net.NetStream;
+	import flash.events.MouseEvent;
 	
 	import net.ored.util.Resize;
 
@@ -19,22 +23,24 @@ package com.strattonimaging.site.display.screens
 	{
 		//standard in outs
 		private var _bg						:StandardInOut;						
-		private var _clapper				:StandardInOut;						
-		private var _videoItem				:StandardInOut;						
+		private var _clapper				:StandardInOut;	
+		private var _carousel				:StandardInOut;	
 		
-		//video stuff
-		private const _VID_WIDTH			:uint = 576;
-		private const _VID_HEIGHT			:uint = 273;
-		private const _VID_NAME				:String = "credits.f4v";
-		private const _VIDEO_READY			:String = "videoReady";
+		//standard buttons
+		private var _prev					:StandardButton;
+		private var _next					:StandardButton;		
+				
+		//credit stuff		
+		private var _creditsList			:Vector.<Credit>;
+		private var _cc						:int = 0;//current credit, defaults to 0
+		private var _cs						:SimpleSequencer; //credits sequencer
 
-		private var _vid					:Video;
-		private var _netStream				:NetStream;
-		private var _netCon					:NetConnection;
-		private var _vidSpecs				:Object;
-		
-		private var _bVidPlaying			:Boolean;
-
+		//linked-list position indicators
+		private var _direction				:int;
+		private const __NEXT_END			:int = 0;
+		private const __NEXT				:int = 1;
+		private const __BEGINNING			:int = 2;
+		private const __PREV				:int = 3;
         
 // =================================================
 // ================ Callable
@@ -47,90 +53,89 @@ package com.strattonimaging.site.display.screens
 			Out.status(this, "init");
 			
 			_bg 		= new StandardInOut(mc.bg_mc);
-			_clapper 	= new StandardInOut(mc.c_mc);
-			_videoItem	= new StandardInOut(mc.v_mc);
-			
+			_clapper 	= new StandardInOut(mc.clapper_mc);
+			_carousel	= new Carousel(mc.carousel_mc);
+			_creditsList= new Vector.<Credit>();
 			
 			setupButtons();
 			setupResize();
-			_initVideo();
 		}//end function
 		
-	
-		/**
-		 * The following several functions are related to setting up the video 
-		 * 
-		 */			
-		private function _connectVidStream():void{
-			_netStream = new NetStream(_netCon);
-			_videoItem.addEventListener(AnimationEvent.OUT, _pauseNetStream);
-			_netStream.addEventListener(NetStatusEvent.NET_STATUS,_vidNetStatus,false,0,true);
-			var metaData:Object = new Object();
-			metaData.onMetaData = _onMetaData;
-			_netStream.client = metaData;
-			_videoItem.mc.video_mc.addChild(_vid);
-			_vid.attachNetStream(_netStream);
-		}
-		
-		
-		private function _initVideo():void{
-			_videoItem.mc.video_mc.logo.stop();
-			Out.info(this, "Initializing streaming video");
-			//remove the current video if there is one
-			if(_vid) _vid = null;
-			_vid = new Video(_VID_WIDTH,_VID_HEIGHT);
+				
+		private function _populateCarousel():void{
+			Out.status(this, "_populateCarousel():");
 			
-			if(_netCon) _netCon = null;
-			_netCon = new NetConnection();
-			_netCon.addEventListener(NetStatusEvent.NET_STATUS,_vidNetStatus,false,0,true);
-			_netCon.connect(null);
-		}
-		private function _setupNewVid():void{
+			var vc:ICredit = CreditFactory.createCredit(Constants.TYPE_VID, "The Other Guys Trailer", mc);
+			_creditsList.push(vc);
+			//todo: look at swfaddress to determine current credit.
+			_carousel.mc.addChild(_creditsList[_cc].mc);
 			
-			_netStream.close();
-			_netStream.bufferTime = 5;
-			_bVidPlaying = true;
-			Out.info(this,"THIS IS THE VID URL TO PLAY = " + _siteModel.getDirPath("vid") + _VID_NAME);
-			
-			//_siteModel.track(_vidNode().@id.toString() + '/start');
-			
-			_netStream.play(_siteModel.getDirPath("vid") + _VID_NAME);
-			dispatchEvent(new Event(_VIDEO_READY));
-		}//end function 
-		
-
+			for(var i:int=0;i<_xml.loadables.loadable.length();i++) {
+				var id:String = _xml.loadables.loadable[i].@id.toString();
+				Out.debug(this, "credit id= "+id);
+				var c:ICredit = CreditFactory.createCredit(Constants.TYPE_IMG, _xml.loadables.loadable[i].toString(), mc);
+				
+				c.configure(_loader.getLoadedAssetById(id));
+				_creditsList.push(c);
+				_carousel.mc.addChild(c.mc);
+								
+			}//end for			
+		}//end fucntion
+		private function _destroyCreditSequencer():void{
+			if(_cs){
+				_cs.removeEventListener(Event.COMPLETE, _csCompleteHandler);
+				_cs = null;
+			}//end if
+				
+		}//end function
 // =================================================
 // ================ Handlers
 // =================================================
-		private function _onMetaData($info:Object):void{
-			if(_vidSpecs) _vidSpecs = null;
-			_vidSpecs = $info;
-
-		}//end function
-        
-		private function _vidNetStatus($evt:NetStatusEvent):void{
-			switch ($evt.info.code) {
-				case "NetConnection.Connect.Success":
-					_connectVidStream();
-					break;
-				case "NetStream.Play.StreamNotFound":
-					Out.info(this, "Unable to locate video");
-					break;
-				
-				case "NetStream.Play.Stop":
-					if(_vidSpecs.duration-_netStream.time <= 1){
-						_netStream.seek(0);
-						//_playPauseClick();
-
-						//  track that the video is finished.
-						//_siteModel.track(_vidNode().@id.toString() + '/complete');
-					}
-					break;
+		private function _nextHandler($me:MouseEvent):void{
+			Out.status(this, "nextHandler:: current= "+_cc); 
+			_creditsList[_cc].isNextAnimation = true;
+			_cs = new SimpleSequencer("creditSeqIn");
+			_cs.addEventListener(Event.COMPLETE, _csCompleteHandler);
+			_cs.addStep(1, _creditsList[_cc], _creditsList[_cc].animateOut, AnimationEvent.OUT);
+			
+			if(_cc<_creditsList.length-1){
+				_direction = __NEXT;
+				_creditsList[_cc+1].isNextAnimation = true;
+				_cs.addStep(2, _creditsList[_cc+1], _creditsList[_cc+1].animateIn, AnimationEvent.IN);
+			}else{
+				_direction = __NEXT_END;
+				_creditsList[0].isNextAnimation = true;
+				_cs.addStep(2, _creditsList[0], _creditsList[0].animateIn, AnimationEvent.IN);
 			}
+			_cs.start();
+			
 		}//end function
-		private function _pauseNetStream($evt:AnimationEvent):void{
-			_netStream.pause();
-		}//end function 
+		private function _prevHandler($me:MouseEvent):void{
+			Out.status(this, "prevHandler:: current = "+_cc); 
+			_cs = new SimpleSequencer("creditSeqIn");
+			_cs.addEventListener(Event.COMPLETE, _csCompleteHandler);
+			_cs.addStep(1, _creditsList[_cc], _creditsList[_cc].animateOut, AnimationEvent.OUT);
+			if(_cc > 0){
+				_direction = __PREV;
+				_cs.addStep(2, _creditsList[_cc-1], _creditsList[_cc-1].animateIn, AnimationEvent.IN);
+			}else{
+				_direction = __BEGINNING;
+				_cs.addStep(2, _creditsList[_creditsList.length-1], _creditsList[_creditsList.length-1].animateIn, AnimationEvent.IN);
+			}
+			_cs.start();
+			
+		}//end function
+		private function _csCompleteHandler($e:Event):void{
+			_creditsList[_cc].resetDirection();
+			switch (_direction){
+				case  	__NEXT 			:	_cc++; break; 
+				case	__NEXT_END		:	_cc = 0; break;  
+				case	__BEGINNING		:	_cc = _creditsList.length-1; break;  
+				case	__PREV			:	_cc--; break;  
+			}//end switch
+			_creditsList[_cc].resetDirection();
+			_destroyCreditSequencer();
+		}//end function
 // =================================================
 // ================ Animation
 // =================================================
@@ -144,8 +149,10 @@ package com.strattonimaging.site.display.screens
 			_ss.addEventListener(Event.COMPLETE,_animateInSequencer_COMPLETE_handler,false,0,true);
 			_ss.addStep(1,_bg,_bg.animateIn,AnimationEvent.IN);
 			_ss.addStep(2,_clapper,_clapper.animateIn,AnimationEvent.IN);
-			_ss.addStep(3,_videoItem,_videoItem.animateIn,AnimationEvent.IN);
-			_ss.addStep(4,this,_setupNewVid,_VIDEO_READY);
+			if (_creditsList[_cc].type == Constants.TYPE_VID)
+				_ss.addStep(4,_creditsList[_cc],_creditsList[_cc].configure, Constants.VIDEO_READY);
+			_ss.addStep(5, _creditsList[_cc], _creditsList[_cc].animateIn, AnimationEvent.IN);
+			_ss.addStep(6,_carousel,_carousel.animateIn,AnimationEvent.IN);
 			
 			_ss.start();
 			
@@ -156,9 +163,10 @@ package com.strattonimaging.site.display.screens
 			_destroySequencer();
 			_ss = new SimpleSequencer("out");
 			_ss.addEventListener(Event.COMPLETE, _animateOutSequencer_COMPLETE_handler, false, 0, true);
-			_ss.addStep(1, _videoItem.mc, _videoItem.animateOut, AnimationEvent.OUT);
-			_ss.addStep(2, _clapper.mc, _clapper.animateOut, AnimationEvent.OUT);
-			_ss.addStep(3, _bg.mc, _bg.animateOut, AnimationEvent.OUT);
+			_ss.addStep(1, _carousel, _carousel.animateOut, AnimationEvent.OUT);			
+			_ss.addStep(2, _creditsList[_cc], _creditsList[_cc].animateOut, AnimationEvent.OUT);
+			_ss.addStep(3, _clapper, _clapper.animateOut, AnimationEvent.OUT);
+			_ss.addStep(4, _bg, _bg.animateOut, AnimationEvent.OUT);
 			_ss.start();
 			
 		}//end function _animateOut
@@ -187,12 +195,29 @@ package com.strattonimaging.site.display.screens
 					}//end custom function
 				}//end 4th resize add parameter
 			);//end @Grad
+			Resize.add(
+				"@CreditsCarousel",
+				_carousel.mc,
+				[Resize.CENTER_X, Resize.CUSTOM],
+				{
+					custom:	function($target, $params, $stage):void{
+								if ($stage.stageHeight > Constants.STAGE_HEIGHT){
+									_carousel.mc.y = ($stage.stageHeight-Constants.STAGE_HEIGHT)/2;
+					 			}else _carousel.mc.y = 0;
+					}//end custom function
+				}//end 4 param
+			);//end resize add @CreditsCarousel
 			
-		}//end function
+		}//end function setupResize
         		
 		
-		public function setupButtons():void
-		{
+		public function setupButtons():void{
+			Out.status(this, "setupButtons");
+			_prev = new StandardButton(_carousel.mc.prev_mc, _carousel.mc.prev_mc.btn);
+			_prev.addEventListener(MouseEvent.CLICK, _prevHandler);
+			_next = new StandardButton(_carousel.mc.next_mc, _carousel.mc.next_mc.btn);
+			_next.addEventListener(MouseEvent.CLICK, _nextHandler);
+			
 		}//end function
 		
 // =================================================
@@ -202,6 +227,11 @@ package com.strattonimaging.site.display.screens
 // =================================================
 // ================ Overrides
 // =================================================
+		override protected function _loadComplete($evt:Event):void{ 
+			
+			_populateCarousel();
+			super._loadComplete($evt);
+		}//end function
 // =================================================
 // ================ Constructor
 // =================================================

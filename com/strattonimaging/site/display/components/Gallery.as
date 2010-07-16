@@ -28,7 +28,7 @@ package com.strattonimaging.site.display.components
 		private var _close				:StandardButton;
 		private var _mainImg			:StandardInOut;
 		private var _thumbs				:Thumbs;
-		
+		private var _thumbs_mc			:MovieClip;
 		private var _curThumb			:String;
 		private var _curImg				:Bitmap;
 		
@@ -112,7 +112,7 @@ package com.strattonimaging.site.display.components
 			Out.status(this, "prevHandler:: current = "+c);
 			if (c>0){
 				_thumbs.current--;
-				_thumbs.changeThumb();				
+				_thumbs.changeThumb(c);				
 			}
 		}//end function
 		private function _nextHandler($me:MouseEvent):void{
@@ -120,8 +120,7 @@ package com.strattonimaging.site.display.components
 			Out.status(this, "nextHandler:: current = "+c);
 			if (c<_xml.loadable.length()-1){
 				_thumbs.current++;
-				_thumbs.changeThumb();
-				_changeMainImg();				
+				_thumbs.changeThumb(c);
 			}
 		}//end function
 		// =================================================
@@ -132,7 +131,7 @@ package com.strattonimaging.site.display.components
 			_thumbs.animateIn();
 		}
 		private function _animateOutCompleteHandler($evt:Event):void{
-			dispatchEvent(new Event(Event.CHANGE));		
+			//dispatchEvent(new Event(Event.CHANGE));		
 		}
 		private function _animateControlsIn($evt:Event=null):void{
 			super._animateIn();
@@ -165,18 +164,22 @@ package com.strattonimaging.site.display.components
 		
 		override protected function _onAnimateOut():void{
 			Out.status(this, "_onAnimateOut");
+			_thumbs.current = 0;
+			_thumbs.killThumbs();
+			_thumbs.destroy();
 		}//end function
 		 
 		 
 		// =================================================
 		// ================ Constructor
 		// =================================================
-		public function Gallery($mc:MovieClip, $imgList:XMLList, $bigLoader:BigLoader)
+		public function Gallery($mc:MovieClip, $thumbs:MovieClip, $imgList:XMLList, $bigLoader:BigLoader)
 		{
 			super($mc);
-			_xml 	= $imgList;
-			_bl		= $bigLoader;
-			_siteModel = SiteModel.getInstance();
+			_thumbs_mc 	= $thumbs;
+			_xml 		= $imgList;
+			_bl			= $bigLoader;
+			_siteModel 	= SiteModel.getInstance();
 			Out.status(this, "new gallery, length = "+ _xml.loadable.length());
 			_init();
 						

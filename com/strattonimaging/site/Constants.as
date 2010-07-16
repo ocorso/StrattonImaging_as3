@@ -43,6 +43,7 @@ package com.strattonimaging.site
 		public static const TYPE_XML						:String = "xml";
 		public static const TYPE_SWF						:String = "swf";
 		public static const TYPE_IMG						:String = "img";
+		public static const TYPE_VID						:String = "vid";
 		
 		// screens
 		public static const SCREEN_HOME						:String = "home";
@@ -51,6 +52,10 @@ package com.strattonimaging.site
 		public static const SCREEN_CREDITS					:String = "credits";
 		public static const SCREEN_CONNECT					:String = "connect";
 
-		
+		//video
+		public static const VID_WIDTH						:uint = 576;
+		public static const VID_HEIGHT						:uint = 275;
+		public static const VID_NAME						:String = "credits.f4v";
+		public static const VIDEO_READY						:String = "videoReady";
 	}
 }

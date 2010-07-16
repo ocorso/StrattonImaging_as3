@@ -2,7 +2,6 @@ package com.strattonimaging.site.display.components
 {
 	import com.bigspaceship.display.StandardButton;
 	import com.bigspaceship.display.StandardInOut;
-	import com.bigspaceship.events.AnimationEvent;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.SimpleSequencer;
 	
@@ -30,6 +29,7 @@ package com.strattonimaging.site.display.components
 			$asset.width = _THUMB_MAX_WIDTH;
 			
 			var id:String = "t"+_current;
+			mc[id].visible = true;
 			mc[id].img.addChild($asset);
 			_thumbsDict[id] = new StandardButton(mc[id], mc[id].btn);
 			_thumbsDict[id].addEventListener(MouseEvent.CLICK, _thumbClickHandler);
@@ -37,10 +37,19 @@ package com.strattonimaging.site.display.components
 			_current++;
 		}//end fucntion
 		
-		public function changeThumb():void{
-			for each(var s:StandardButton in _thumbsDict){s.deselect();}
+		public function changeThumb($deselectThis:int):void{
+			_thumbsDict["t"+$deselectThis].deselect();
 			_thumbsDict["t"+current].select();
 			dispatchEvent(new Event(Event.CHANGE));
+		}//end function
+		
+		public function killThumbs():void{
+			Out.status(this, "killThumbs");
+			for each(var s:StandardButton in _thumbsDict){
+				s.mc.visible = false;
+				//s.destroy();
+			}
+			
 		}//end function
 // =================================================
 // ================ Workers
@@ -56,6 +65,7 @@ package com.strattonimaging.site.display.components
 // ================ Handlers
 // =================================================
 		private function _thumbClickHandler($me:MouseEvent):void{
+			
 			var s:String = StandardButton($me.target).mc.name;
 			Out.status(this, "_thumbClickHandler: "+ s);
 			_thumbsDict[s].select();
@@ -104,7 +114,7 @@ package com.strattonimaging.site.display.components
 
 		public function Thumbs($mc:MovieClip, $useWeakReference:Boolean=true)
 		{
-			super($mc, $useWeakReference);
+			super($mc);
 			_thumbsDict = new Dictionary();
 		}//end constructor
 		

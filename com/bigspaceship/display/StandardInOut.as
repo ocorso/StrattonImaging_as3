@@ -30,6 +30,7 @@
 package com.bigspaceship.display
 {
 	import com.bigspaceship.events.AnimationEvent;
+	import com.bigspaceship.utils.Out;
 	
 	import flash.display.MovieClip;
 	

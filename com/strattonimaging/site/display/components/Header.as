@@ -42,7 +42,8 @@ package com.strattonimaging.site.display.components
 				var id:String = _xml.menu[i].@id.toString();
 				Out.info(this, "the id of this button is: "+ id);
 				//setup nav btns
-				_navIdsToItems[id] = new StandardButton(_mc.tabs_mc[id + "_mc"]);					
+				_navIdsToItems[id] = new StandardButton(_mc.tabs_mc[id + "_mc"], _mc.tabs_mc[id + "_mc"].btn);					
+				if (id!="home")	_navIdsToItems[id].mc.text_mc.inner.tf.text = id.toUpperCase();					
 				_navIdsToItems[id].addEventListener(MouseEvent.CLICK,_navOnClick,false,0,true);
 				_navIdsToItems[id].addEventListener(MouseEvent.ROLL_OVER,_navOnRollOver,false,0,true);
 				_navIdsToItems[id].addEventListener(MouseEvent.ROLL_OUT,_navOnRollOut,false,0,true);
