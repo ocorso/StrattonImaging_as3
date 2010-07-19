@@ -54,10 +54,11 @@ package com.strattonimaging.site.display.screens
 			
 			
 			//SWF ADDRESS STUFF
-			var swfArr:Array = SWFAddress.getPathNames(); // path should look something like this: contradictionary/top10/3453
+			var swfArr:Array = SWFAddress.getPathNames(); // path should look something like this: craft/grand_format/2
 			if(swfArr.length == 1 && _bGalleryIn){
 					Out.debug(this, "swfArr length is 1 and gallery is in");
-					_gallery.addEventListener(AnimationEvent.OUT, _showServices);						
+					_gallery.addEventListener(AnimationEvent.OUT, _showServices);		
+					_title.animateIn();				
 					_gallery.animateOut();
 			}
 			else if(swfArr.length > 1 && _xml.loadables.(@type==swfArr[2])){
@@ -135,8 +136,8 @@ package com.strattonimaging.site.display.screens
 			_bGalleryIn = true;
 			_gallery	= new Gallery(_gallery_mc, _thumbs_mc, getNodeByType(SiteModel.CONFIG_LOADABLES, _siteModel.currentSection), _loader);
 			_gallery.addEventListener(AnimationEvent.OUT, _destroyGallery);
+			_title.animateOut();			
 			_gallery.animateIn();
-			
 			SWFAddress.setValue(_siteModel.currentScreen+"/"+_siteModel.currentSection);
 		}
 		private function _destroyGallery($ae:AnimationEvent=null):void{
