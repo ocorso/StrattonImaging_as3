@@ -8,7 +8,6 @@ package com.strattonimaging.site.display.screens.credits
 	import flash.display.DisplayObject;
 	import flash.display.MovieClip;
 	import flash.events.Event;
-	import flash.events.MouseEvent;
 	import flash.events.NetStatusEvent;
 	import flash.media.Video;
 	import flash.net.NetConnection;
@@ -67,7 +66,9 @@ package com.strattonimaging.site.display.screens.credits
 		 */			
 		private function _connectVidStream():void{
 			_netStream = new NetStream(_netCon);
-			addEventListener(AnimationEvent.OUT, _pauseNetStream);
+			
+			addEventListener(AnimationEvent.OUT_START, _playPauseClick);
+			
 			_netStream.addEventListener(NetStatusEvent.NET_STATUS,_vidNetStatus,false,0,true);
 			var metaData:Object = new Object();
 			metaData.onMetaData = _onMetaData;
@@ -77,12 +78,15 @@ package com.strattonimaging.site.display.screens.credits
 			_vid.attachNetStream(_netStream);
 		}
 		
-		private function _playPauseClick($evt:MouseEvent=null):void{
+		private function _playPauseClick($evt:Event=null):void{
+			Out.status(this, "playPauseClick");
+			
 			if(_bVidPlaying){
 				_netStream.pause();
 				_bVidPlaying = false;
 			}
 			else{
+				_netStream.seek(0);
 				_netStream.resume();
 				_bVidPlaying = true;
 			}
@@ -124,6 +128,12 @@ package com.strattonimaging.site.display.screens.credits
 		private function _pauseNetStream($evt:AnimationEvent):void{
 			_netStream.pause();
 		}//end function 
+		private function _playNetStream($evt:AnimationEvent):void{
+			//_netStream.seek(0);
+			//_netStream.resume();
+			_netStream.play(_siteModel.getDirPath("vid") + Constants.VID_NAME);			
+		
+		}//end function 
         
 // =================================================
 // ================ Animation
@@ -144,8 +154,15 @@ package com.strattonimaging.site.display.screens.credits
 // =================================================
 // ================ Overrides
 // =================================================
-		override protected function _onAnimateOutStart():void{
-			_netStream.pause();
+		override protected function _onAnimateIn():void{
+			Out.status(this, "onAnimateIn");
+			addEventListener(AnimationEvent.OUT_START, _pauseNetStream);
+			removeEventListener(AnimationEvent.IN, _playNetStream);
+			
+		}
+		override protected function _onAnimateOut():void{
+			removeEventListener(AnimationEvent.OUT_START, _pauseNetStream);
+			addEventListener(AnimationEvent.IN, _playNetStream);
 		}
 // =================================================
 // ================ Constructor

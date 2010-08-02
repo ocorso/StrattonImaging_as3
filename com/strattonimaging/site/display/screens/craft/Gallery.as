@@ -1,4 +1,4 @@
-package com.strattonimaging.site.display.components
+package com.strattonimaging.site.display.screens.craft
 {
 	import com.asual.swfaddress.SWFAddress;
 	import com.bigspaceship.display.StandardButton;

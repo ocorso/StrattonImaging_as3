@@ -1,4 +1,4 @@
-package com.strattonimaging.site.display.components
+package com.strattonimaging.site.display.screens.craft
 {
 	import com.bigspaceship.display.StandardButton;
 	import com.bigspaceship.display.StandardInOut;

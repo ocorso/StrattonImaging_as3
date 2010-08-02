@@ -2,12 +2,13 @@ package com.strattonimaging.site.display.screens
 {
 	import com.asual.swfaddress.SWFAddress;
 	import com.bigspaceship.display.StandardButtonInOut;
+	import com.bigspaceship.display.StandardCover;
 	import com.bigspaceship.display.StandardInOut;
 	import com.bigspaceship.events.AnimationEvent;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.SimpleSequencer;
 	import com.strattonimaging.site.Constants;
-	import com.strattonimaging.site.display.components.Gallery;
+	import com.strattonimaging.site.display.screens.craft.Gallery;
 	import com.strattonimaging.site.model.SiteModel;
 	
 	import flash.display.MovieClip;
@@ -37,6 +38,7 @@ package com.strattonimaging.site.display.screens
 		private var _bg							:StandardInOut;
 		private var _title						:StandardInOut;
 		private var _services					:StandardInOut;
+		private var _cover						:StandardCover;
 		private var _currentService				:String;
 		private var _gallery					:Gallery;
 		private var _p							:Point // holds original x y position... do we need this? or just show new 
@@ -58,7 +60,7 @@ package com.strattonimaging.site.display.screens
 			if(swfArr.length == 1 && _bGalleryIn){
 					Out.debug(this, "swfArr length is 1 and gallery is in");
 					_gallery.addEventListener(AnimationEvent.OUT, _showServices);		
-					_title.animateIn();				
+					_title.mc.visible = true;				
 					_gallery.animateOut();
 			}
 			else if(swfArr.length > 1 && _xml.loadables.(@type==swfArr[2])){
@@ -93,6 +95,7 @@ package com.strattonimaging.site.display.screens
 			_thumbs_mc 	= mc.services_mc.gallery_mc.thumbs_mc;
 			
 			//here are all the StandardInOuts
+			_cover		= new StandardCover(mc.services_mc.cover_mc);
 			_bg 		= new StandardInOut(mc.bg_mc);
 			_title 		= new StandardInOut(mc.title_mc);
 			_services	= new StandardInOut(mc.services_mc);
@@ -108,10 +111,13 @@ package com.strattonimaging.site.display.screens
 			_ss.addEventListener(Event.COMPLETE,_onShowServices,false,0,true);
 			// oc: services
 		 	var n:uint=0
+		 	_ss.addStep(1, _cover, _cover.animateIn, AnimationEvent.IN);
 			for each(var s:StandardButtonInOut in _serviceIdsToItems){
 				_ss.addStep((n+1), s.mc, s.animateIn, "NEXT_IN");
 				n++;
 			}
+		 	_ss.addStep(n+2, _cover, _cover.animateOut, AnimationEvent.OUT);
+			
 			_ss.start();
 			
 		}//end function showServices
@@ -124,11 +130,13 @@ package com.strattonimaging.site.display.screens
 			_ss = new SimpleSequencer("hideServices");
 			_ss.addEventListener(Event.COMPLETE,_onHideServices,false,0,true);
 			// oc: services
+		 	_ss.addStep(1, _cover, _cover.animateIn, AnimationEvent.IN);
 		 	var n:uint=0
 			for each(var s:StandardButtonInOut in _serviceIdsToItems){
 				_ss.addStep((n+1), s.mc, s.animateOut, "NEXT_OUT");
 				n++;
 			}
+		 	_ss.addStep(n+2, _cover, _cover.animateOut, AnimationEvent.OUT);
 			_ss.start();
 		}//end function _hideServices
 		private function _onHideServices($evt:Event = null){
@@ -136,7 +144,7 @@ package com.strattonimaging.site.display.screens
 			_bGalleryIn = true;
 			_gallery	= new Gallery(_gallery_mc, _thumbs_mc, getNodeByType(SiteModel.CONFIG_LOADABLES, _siteModel.currentSection), _loader);
 			_gallery.addEventListener(AnimationEvent.OUT, _destroyGallery);
-			_title.animateOut();			
+			_title.mc.visible = false;			
 			_gallery.animateIn();
 			SWFAddress.setValue(_siteModel.currentScreen+"/"+_siteModel.currentSection);
 		}
