@@ -5,8 +5,10 @@ package com.strattonimaging.site.display.components.ftp
 	import com.bigspaceship.display.StandardInOut;
 	import com.bigspaceship.utils.Out;
 	import com.dynamicflash.util.Base64;
+	import com.strattonimaging.site.Constants;
 	import com.strattonimaging.site.events.FtpEvent;
 	import com.strattonimaging.site.model.SiteModel;
+	import com.strattonimaging.site.model.vo.FTPUser;
 	
 	import flash.display.MovieClip;
 	import flash.events.Event;
@@ -34,7 +36,7 @@ package com.strattonimaging.site.display.components.ftp
 			Out.status(this, "Submit handler::");
 			_submitLoader = new URLLoader();
 			
-			var loginURL:String = _model.getBaseURL() + __LOGIN_ROUTE;
+			var loginURL:String = _model.getBaseURL() + SiteModel.LOGIN_ROUTE;
 			var urlRequest:URLRequest = new URLRequest(loginURL);
 			urlRequest.method = URLRequestMethod.POST;
 			var urlVar:URLVariables = new URLVariables();
@@ -74,14 +76,18 @@ package com.strattonimaging.site.display.components.ftp
 			var json:JSONDecoder = new JSONDecoder(Base64.decode($evt.target.data), false);
 			ObjectToString.o(json.getValue());
 			
-			if ($evt.target.data != __LOGIN_ANSWER) {
+			_model.ftpUser = new FTPUser(json.getValue());
+			if (!_model.ftpUser.auth) {
 				mc.inputs_mc.utf.text = "";
 				mc.inputs_mc.ptf.text = "";
 				mc.loginError_mc.visible = true;
+				
 			}
 			else{
+				mc.inputs_mc.utf.text = "";
+				mc.inputs_mc.ptf.text = "";
+				
 				mc.loginError_mc.visible = false;
-				//hide loading spinny thing
 				dispatchEvent(new FtpEvent(FtpEvent.LOGIN));
 			} 
 		}//end function

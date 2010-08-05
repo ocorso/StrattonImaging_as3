@@ -14,11 +14,17 @@ package com.strattonimaging.site.model.vo
 		public function get email():String{return _email;}
 		public function get auth():Boolean{return _auth;}
 		
+		public function destroy():void{
+			_name = null;
+			_iPath = null;
+			_email = null;
+			_auth = false;
+		}
 		public function FTPUser($o:Object)
 		{
-			_name = $o[Constants.POST_VAR_NAME];
-			_iPath = $o[Constants.POST_VAR_PATH];
-			_email = $o[Constants.POST_VAR_EMAIL];
+			_name =  $o[Constants.POST_VAR_NAME] || "";
+			_iPath = $o[Constants.POST_VAR_PATH] || "";
+			_email = $o[Constants.POST_VAR_EMAIL]|| "";
 			_auth = ($o[Constants.POST_VAR_SUCCESS] == Constants.LOGIN_ANSWER) ? true : false;
 		}
 

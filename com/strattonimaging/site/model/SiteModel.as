@@ -4,6 +4,7 @@ package com.strattonimaging.site.model
 	import com.asual.swfaddress.SWFAddressEvent;
 	import com.bigspaceship.events.NavigationEvent;
 	import com.bigspaceship.utils.Out;
+	import com.strattonimaging.site.model.vo.FTPUser;
 	
 	import flash.display.DisplayObject;
 	import flash.display.LoaderInfo;
@@ -19,7 +20,8 @@ package com.strattonimaging.site.model
 		private var _configXml								:XML;
 		
 		public static const CONFIG_XML_PATH					:String = "/xml/site/config.xml";
-		public const LOGIN_ROUTE							:String = "/ftp/login.xml";
+		public static const LOGIN_ROUTE						:String = "/ftp/login.json";
+		public static const REFRESH_ROUTE					:String = "/ftp/refresh.json"; 
 		
 		public static const CONFIG_SETTING					:String	= "setting";
 		public static const CONFIG_COMPONENTS				:String = "components";
@@ -137,10 +139,22 @@ package com.strattonimaging.site.model
 		public function getNodeByType($node:String, $att:String):XMLList{ 
 			return _configXml.child($node).(@type == $att);
 		};
+		
 		//ftp 
 		public function get ftpUser():FTPUser{return _ftpUser;}
-		public function set ftpUser($u:FTPUser):void{ _ftpUser = $u;}
-		public function getEmail():String{ return _ftpUser.Email;}
+		public function set ftpUser($u:FTPUser):void{ 
+			if (_ftpUser){
+				_ftpUser.destroy();
+				_ftpUser = null;
+			}
+			
+			_ftpUser = $u;
+			_currentDirectory = $u.iPath;
+		}
+		public function getEmail():String{ return _ftpUser.email;}
+		public function get currentDirectory():String{ return _currentDirectory;}
+		public function set currentDirectory($p:String):void{ _currentDirectory = $p;}
+			
 		// screens
 		public function get nextScreen():String { return _nextScreen; }
 		public function get currentScreen():String { return _currentScreen; }

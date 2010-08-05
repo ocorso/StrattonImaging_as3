@@ -9,6 +9,7 @@ package com.strattonimaging.site.display.components.ftp
 	import com.strattonimaging.site.Constants;
 	import com.strattonimaging.site.display.screens.IScreen;
 	import com.strattonimaging.site.display.screens.Screen;
+	import com.strattonimaging.site.events.FtpEvent;
 	import com.strattonimaging.site.model.SiteModel;
 	
 	import flash.display.MovieClip;
@@ -32,6 +33,7 @@ package com.strattonimaging.site.display.components.ftp
 
 		//utility vars
 		private var _bIsInitialIn		:Boolean 		= true;
+		private var _ftpUtil			:FtpUtil;
         
 // =================================================
 // ================ Callable
@@ -46,19 +48,25 @@ package com.strattonimaging.site.display.components.ftp
 			        	
 			_model 	= SiteModel.getInstance();
 			
+			//initialize our handy little ftp module			
+			_ftpUtil= new FtpUtil();
+			_ftpUtil.addEventListener(FtpEvent.REFRESH, _handleRefresh);
 			//initialize standard in outs
 			_bg 	= new BackgroundPanel(mc.bg_mc);
 			_login	= new Login(mc.login_mc);
+			_login.addEventListener(FtpEvent.LOGIN, _showDashboard);
 			_login.mc.visible = false;
 						
 			//config 
 			setupButtons();
 			setupResize();
 			
-			//addEventListener(AnimationEvent.IN, _showLogin);
 			
         }//end function
 		
+		private function _handleRefresh($evt:FtpEvent):void{
+			Out.status (this, "handle REfresh");
+		}
 // =================================================
 // ================ Handlers
 // =================================================
@@ -100,6 +108,16 @@ package com.strattonimaging.site.display.components.ftp
 				_ss.start();
         	
         }//end function
+        private function _showDashboard($evt:FtpEvent):void{
+        	Out.status(this, "showDashboard");
+        	
+        	//todo: animate login out, 
+        	//animate dashboard in
+        	//animate tabs in
+        	//request initial directory	
+        	_ftpUtil.getDirectory(_model.currentDirectory);
+        	
+        }//end function 
 // =================================================
 // ================ Getters / Setters
 // =================================================
