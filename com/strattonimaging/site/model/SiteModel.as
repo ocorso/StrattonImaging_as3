@@ -19,6 +19,7 @@ package com.strattonimaging.site.model
 		private var _configXml								:XML;
 		
 		public static const CONFIG_XML_PATH					:String = "/xml/site/config.xml";
+		public const LOGIN_ROUTE							:String = "/ftp/login.xml";
 		
 		public static const CONFIG_SETTING					:String	= "setting";
 		public static const CONFIG_COMPONENTS				:String = "components";
@@ -32,6 +33,10 @@ package com.strattonimaging.site.model
 		private var _nextScreen								:String;
 		private var _currentScreen							:String; // learn, craft, credits, connect
 		private var _currentSection							:String; // could be service, credit, which about ect
+		
+		//ftp stuff
+		private var _ftpUser								:FTPUser;
+		private var _currentDirectory						:String;
 		
 		public function SiteModel(target:IEventDispatcher=null)
 		{
@@ -132,7 +137,10 @@ package com.strattonimaging.site.model
 		public function getNodeByType($node:String, $att:String):XMLList{ 
 			return _configXml.child($node).(@type == $att);
 		};
-		
+		//ftp 
+		public function get ftpUser():FTPUser{return _ftpUser;}
+		public function set ftpUser($u:FTPUser):void{ _ftpUser = $u;}
+		public function getEmail():String{ return _ftpUser.Email;}
 		// screens
 		public function get nextScreen():String { return _nextScreen; }
 		public function get currentScreen():String { return _currentScreen; }

@@ -33,6 +33,8 @@
 package com.adobe.serialization.json 
 {
 
+	import com.bigspaceship.utils.Out;
+	
 	import flash.utils.describeType;
 
 	public class JSONEncoder {
@@ -240,6 +242,7 @@ package com.adobe.serialization.json
 			
 			// determine if o is a class instance or a plain object
 			var classInfo:XML = describeType( o );
+			Out.info(this, "classInfo: "+classInfo);
 			if ( classInfo.@name.toString() == "Object" )
 			{
 				// the value of o[key] in the loop below - store this 

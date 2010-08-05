@@ -57,5 +57,12 @@ package com.strattonimaging.site
 		public static const VID_HEIGHT						:uint = 275;
 		public static const VID_NAME						:String = "credits.f4v";
 		public static const VIDEO_READY						:String = "videoReady";
+		
+		//ftp login 
+		public static const LOGIN_ANSWER						:String	= "yep";
+		public static const POST_VAR_SUCCESS					:String	= "s";
+		public static const POST_VAR_NAME						:String = "n";
+		public static const POST_VAR_PATH						:String = "p";
+		public static const POST_VAR_EMAIL						:String = "e";
 	}
 }
