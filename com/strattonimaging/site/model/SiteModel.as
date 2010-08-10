@@ -4,6 +4,7 @@ package com.strattonimaging.site.model
 	import com.asual.swfaddress.SWFAddressEvent;
 	import com.bigspaceship.events.NavigationEvent;
 	import com.bigspaceship.utils.Out;
+	import com.strattonimaging.site.display.components.ftp.IFtpScreen;
 	import com.strattonimaging.site.model.vo.FTPUser;
 	
 	import flash.display.DisplayObject;
@@ -36,9 +37,14 @@ package com.strattonimaging.site.model
 		private var _currentScreen							:String; // learn, craft, credits, connect
 		private var _currentSection							:String; // could be service, credit, which about ect
 		
+		
 		//ftp stuff
 		private var _ftpUser								:FTPUser;
+		private var _ftpAuth								:Boolean = false;
+		
 		private var _currentDirectory						:String;
+		private var _currentFtpScreen						:IFtpScreen;
+		private var _nextFtpScreen							:IFtpScreen;
 		
 		public function SiteModel(target:IEventDispatcher=null)
 		{
@@ -141,6 +147,7 @@ package com.strattonimaging.site.model
 		};
 		
 		//ftp 
+		public function get ftpAuth():Boolean{return _ftpAuth;}
 		public function get ftpUser():FTPUser{return _ftpUser;}
 		public function set ftpUser($u:FTPUser):void{ 
 			if (_ftpUser){
@@ -149,11 +156,16 @@ package com.strattonimaging.site.model
 			}
 			
 			_ftpUser = $u;
+			_ftpAuth = $u.auth;
 			_currentDirectory = $u.iPath;
 		}
 		public function getEmail():String{ return _ftpUser.email;}
 		public function get currentDirectory():String{ return _currentDirectory;}
 		public function set currentDirectory($p:String):void{ _currentDirectory = $p;}
+		public function get nextFtpScreen():IFtpScreen { return _nextFtpScreen; }
+		public function set nextFtpScreen($screenId:IFtpScreen):void { _nextFtpScreen = $screenId; }
+		public function get currentFtpScreen():IFtpScreen { return _currentFtpScreen; }
+		public function set currentFtpScreen($screenId:IFtpScreen):void { _currentFtpScreen = $screenId; }
 			
 		// screens
 		public function get nextScreen():String { return _nextScreen; }

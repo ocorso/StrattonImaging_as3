@@ -3,6 +3,7 @@ package com.strattonimaging.site.display.components.ftp
 	import com.bigspaceship.display.AnimationState;
 	import com.bigspaceship.display.StandardButton;
 	import com.bigspaceship.display.StandardButtonInOut;
+	import com.bigspaceship.display.StandardInOut;
 	import com.bigspaceship.events.AnimationEvent;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.SimpleSequencer;
@@ -11,9 +12,13 @@ package com.strattonimaging.site.display.components.ftp
 	import com.strattonimaging.site.display.screens.Screen;
 	import com.strattonimaging.site.events.FtpEvent;
 	import com.strattonimaging.site.model.SiteModel;
+	import com.strattonimaging.site.model.vo.FTPUser;
+	
+	import fl.data.DataProvider;
 	
 	import flash.display.MovieClip;
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.events.MouseEvent;
 	
 	import net.ored.util.Resize;
@@ -24,13 +29,16 @@ package com.strattonimaging.site.display.components.ftp
 		
 		//standard in outs
 		protected var _bg				:BackgroundPanel;
+		protected var _tabs				:StandardInOut;
 		protected var _login			:Login
+		protected var _dlm				:DownloadManager;
+		protected var _db				:Dashboard;
 		
 		//standard buttons
 		protected var ftpBtn			:StandardButtonInOut;
 		protected var loginBtn			:StandardButton;
-		
-
+		protected var logoutBtn			:StandardButton;
+	
 		//utility vars
 		private var _bIsInitialIn		:Boolean 		= true;
 		private var _ftpUtil			:FtpUtil;
@@ -49,24 +57,37 @@ package com.strattonimaging.site.display.components.ftp
 			_model 	= SiteModel.getInstance();
 			
 			//initialize our handy little ftp module			
-			_ftpUtil= new FtpUtil();
+			_ftpUtil = new FtpUtil();
 			_ftpUtil.addEventListener(FtpEvent.REFRESH, _handleRefresh);
-			//initialize standard in outs
-			_bg 	= new BackgroundPanel(mc.bg_mc);
-			_login	= new Login(mc.login_mc);
-			_login.addEventListener(FtpEvent.LOGIN, _showDashboard);
-			_login.mc.visible = false;
-						
+			
+				
 			//config 
+			_setupFtpScreens();
 			setupButtons();
 			setupResize();
 			
+			_model.currentFtpScreen = _login;
+			_model.nextFtpScreen	= _dlm;
 			
         }//end function
 		
-		private function _handleRefresh($evt:FtpEvent):void{
-			Out.status (this, "handle REfresh");
-		}
+		private function _setupFtpScreens():void{
+			Out.status(this, "_setupFtpScreens");
+			//initialize standard in outs
+			_bg 	= new BackgroundPanel(mc.bg_mc);
+			_tabs	= new StandardInOut(mc.tabs_mc);
+			
+			_login	= new Login(mc.login_mc);
+			_login.addEventListener(FtpEvent.LOGIN, _loginHandler);
+			_db		= new Dashboard(mc.dashboard_mc);
+			_dlm	= new DownloadManager(mc.get_mc);
+
+			_tabs.mc.visible	= false;
+			_login.mc.visible 	= false;
+			_db.mc.visible		= false;
+			_dlm.mc.visible		= false;
+		}//end function 
+		
 // =================================================
 // ================ Handlers
 // =================================================
@@ -78,44 +99,67 @@ package com.strattonimaging.site.display.components.ftp
 			
 		}//end function 
 		
+		private function _handleRefresh($evt:FtpEvent):void{
+			Out.status (this, "handle REfresh");
+			_dlm.refresh($evt.info as DataProvider);
+		}//end function
 
+		private function _loginHandler($evt:FtpEvent):void{
+			Out.status(this, "_loginHandler");
+        	_ftpUtil.getDirectory(_model.currentDirectory);
+			_tabs.addEventListener(AnimationEvent.IN, _showNextFtpScreen);
+			_tabs.animateIn();			
+		}//end function
 		
+		private function _logoutHandler($me:MouseEvent):void{
+			Out.status(this, "_logoutHandler()::");
+			_model.ftpUser = new FTPUser({});
+			_model.currentFtpScreen = _login;
+			animateOut();			
+		}//end function
 // =================================================
 // ================ Animation
 // =================================================
         override protected function _animateIn():void{
+        	
         		if (_bIsInitialIn)	{
     				_bIsInitialIn = false;    			
 	        		_bg.mc.toggle_mc.play();
 	        		dispatchEvent(new AnimationEvent(AnimationEvent.IN));
         		}
         		else{
+				Out.status(this, "_animateIn()::");
 	        		if (_ss) _destroySequencer();
 					_ss = new SimpleSequencer("ftpIn");	
 					_ss.addEventListener(Event.COMPLETE,_animateInSequencer_COMPLETE_handler,false,0,true);
 					_ss.addStep(1, _bg, _bg.animateIn, AnimationEvent.IN);
-					_ss.addStep(2, _login, _login.animateIn, AnimationEvent.IN);
+					if (_model.ftpUser || _model.ftpAuth)	_ss.addStep(2, _tabs, _tabs.animateIn, AnimationEvent.IN);
+					_ss.addStep(3, _model.currentFtpScreen as EventDispatcher, _model.currentFtpScreen.animateIn, AnimationEvent.IN);
 					_ss.start();
         		}
         	
         }//end function
         override protected function _animateOut():void{
+				Out.status(this, "_animateOut()::");
         		if (_ss) _destroySequencer();
 				_ss = new SimpleSequencer("ftpOut");	
 				_ss.addEventListener(Event.COMPLETE,_animateOutSequencer_COMPLETE_handler,false,0,true);
-				_ss.addStep(1, _login, _login.animateOut, AnimationEvent.OUT);
-				_ss.addStep(2, _bg, _bg.animateOut, AnimationEvent.OUT);
+				_ss.addStep(1, _model.currentFtpScreen as EventDispatcher, _model.currentFtpScreen.animateOut, AnimationEvent.OUT);
+				_ss.addStep(2, _tabs, _tabs.animateOut, AnimationEvent.OUT);
+				_ss.addStep(3, _bg, _bg.animateOut, AnimationEvent.OUT);
 				_ss.start();
         	
         }//end function
-        private function _showDashboard($evt:FtpEvent):void{
-        	Out.status(this, "showDashboard");
-        	
-        	//todo: animate login out, 
+        
+        private function _showNextFtpScreen($evt:AnimationEvent):void{
+        	Out.status(this, "_showNextFtpScreen");
+        	_model.currentFtpScreen
+        	if (_tabs.hasEventListener(AnimationEvent.IN)) _tabs.removeEventListener(AnimationEvent.IN, _showNextFtpScreen);
+        	_model.currentFtpScreen.addEventListener(AnimationEvent.OUT, _model.nextFtpScreen.animateIn);
+        	_model.currentFtpScreen.animateOut();
         	//animate dashboard in
         	//animate tabs in
         	//request initial directory	
-        	_ftpUtil.getDirectory(_model.currentDirectory);
         	
         }//end function 
 // =================================================
@@ -148,6 +192,10 @@ package com.strattonimaging.site.display.components.ftp
 			loginBtn= new StandardButton(_login.mc.loginBtn_mc);
 			loginBtn.addEventListener(MouseEvent.CLICK, _login.submitLoginHandler);
 			
+			logoutBtn = new StandardButton(_tabs.mc.display_mc.logout_mc);
+			logoutBtn.addEventListener(MouseEvent.CLICK, _logoutHandler);
+			
+			
         }//end function
 // =================================================
 // ================ Core Handler
@@ -175,9 +223,9 @@ package com.strattonimaging.site.display.components.ftp
 		}     
 		override protected function _onAnimateOut_handler($evt:AnimationEvent = null):void{ 
 			mc.stop();
-			//_mc.visible = false;
 			_curState = AnimationState.OUT;
 			_onAnimateOut();
+			if (_model.currentFtpScreen.hasEventListener(AnimationEvent.IN)) _model.currentFtpScreen.removeEventListener(AnimationEvent.IN, _showNextFtpScreen);
 			dispatchEvent(new AnimationEvent(AnimationEvent.OUT));
 		}
 // =================================================

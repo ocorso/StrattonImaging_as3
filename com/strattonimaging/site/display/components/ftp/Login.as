@@ -5,7 +5,6 @@ package com.strattonimaging.site.display.components.ftp
 	import com.bigspaceship.display.StandardInOut;
 	import com.bigspaceship.utils.Out;
 	import com.dynamicflash.util.Base64;
-	import com.strattonimaging.site.Constants;
 	import com.strattonimaging.site.events.FtpEvent;
 	import com.strattonimaging.site.model.SiteModel;
 	import com.strattonimaging.site.model.vo.FTPUser;
@@ -23,7 +22,7 @@ package com.strattonimaging.site.display.components.ftp
 	import net.ored.util.ObjectToString;
 	
 	
-	public class Login extends StandardInOut
+	public class Login extends StandardInOut implements IFtpScreen
 	{
 		private var _model				:SiteModel;
 
@@ -86,7 +85,6 @@ package com.strattonimaging.site.display.components.ftp
 			else{
 				mc.inputs_mc.utf.text = "";
 				mc.inputs_mc.ptf.text = "";
-				
 				mc.loginError_mc.visible = false;
 				dispatchEvent(new FtpEvent(FtpEvent.LOGIN));
 			} 
