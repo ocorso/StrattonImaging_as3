@@ -2,8 +2,9 @@ package net.ored.util
 {
 	import com.bigspaceship.utils.Out;
 	
-	import flash.events.Event;
+	import flash.display.MovieClip;
 	import flash.display.Stage;
+	import flash.events.Event;
 	
 	/**
 	 * Resize
@@ -103,7 +104,7 @@ package net.ored.util
 								 *  in handler, the `height` will be overwritten by the
 								 *  FULLSCREEN Y.
 								 **/
-								var isLast  =   ii == _objects[i].type.length-1 ? 1 : 0;
+								var isLast:int  =   ii == _objects[i].type.length-1 ? 1 : 0;
 								
 								// calls a private function below with params
 								Resize['_'+_objects[i].type[ii]](
@@ -126,7 +127,7 @@ package net.ored.util
 							"Running Resize: " + _objects[i].type +
 							" on " + _objects[i].element.name.toString()
 						);
-					}catch($e){
+					}catch($e:Error){
 						Out.debug( Resize,
 							"Resize error on " + _objects[i].element.name.toString()
 						);
@@ -154,11 +155,11 @@ package net.ored.util
 		/*****************************************************
 		 * Resizer Functions
 		 * *************************************************/
-		private static function _handleParams($object:*, $element, $params:Object):void{
+		private static function _handleParams($object:*, $element:*, $params:Object):void{
 			if( $object.extraParamsHandled )
 				return;
 			
-			for( var i in $params ){
+			for( var i:String in $params ){
 				if( typeof($params[i]) == 'function')
 					return;
 				$element[i] += $params[i];
@@ -168,7 +169,7 @@ package net.ored.util
 		}
 		
 		// workers
-		private static function _center_x($object, $element, $params:Object, $useHandler:int = 1):void{
+		private static function _center_x($object, $element:MovieClip, $params:Object, $useHandler:int = 1):void{
 			if( !_checkX() ) return;
 			$element.x      =   (Resize.STAGE.stageWidth / 2) - ($element.width/2);
 			if($useHandler)
