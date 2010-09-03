@@ -23,6 +23,7 @@ package com.strattonimaging.site.model
 		public static const CONFIG_XML_PATH					:String = "/xml/site/config.xml";
 		public static const LOGIN_ROUTE						:String = "/ftp/login.json";
 		public static const REFRESH_ROUTE					:String = "/ftp/refresh.json"; 
+		public static const UPLOAD_ROUTE					:String = "/ftp/upload/"; 
 		
 		public static const CONFIG_SETTING					:String	= "setting";
 		public static const CONFIG_COMPONENTS				:String = "components";

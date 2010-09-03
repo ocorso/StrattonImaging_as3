@@ -124,6 +124,7 @@ package com.strattonimaging.site.display.components.ftp
 		{
 			super($mc, $useWeakReference);
 			_model = SiteModel.getInstance();
+			mc.visible = false;
 		}
 		
 	}
