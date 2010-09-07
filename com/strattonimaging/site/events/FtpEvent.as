@@ -7,9 +7,10 @@ package com.strattonimaging.site.events
 		public static const LOGIN						:String = "login";
 		public static const LOGIN_FAILED				:String = "loginFailed";
 		public static const CHANGE_FTP_SCREEN			:String = "changeFtpScreen";
+		public static const DO_REFRESH					:String = "requestRefresh";
 		public static const REFRESH						:String = "refresh";
-		public static const GET_FILE					:String = "getFile";
-		public static const PUT_FILE					:String = "putFile";
+		public static const TRANSFER_START				:String = "transferStart";
+		public static const TRANSFER_COMPLETE			:String = "transferComplete";
 		
 		private var _info		: Object;
 		public function get info():Object{

@@ -8,7 +8,7 @@ package
 	import com.bigspaceship.utils.out.adapters.ArthropodAdapter;
 	import com.greensock.plugins.BlurFilterPlugin;
 	import com.greensock.plugins.TweenPlugin;
-	import com.strattonimaging.site.Constants;
+	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.display.MainView;
 	import com.strattonimaging.site.events.ScreenEvent;
 	import com.strattonimaging.site.model.SiteModel;
@@ -32,7 +32,7 @@ package
 	{
 		private var _mainview										:MainView;
 		private var _preloader										:IPreloader;
-		private var _siteModel:SiteModel;
+		private var _m:SiteModel;
 		
 		//demonster debugger
 		private var debugger:MonsterDebugger;
@@ -60,8 +60,8 @@ package
 			debugger = new MonsterDebugger(this);
 			
 			//site wide config
-			_siteModel = SiteModel.getInstance();
-			_siteModel.initialize(stage.loaderInfo);
+			_m = SiteModel.getInstance();
+			_m.initialize(stage.loaderInfo);
 			
 			if(!Environment.IS_IN_BROWSER || !Environment.IS_ON_SERVER){
 				_turnOnOut();
@@ -103,7 +103,7 @@ package
 		private function _loadConfigXml():void{
 			_configLoader = new URLLoader();
 			
-			var configURL:String = _siteModel.getBaseURL() + SiteModel.CONFIG_XML_PATH;
+			var configURL:String = _m.baseUrl + Constants.CONFIG_XML_PATH;
 			
 			Out.debug(this,"Config URL: " + configURL);
 			_configLoader.addEventListener(Event.COMPLETE, _onConfigXMLLoaded,false,0,true);			
@@ -111,13 +111,13 @@ package
 		}//end function
 		
 		private function _onConfigXMLLoaded($evt:Event):void{
-			_siteModel.configXml = new XML($evt.target.data);
+			_m.configXml = new XML($evt.target.data);
 			_configLoader.removeEventListener(Event.COMPLETE,_onConfigXMLLoaded);		
 			_configLoader = null;
 			
 			// initial load begins here
 			_loadState = Constants.LOAD_STATE_INITIAL_ASSETS_BEGIN;
-			_loadList = _siteModel.getNodeByType(SiteModel.CONFIG_LOADABLES, SiteModel.CONFIG_COMPONENTS).component;
+			_loadList = _m.getNodeByType(Constants.CONFIG_LOADABLES, Constants.CONFIG_COMPONENTS).component;
 			Out.debug(this,"LOAD_STATE_INITIAL_ASSETS_BEGIN");
 			Out.status(this, "_onConfigXMLLoaded :: loadlist.length = "+ _loadList.length());
 			if(_loadList.length() > 0) _startLoad();
@@ -136,8 +136,8 @@ package
 				var swfPath:String = _loadList[n].@swf || "";
 				var xmlPath:String = _loadList[n].@xml || "";
 				
-				if (swfPath != "") _loader.add(_siteModel.getFilePath(swfPath, "swf"), _loadList[n].@id + "_" + Constants.TYPE_SWF);//spits out an id that looks like this "header_swf"
-				if (xmlPath != "") _loader.add(_siteModel.getFilePath(xmlPath, "xml", true), _loadList[n].@id + "_" + Constants.TYPE_XML);//spits out an id that looks like this "header_swf"
+				if (swfPath != "") _loader.add(_m.getFilePath(swfPath, "swf"), _loadList[n].@id + "_" + Constants.TYPE_SWF);//spits out an id that looks like this "header_swf"
+				if (xmlPath != "") _loader.add(_m.getFilePath(xmlPath, "xml", true), _loadList[n].@id + "_" + Constants.TYPE_XML);//spits out an id that looks like this "header_swf"
 			}//end for
 			
 			_loader.start();
@@ -155,7 +155,7 @@ package
 				var xml:XML = (xmlPath != "") ? XML(_loader.getLoadedAssetById(_loadList[i].@id + "_" + Constants.TYPE_XML)) : new XML();
 				
 				if(_loadList[i].@id == Constants.COMPONENT_ASSETS) {
-					_siteModel.siteAssets = swf;
+					_m.siteAssets = swf;
 				}
 				else if(_loadList[i].@id == Constants.COMPONENT_SECTION_LOADER) {
 					_mainview.addAsset(_loadList[i].@id,swf,xml);
@@ -201,7 +201,7 @@ package
 			_loadState = Constants.LOAD_STATE_INITIAL_ASSETS_COMPLETE;
 			
 			// force the first screen to load.
-			_siteModel.getInitialPath();
+			_m.getInitialPath();
 		}
 		/**our master loading tidy up function**/
 		private function _loaderCleanUp():void {
@@ -228,7 +228,7 @@ package
 			var lastLoadState:String = _loadState;
 			
 			_loadState = (_loadState == Constants.LOAD_STATE_INITIAL_ASSETS_COMPLETE) ? Constants.LOAD_STATE_INITIAL_SCREEN_BEGIN: Constants.LOAD_STATE_SCREEN_BEGIN;
-			_loadList = _siteModel.configXml.loadables.component.(@id == _siteModel.currentScreen);
+			_loadList = _m.configXml.loadables.component.(@id == _m.currentScreen);
 			
 			switch(lastLoadState)
 			{

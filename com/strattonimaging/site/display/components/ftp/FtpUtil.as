@@ -4,8 +4,8 @@ package com.strattonimaging.site.display.components.ftp
 	import com.adobe.serialization.json.JSONEncoder;
 	import com.bigspaceship.utils.Out;
 	import com.dynamicflash.util.Base64;
-	import com.strattonimaging.site.Constants;
 	import com.strattonimaging.site.events.FtpEvent;
+	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.model.SiteModel;
 	
 	import fl.data.DataProvider;
@@ -28,10 +28,11 @@ package com.strattonimaging.site.display.components.ftp
 			_m = SiteModel.getInstance();
 			
 		}//end constructor
-		public function getDirectory($o:String):void{
+		public function getDirectory($e:Event = null):void{
 			if (_m.ftpUser.auth){
+				
 	 			var l:URLLoader		= new URLLoader();
-				var req:URLRequest 	= new URLRequest(_m.getBaseURL()+ SiteModel.REFRESH_ROUTE);
+				var req:URLRequest 	= new URLRequest(_m.baseUrl+ Constants.REFRESH_ROUTE);
 				req.method = URLRequestMethod.POST;
 				var urlVar:URLVariables = new URLVariables();
 				var o:Object = new Object();

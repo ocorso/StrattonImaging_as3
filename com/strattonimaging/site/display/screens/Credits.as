@@ -7,7 +7,7 @@ package com.strattonimaging.site.display.screens
 	import com.bigspaceship.events.AnimationEvent;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.SimpleSequencer;
-	import com.strattonimaging.site.Constants;
+	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.display.screens.credits.Carousel;
 	import com.strattonimaging.site.display.screens.credits.Credit;
 	import com.strattonimaging.site.display.screens.credits.CreditFactory;

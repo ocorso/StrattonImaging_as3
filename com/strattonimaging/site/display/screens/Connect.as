@@ -1,7 +1,7 @@
 package com.strattonimaging.site.display.screens
 {
 	import com.bigspaceship.utils.Out;
-	import com.strattonimaging.site.Constants;
+	import com.strattonimaging.site.model.Constants;
 	
 	import flash.display.MovieClip;
 	import flash.events.Event;

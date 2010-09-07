@@ -3,7 +3,7 @@ package com.strattonimaging.site.display.components
 	import com.asual.swfaddress.SWFAddress;
 	import com.bigspaceship.display.StandardButton;
 	import com.bigspaceship.utils.Out;
-	import com.strattonimaging.site.Constants;
+	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.display.screens.Screen;
 	
 	import flash.display.MovieClip;

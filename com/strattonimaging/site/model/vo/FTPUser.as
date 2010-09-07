@@ -1,6 +1,6 @@
 package com.strattonimaging.site.model.vo
 {
-	import com.strattonimaging.site.Constants;
+	import com.strattonimaging.site.model.Constants;
 	
 	public class FTPUser
 	{

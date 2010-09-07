@@ -1,4 +1,4 @@
-package com.strattonimaging.site.display.components.ftp
+package com.strattonimaging.site.display.components.ftp.screens
 {
 	import flash.events.IEventDispatcher;
 	

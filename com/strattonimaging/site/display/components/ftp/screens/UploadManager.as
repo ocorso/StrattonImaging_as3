@@ -1,7 +1,10 @@
-package com.strattonimaging.site.display.components.ftp
+package com.strattonimaging.site.display.components.ftp.screens
 {
+	import com.bigspaceship.display.StandardButton;
 	import com.bigspaceship.display.StandardInOut;
 	import com.bigspaceship.utils.Out;
+	import com.strattonimaging.site.events.FtpEvent;
+	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.model.SiteModel;
 	
 	import flash.display.MovieClip;
@@ -14,12 +17,16 @@ package com.strattonimaging.site.display.components.ftp
 	import flash.events.SecurityErrorEvent;
 	import flash.net.FileReference;
 	import flash.net.URLRequest;
+	import flash.net.URLRequestMethod;
+	import flash.net.URLVariables;
 
 	public class UploadManager extends StandardInOut implements IFtpScreen
 	{
-		private var _model			:SiteModel;
+		private var _m				:SiteModel;
         private var _fr				:FileReference;
         
+		private var _browseBtn		:StandardButton;
+		private var _uploadBtn		:StandardButton;
         
         private var _isFileSelected	:Boolean = false;
         
@@ -34,22 +41,35 @@ package com.strattonimaging.site.display.components.ftp
 // ================ Workers
 // =================================================
         private function _init():void{
-			_model = SiteModel.getInstance();
+			_m = SiteModel.getInstance();
 			mc.visible = false;
 			
 			_fr = new FileReference();
 			_fr.addEventListener(Event.SELECT, _selectHandler);
 			_fr.addEventListener(Event.COMPLETE, _frCompleteHandler);
 			_fr.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, _frDataCompleteHandler);
+			_fr.addEventListener(ProgressEvent.PROGRESS, _progressHandler);
+			
+			//upload manager
+			_browseBtn = new StandardButton(mc.browseBtn);
+			_browseBtn.addEventListener(MouseEvent.CLICK, browse);
+			_uploadBtn = new StandardButton(mc.uploadBtn);
 			
         }//end function 
         
         private function _upload($me:MouseEvent):void{
         	Out.status(this, "upload");
-        	var url:String = _model.getBaseURL() + SiteModel.UPLOAD_ROUTE;
-        	Out.debug(this, "url = "+ url);
-        	var req:URLRequest = new URLRequest(url);
-        	_fr.upload(req);
+        	var vars:URLVariables = new URLVariables();
+			vars.email 	= _m.ftpUser.email;
+			vars.dir	= _m.currentDirectory;
+			vars.name	= _fr.name;
+			vars.size	= _fr.size;
+			vars.type	= _fr.type;
+			var req:URLRequest = new URLRequest(_m.baseUrl + Constants.UPLOAD_ROUTE);
+			req.method = URLRequestMethod.POST;
+			req.data = vars;
+			dispatchEvent(new FtpEvent(FtpEvent.CHANGE_FTP_SCREEN, {ns:Constants.TRANSFER}));
+        	_fr.upload(req, "ored_data", true);
         	
         }//end function
 // =================================================
@@ -76,20 +96,20 @@ package com.strattonimaging.site.display.components.ftp
         	
         }
 
-        private function httpStatusHandler($e:HTTPStatusEvent):void {
+        private function _httpStatusHandler($e:HTTPStatusEvent):void {
             Out.status(this, "httpStatusHandler: " + $e);
         }
 
-        private function openHandler($e:Event):void {
+        private function _openHandler($e:Event):void {
             Out.status(this, "openHandler: " + $e);
         }
 
-        private function progressHandler($pe:ProgressEvent):void {
+        private function _progressHandler($pe:ProgressEvent):void {
             var file:FileReference = FileReference($pe.target);
             Out.status(this, "progressHandler name=" + file.name + " bytesLoaded=" + $pe.bytesLoaded + " bytesTotal=" + $pe.bytesTotal);
         }
 
-        private function securityErrorHandler($se:SecurityErrorEvent):void {
+        private function _securityErrorHandler($se:SecurityErrorEvent):void {
             Out.status(this, "securityErrorHandler: " + $se);
         }
 

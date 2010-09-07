@@ -1,7 +1,7 @@
 package com.strattonimaging.site.display.screens.credits
 {
 	import com.bigspaceship.utils.Lib;
-	import com.strattonimaging.site.Constants;
+	import com.strattonimaging.site.model.Constants;
 	
 	import flash.display.MovieClip;
 	/**

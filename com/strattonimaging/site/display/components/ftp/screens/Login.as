@@ -1,10 +1,12 @@
-package com.strattonimaging.site.display.components.ftp
+package com.strattonimaging.site.display.components.ftp.screens
 {
 	import com.adobe.serialization.json.JSONDecoder;
 	import com.adobe.serialization.json.JSONEncoder;
+	import com.bigspaceship.display.StandardButton;
 	import com.bigspaceship.display.StandardInOut;
 	import com.bigspaceship.utils.Out;
 	import com.dynamicflash.util.Base64;
+	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.events.FtpEvent;
 	import com.strattonimaging.site.model.SiteModel;
 	import com.strattonimaging.site.model.vo.FTPUser;
@@ -25,17 +27,37 @@ package com.strattonimaging.site.display.components.ftp
 	public class Login extends StandardInOut implements IFtpScreen
 	{
 		private var _model				:SiteModel;
-
+		private var loginBtn			:StandardButton;
 		private var _submitLoader		:URLLoader;
         
 // =================================================
 // ================ Callable
 // =================================================
-		public function submitLoginHandler($evt:MouseEvent = null):void{
+// =================================================
+// ================ Workers
+// =================================================
+        private function _init():void{
+			_model = SiteModel.getInstance();
+			mc.visible = false;
+			
+			loginBtn= new StandardButton(mc.loginBtn_mc);
+			loginBtn.addEventListener(MouseEvent.CLICK, _submitLoginHandler);
+		}//end function
+// =================================================
+// ================ Handlers
+// =================================================
+		private function _keyEventHandler($ke:KeyboardEvent):void{	
+			if ($ke.charCode == Keyboard.ENTER){
+				Out.status(this, "Enter");
+				_submitLoginHandler();			
+			}//end if
+				
+		}//end function
+		private function _submitLoginHandler($evt:MouseEvent = null):void{
 			Out.status(this, "Submit handler::");
 			_submitLoader = new URLLoader();
 			
-			var loginURL:String = _model.getBaseURL() + SiteModel.LOGIN_ROUTE;
+			var loginURL:String = _model.baseUrl + Constants.LOGIN_ROUTE;
 			var urlRequest:URLRequest = new URLRequest(loginURL);
 			urlRequest.method = URLRequestMethod.POST;
 			var urlVar:URLVariables = new URLVariables();
@@ -45,7 +67,8 @@ package com.strattonimaging.site.display.components.ftp
 			regularObject.u = usn;
 			regularObject.p = pwd;
 			
-			Out.debug(this, "we about to request the login, here is usn: "+usn);
+			Out.debug(this, "usn: "+regularObject.u);
+			Out.debug(this, "pwd: "+regularObject.p);
 			//here is where we name the url variable, "time_from_flash"
 			var toJSON:JSONEncoder = new JSONEncoder(regularObject);
 			var json:String = toJSON.getString();
@@ -55,20 +78,6 @@ package com.strattonimaging.site.display.components.ftp
 			_submitLoader.addEventListener(Event.COMPLETE, _loginHandler);
 			_submitLoader.load(urlRequest);
 		}//end function submitHandler
-// =================================================
-// ================ Workers
-// =================================================
-        
-// =================================================
-// ================ Handlers
-// =================================================
-		private function _keyEventHandler($ke:KeyboardEvent):void{	
-			if ($ke.charCode == Keyboard.ENTER){
-				Out.status(this, "Enter");
-				submitLoginHandler();			
-			}//end if
-				
-		}//end function
 		
         private function _loginHandler($evt:Event):void{
 			Out.status(this, "loginHandler, here is the response: "+$evt.target.data);
@@ -123,9 +132,7 @@ package com.strattonimaging.site.display.components.ftp
 		public function Login($mc:MovieClip, $useWeakReference:Boolean=false)
 		{
 			super($mc, $useWeakReference);
-			_model = SiteModel.getInstance();
-			mc.visible = false;
-		}
-		
-	}
-}
+			_init();
+		}//end constructor
+	}//end class
+}//end package

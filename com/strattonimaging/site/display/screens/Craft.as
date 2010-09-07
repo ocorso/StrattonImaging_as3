@@ -7,7 +7,7 @@ package com.strattonimaging.site.display.screens
 	import com.bigspaceship.events.AnimationEvent;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.SimpleSequencer;
-	import com.strattonimaging.site.Constants;
+	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.display.screens.craft.Gallery;
 	import com.strattonimaging.site.model.SiteModel;
 	
@@ -142,7 +142,7 @@ package com.strattonimaging.site.display.screens
 		private function _onHideServices($evt:Event = null){
 			Out.status(this, "_onHideServices");
 			_bGalleryIn = true;
-			_gallery	= new Gallery(_gallery_mc, _thumbs_mc, getNodeByType(SiteModel.CONFIG_LOADABLES, _siteModel.currentSection), _loader);
+			_gallery	= new Gallery(_gallery_mc, _thumbs_mc, getNodeByType(Constants.CONFIG_LOADABLES, _siteModel.currentSection), _loader);
 			_gallery.addEventListener(AnimationEvent.OUT, _destroyGallery);
 			_title.mc.visible = false;			
 			_gallery.animateIn();

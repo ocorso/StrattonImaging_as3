@@ -1,7 +1,21 @@
-package com.strattonimaging.site
+package com.strattonimaging.site.model
 {
 	public class Constants
 	{
+		//routes
+		public static const CONFIG_XML_PATH					:String = "xml/site/config.xml";
+		public static const LOGIN_ROUTE						:String = "ftp/login.json";
+		public static const REFRESH_ROUTE					:String = "ftp/refresh.json"; 
+		public static const UPLOAD_ROUTE					:String = "ftp/upload/"; 
+		
+		//xml config
+		public static const CONFIG_SETTING					:String	= "setting";
+		public static const CONFIG_COMPONENTS				:String = "components";
+		public static const CONFIG_COMPONENT				:String = "component";
+		public static const CONFIG_SCREEN					:String = "screens";
+		public static const CONFIG_LOADABLES				:String = "loadables";
+		public static const CONFIG_DEFAULTFEATURE			:String = "defaultFeature";
+		
 		//stage
 		public static const STAGE_WIDTH						:int = 980;
 		public static const STAGE_HEIGHT					:int = 643;
@@ -64,5 +78,12 @@ package com.strattonimaging.site
 		public static const POST_VAR_NAME						:String = "n";
 		public static const POST_VAR_PATH						:String = "p";
 		public static const POST_VAR_EMAIL						:String = "e";
+		
+		//ftp screen names
+		public static const GET								:String = "get";
+		public static const PUT								:String = "put";
+		public static const LOGIN							:String = "login";
+		public static const DASH							:String = "dashboard";
+		public static const TRANSFER						:String = "transfer";
 	}
 }

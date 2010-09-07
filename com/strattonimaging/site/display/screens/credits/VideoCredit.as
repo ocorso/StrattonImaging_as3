@@ -2,7 +2,7 @@ package com.strattonimaging.site.display.screens.credits
 {
 	import com.bigspaceship.events.AnimationEvent;
 	import com.bigspaceship.utils.Out;
-	import com.strattonimaging.site.Constants;
+	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.model.SiteModel;
 	
 	import flash.display.DisplayObject;

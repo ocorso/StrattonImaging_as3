@@ -4,7 +4,7 @@ package com.strattonimaging.site.display.screens
 	import com.bigspaceship.loading.BigLoader;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.SimpleSequencer;
-	import com.strattonimaging.site.Constants;
+	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.model.SiteModel;
 	
 	import flash.display.MovieClip;
@@ -64,7 +64,7 @@ package com.strattonimaging.site.display.screens
 					
 					
 					//check to see if the base url needs to be added
-					if(_loadList[n].@needs_baseURL == "yes") path = _siteModel.getBaseURL() + path;
+					if(_loadList[n].@needs_baseURL == "yes") path = _siteModel.baseUrl + path;
 					
 					//if there is no "." for a file extension I am assuming it is a URL request
 					if(path.substr((path.length - 4), 1) == ".") _loader.add(path, _loadList[n].@id);

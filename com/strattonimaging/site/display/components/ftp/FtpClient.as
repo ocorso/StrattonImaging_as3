@@ -1,5 +1,12 @@
 package com.strattonimaging.site.display.components.ftp
-{
+{	
+	/**
+	 * @author Owen Corso
+	 * 
+	 * This is the custom Flash FTP Client
+	 * it has both upload and download functionality
+	 *  
+	 */	
 	import com.bigspaceship.display.AnimationState;
 	import com.bigspaceship.display.StandardButton;
 	import com.bigspaceship.display.StandardButtonInOut;
@@ -7,10 +14,16 @@ package com.strattonimaging.site.display.components.ftp
 	import com.bigspaceship.events.AnimationEvent;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.SimpleSequencer;
-	import com.strattonimaging.site.Constants;
+	import com.strattonimaging.site.display.components.ftp.screens.Dashboard;
+	import com.strattonimaging.site.display.components.ftp.screens.DownloadManager;
+	import com.strattonimaging.site.display.components.ftp.screens.IFtpScreen;
+	import com.strattonimaging.site.display.components.ftp.screens.Login;
+	import com.strattonimaging.site.display.components.ftp.screens.TransferDisplay;
+	import com.strattonimaging.site.display.components.ftp.screens.UploadManager;
 	import com.strattonimaging.site.display.screens.IScreen;
 	import com.strattonimaging.site.display.screens.Screen;
 	import com.strattonimaging.site.events.FtpEvent;
+	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.model.SiteModel;
 	import com.strattonimaging.site.model.vo.FTPUser;
 	
@@ -33,23 +46,19 @@ package com.strattonimaging.site.display.components.ftp
 		//ftp screens
 		private var _bg					:BackgroundPanel;
 		private var _login				:Login
+		private var _dash				:Dashboard;
 		private var _dlm				:DownloadManager;
-		private var _dash					:Dashboard;
 		private var _ulm				:UploadManager;
+		private var _trans				:TransferDisplay;
 		
 		//standard buttons
-		private var ftpBtn				:StandardButtonInOut;
+		private var _ftpBtn				:StandardButtonInOut;
 		private var _tabDashBtn			:StandardButton;
 		private var _tabPutBtn			:StandardButton;
 		private var _tabGetBtn			:StandardButton;
-		private var loginBtn			:StandardButton;
-		private var logoutBtn			:StandardButton;
-        private var _getBtn				:StandardButton;
-        private var _putBtn				:StandardButton;
-		private var _browseBtn			:StandardButton;
-		private var _uploadBtn			:StandardButton;
-		private var _refreshBtn			:StandardButton;
 		
+		private var _logoutBtn			:StandardButton;
+        
 		//utility vars
 		private var _bIsInitialIn		:Boolean 		= true;
 		private var _ftpUtil			:FtpUtil;
@@ -90,9 +99,16 @@ package com.strattonimaging.site.display.components.ftp
 			_bg 	= new BackgroundPanel(mc.bg_mc);
 			_login	= new Login(mc.login_mc);
 			_login.addEventListener(FtpEvent.LOGIN, _loginHandler);
-			_dash		= new Dashboard(mc.dashboard_mc);
+			_dash	= new Dashboard(mc.dashboard_mc);
+			_dash.addEventListener(FtpEvent.CHANGE_FTP_SCREEN, _handleFtpScreenChange);
 			_dlm	= new DownloadManager(mc.get_mc);
+			_dlm.addEventListener(FtpEvent.DO_REFRESH, _ftpUtil.getDirectory);
+			_dlm.addEventListener(FtpEvent.CHANGE_FTP_SCREEN, _handleFtpScreenChange);
+			_dlm.addEventListener(FtpEvent.TRANSFER_START, _handleTransferStart);
 			_ulm	= new UploadManager(mc.put_mc);
+			_ulm.addEventListener(FtpEvent.CHANGE_FTP_SCREEN, _handleFtpScreenChange);
+			_ulm.addEventListener(FtpEvent.TRANSFER_START, _handleTransferStart);
+			_trans	= new TransferDisplay(mc.transfer_mc);
 			
 		}//end function 
 		
@@ -114,8 +130,9 @@ package com.strattonimaging.site.display.components.ftp
 
 		private function _loginHandler($evt:FtpEvent):void{
 			Out.status(this, "_loginHandler");
-        	_ftpUtil.getDirectory(_model.currentDirectory);
+        	_ftpUtil.getDirectory();
 			_tabs.addEventListener(AnimationEvent.IN, _showNextFtpScreen);
+			_tabs.mc.display_mc.name_mc.tf.text = _model.ftpUser.name;
 			_tabs.animateIn();			
 		}//end function
 		
@@ -126,16 +143,22 @@ package com.strattonimaging.site.display.components.ftp
 			cs = _login;
 			ns = _dash;
 		}//end function
+		private function _handleFtpScreenChange($e:FtpEvent):void{
+			Out.status(this, "_handleFtpScreenChange():: " + $e.data.ns);
+			switch ($e.data.ns){
+				case Constants.GET  	: ns = _dlm; break;
+				case Constants.PUT  	: ns = _ulm; break;
+				case Constants.DASH 	: ns = _dash; break;
+				case Constants.TRANSFER : ns = _trans; break;
+				default : Out.error(this, "huh? no idea what you clicked"); return;
+			}//end switch
+			_showNextFtpScreen();
+			
+		}//end function 
 		
-		private function _getClickHandler($me:MouseEvent):void{
-			Out.status(this, "_getClickHandler()::");
-			ns = _dlm;
-			_showNextFtpScreen();
-		}
-		private function _putClickHandler($me:MouseEvent):void{
-			Out.status(this, "_putClickHandler()::");
-			ns = _ulm;
-			_showNextFtpScreen();
+		private function _handleTransferStart($e:FtpEvent): void{
+			Out.status(this, "_handleTransferStart");
+			
 		}
 		private function _dashClickHandler($me:MouseEvent):void{
 			Out.status(this, "_dashClickHandler()::");
@@ -224,37 +247,28 @@ package com.strattonimaging.site.display.components.ftp
 			);//end btns center
 		
 		}//end function
+		/**
+		 * setupButtons takes care of all buttons that perform the navigation 
+		 * within the FTPClient.  if 
+		 */		
         public function setupButtons():void{
         	
         	//main toggle btn
-			ftpBtn 	= new StandardButtonInOut(_bg.mc.toggle_mc, _bg.mc.toggle_mc.btn);
-			ftpBtn.addEventListener(MouseEvent.CLICK, _toggleFtp); 	
+			_ftpBtn 	= new StandardButtonInOut(_bg.mc.toggle_mc, _bg.mc.toggle_mc.btn);
+			_ftpBtn.addEventListener(MouseEvent.CLICK, _toggleFtp); 	
         	
         	//tabs 
         	_tabDashBtn = new StandardButton(_tabs.mc.dash);
         	_tabDashBtn.addEventListener(MouseEvent.CLICK, _dashClickHandler);
         	_tabGetBtn = new StandardButton(_tabs.mc.get);
-        	_tabGetBtn.addEventListener(MouseEvent.CLICK, _getClickHandler);
+        	_tabGetBtn.addEventListener(MouseEvent.CLICK, _dash.getClickHandler);
         	_tabPutBtn = new StandardButton(_tabs.mc.put);
-        	_tabPutBtn.addEventListener(MouseEvent.CLICK, _putClickHandler);
+        	_tabPutBtn.addEventListener(MouseEvent.CLICK, _dash.putClickHandler);
         	
-        	//login
-			loginBtn= new StandardButton(_login.mc.loginBtn_mc);
-			loginBtn.addEventListener(MouseEvent.CLICK, _login.submitLoginHandler);
-			logoutBtn = new StandardButton(_tabs.mc.display_mc.logout_mc);
-			logoutBtn.addEventListener(MouseEvent.CLICK, _logoutHandler);
-			
-			//dash			
-         	_getBtn = new StandardButton(_dash.mc.getBtn);
-         	_getBtn.addEventListener(MouseEvent.CLICK, _getClickHandler);
-        	_putBtn = new StandardButton(_dash.mc.putBtn);
-         	_putBtn.addEventListener(MouseEvent.CLICK, _putClickHandler);
+        	//logout
+			_logoutBtn = new StandardButton(_tabs.mc.display_mc.logout_mc);
+			_logoutBtn.addEventListener(MouseEvent.CLICK, _logoutHandler);
          	
-         	//upload manager
-         	_browseBtn = new StandardButton(_ulm.mc.browseBtn);
-			_browseBtn.addEventListener(MouseEvent.CLICK, _ulm.browse);
-			
-			         	
         }//end function
 // =================================================
 // ================ Core Handler

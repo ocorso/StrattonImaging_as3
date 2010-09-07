@@ -11,7 +11,7 @@ package com.strattonimaging.site.display
 	import com.bigspaceship.utils.Lib;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.SimpleSequencer;
-	import com.strattonimaging.site.Constants;
+	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.display.components.Background;
 	import com.strattonimaging.site.display.components.Footer;
 	import com.strattonimaging.site.display.components.Header;
