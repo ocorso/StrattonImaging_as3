@@ -25,7 +25,6 @@ package com.strattonimaging.site.display.components.ftp
 	import com.strattonimaging.site.events.FtpEvent;
 	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.model.SiteModel;
-	import com.strattonimaging.site.model.vo.FTPUser;
 	
 	import fl.data.DataProvider;
 	
@@ -38,7 +37,7 @@ package com.strattonimaging.site.display.components.ftp
 
 	public class FtpClient extends Screen implements IScreen
 	{
-		private var _model				:SiteModel;
+		private var _m					:SiteModel;
 		
 		//standard in outs
 		private var _tabs				:StandardInOut;
@@ -61,7 +60,7 @@ package com.strattonimaging.site.display.components.ftp
         
 		//utility vars
 		private var _bIsInitialIn		:Boolean 		= true;
-		private var _ftpUtil			:FtpUtil;
+		private var _ftpUtil			:FtpUtil; 
         
 // =================================================
 // ================ Callable
@@ -72,20 +71,22 @@ package com.strattonimaging.site.display.components.ftp
 // =================================================
         private function _init():void{
 			Out.status(this, "init()");
-			_model 	= SiteModel.getInstance();
+			_m 	= SiteModel.getInstance();
 			
 			//initialize our handy little ftp module			
 			_ftpUtil = new FtpUtil();
 			_ftpUtil.addEventListener(FtpEvent.REFRESH, _handleRefresh);
+			_ftpUtil.addEventListener(FtpEvent.TRANSFER_COMPLETE, _handleFtpScreenChange);
 			
 			//config 
 			_setupFtpScreens();
 			setupButtons();
 			setupResize();
 			
+			
 			//screen nav config			
-			_model.currentFtpScreen = _login;
-			_model.nextFtpScreen	= _dash;
+			_m.currentFtpScreen = _login;
+			_m.nextFtpScreen	= _dash;
 			
         }//end function
 		
@@ -132,24 +133,28 @@ package com.strattonimaging.site.display.components.ftp
 			Out.status(this, "_loginHandler");
         	_ftpUtil.getDirectory();
 			_tabs.addEventListener(AnimationEvent.IN, _showNextFtpScreen);
-			_tabs.mc.display_mc.name_mc.tf.text = _model.ftpUser.name;
+			_tabs.mc.display_mc.name_mc.tf.text = _m.ftpUser.name;
 			_tabs.animateIn();			
 		}//end function
 		
 		private function _logoutHandler($me:MouseEvent):void{
 			Out.status(this, "_logoutHandler()::");
-			_model.ftpUser = new FTPUser({});
+			_ftpUtil.clearFtpUser();
+			Out.debug(this, "ftpAuth = :"+_m.ftpAuth);
 			animateOut();			
 			cs = _login;
 			ns = _dash;
 		}//end function
+		
 		private function _handleFtpScreenChange($e:FtpEvent):void{
 			Out.status(this, "_handleFtpScreenChange():: " + $e.data.ns);
 			switch ($e.data.ns){
 				case Constants.GET  	: ns = _dlm; break;
 				case Constants.PUT  	: ns = _ulm; break;
 				case Constants.DASH 	: ns = _dash; break;
-				case Constants.TRANSFER : ns = _trans; break;
+				case Constants.TRANSFER : ns = _trans; 
+					_ftpUtil.manageProgress(cs, _trans);
+					break;
 				default : Out.error(this, "huh? no idea what you clicked"); return;
 			}//end switch
 			_showNextFtpScreen();
@@ -166,7 +171,7 @@ package com.strattonimaging.site.display.components.ftp
 			_showNextFtpScreen();
 		}//end function
 		private function _removeOutListeners($ae:AnimationEvent):void{
-			Out.status(this, "uh what is the target?"+ $ae.target);
+			Out.status(this, "removing OutListeners on: "+ $ae.target);
 			IFtpScreen($ae.target).removeEventListener(AnimationEvent.OUT_START, ns.animateIn);
 			IFtpScreen($ae.target).removeEventListener(AnimationEvent.OUT, _removeOutListeners);
 		}
@@ -186,7 +191,7 @@ package com.strattonimaging.site.display.components.ftp
 					_ss = new SimpleSequencer("ftpIn");	
 					_ss.addEventListener(Event.COMPLETE,_animateInSequencer_COMPLETE_handler,false,0,true);
 					_ss.addStep(1, _bg, _bg.animateIn, AnimationEvent.IN);
-					if (_model.ftpUser || _model.ftpAuth)	_ss.addStep(2, _tabs, _tabs.animateIn, AnimationEvent.IN);
+					if (_m.ftpAuth)	_ss.addStep(2, _tabs, _tabs.animateIn, AnimationEvent.IN);
 					_ss.addStep(3, EventDispatcher(cs), cs.animateIn, AnimationEvent.IN);
 					_ss.start();
         		}
@@ -198,7 +203,7 @@ package com.strattonimaging.site.display.components.ftp
 				_ss = new SimpleSequencer("ftpOut");	
 				_ss.addEventListener(Event.COMPLETE,_animateOutSequencer_COMPLETE_handler,false,0,true);
 				_ss.addStep(1, EventDispatcher(cs), cs.animateOut, AnimationEvent.OUT);
-				_ss.addStep(2, _tabs, _tabs.animateOut, AnimationEvent.OUT);
+				if(_tabs.state == AnimationState.IN)	_ss.addStep(2, _tabs, _tabs.animateOut, AnimationEvent.OUT);
 				_ss.addStep(3, _bg, _bg.animateOut, AnimationEvent.OUT);
 				_ss.start();
         	
@@ -206,7 +211,7 @@ package com.strattonimaging.site.display.components.ftp
         
         private function _showNextFtpScreen($evt:AnimationEvent = null):void{
         	Out.status(this, "_showNextFtpScreen");
-        	
+        	Out.debug(this, "ns: "+ns+" cs: "+cs);
         	if (_tabs.hasEventListener(AnimationEvent.IN)) _tabs.removeEventListener(AnimationEvent.IN, _showNextFtpScreen);
         	cs.addEventListener(AnimationEvent.OUT_START, ns.animateIn);
         	cs.addEventListener(AnimationEvent.OUT, _removeOutListeners);
@@ -225,10 +230,10 @@ package com.strattonimaging.site.display.components.ftp
          * my apologies if you can't tell what it means.
          * 
          */
-        private function set cs($currentScreen:IFtpScreen):void{ _model.currentFtpScreen = $currentScreen;}
-        private function get cs():IFtpScreen{ return _model.currentFtpScreen;}
-        private function set ns($nextScreen:IFtpScreen):void{ _model.nextFtpScreen = $nextScreen;}
-        private function get ns():IFtpScreen{ return _model.nextFtpScreen;}
+        private function set cs($currentScreen:IFtpScreen):void{ _m.currentFtpScreen = $currentScreen;}
+        private function get cs():IFtpScreen{ return _m.currentFtpScreen;}
+        private function set ns($nextScreen:IFtpScreen):void{ _m.nextFtpScreen = $nextScreen;}
+        private function get ns():IFtpScreen{ return _m.nextFtpScreen;}
 // =================================================
 // ================ Interfaced
 // =================================================
@@ -298,7 +303,7 @@ package com.strattonimaging.site.display.components.ftp
 			mc.stop();
 			_curState = AnimationState.OUT;
 			_onAnimateOut();
-			if (_model.currentFtpScreen.hasEventListener(AnimationEvent.IN)) _model.currentFtpScreen.removeEventListener(AnimationEvent.IN, _showNextFtpScreen);
+			if (_m.currentFtpScreen.hasEventListener(AnimationEvent.IN)) _m.currentFtpScreen.removeEventListener(AnimationEvent.IN, _showNextFtpScreen);
 			dispatchEvent(new AnimationEvent(AnimationEvent.OUT));
 		}
 // =================================================

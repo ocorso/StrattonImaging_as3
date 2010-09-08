@@ -33,6 +33,7 @@ package com.strattonimaging.site.model
 		private var _ftpUser								:FTPUser;
 		private var _ftpAuth								:Boolean = false;
 		private var _currentDirectory						:String;
+		private var _currentFilename						:String;
 		private var _currentFtpScreen						:IFtpScreen;
 		private var _nextFtpScreen							:IFtpScreen;
 		
@@ -119,8 +120,11 @@ package com.strattonimaging.site.model
 			_currentDirectory = $u.iPath;
 		}
 		public function getEmail():String{ return _ftpUser.email;}
-		public function get currentDirectory():String{ return _currentDirectory;}
+		public function get currentDirectory():String{ return _currentDirectory == "/" ? "" : _currentDirectory;}
 		public function set currentDirectory($p:String):void{ _currentDirectory = $p;}
+		public function set currentFilename($filename:String):void{ _currentFilename = $filename;}
+		public function get currentFilename():String{ return _currentFilename;}
+		public function get fileToDownload():String{ return baseUrl + currentDirectory + _currentFilename;}
 		public function get nextFtpScreen():IFtpScreen { return _nextFtpScreen; }
 		public function set nextFtpScreen($screenId:IFtpScreen):void { _nextFtpScreen = $screenId; }
 		public function get currentFtpScreen():IFtpScreen { return _currentFtpScreen; }

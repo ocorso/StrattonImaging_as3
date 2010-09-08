@@ -242,7 +242,7 @@ package com.adobe.serialization.json
 			
 			// determine if o is a class instance or a plain object
 			var classInfo:XML = describeType( o );
-			Out.info(this, "classInfo: "+classInfo);
+			//Out.info(this, "classInfo: "+classInfo);
 			if ( classInfo.@name.toString() == "Object" )
 			{
 				// the value of o[key] in the loop below - store this 

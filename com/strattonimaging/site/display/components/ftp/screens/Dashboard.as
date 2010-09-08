@@ -50,7 +50,8 @@ package com.strattonimaging.site.display.components.ftp.screens
 // =================================================
 // ================ Interfaced
 // =================================================
-        
+ 		public function startTransfer():void{}//no need for this here    
+	   	public function cancelTransfer():void{}//no need for this here   
 // =================================================
 // ================ Core Handler
 // =================================================

@@ -72,12 +72,14 @@ package com.strattonimaging.site.model
 		public static const VID_NAME						:String = "credits.f4v";
 		public static const VIDEO_READY						:String = "videoReady";
 		
-		//ftp login 
+		//ftp POST variable names 
 		public static const LOGIN_ANSWER						:String	= "yep";
+		public static const LOGIN_FAILURE						:String	= "nope";
 		public static const POST_VAR_SUCCESS					:String	= "s";
 		public static const POST_VAR_NAME						:String = "n";
 		public static const POST_VAR_PATH						:String = "p";
 		public static const POST_VAR_EMAIL						:String = "e";
+		public static const O_RED_DATA							:String = "ored_data";
 		
 		//ftp screen names
 		public static const GET								:String = "get";
@@ -85,5 +87,8 @@ package com.strattonimaging.site.model
 		public static const LOGIN							:String = "login";
 		public static const DASH							:String = "dashboard";
 		public static const TRANSFER						:String = "transfer";
-	}
-}
+		
+		//ftp misc
+		public static const PROGRESS_WIDTH					:int = 300;
+	}//end class
+}//end package

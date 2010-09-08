@@ -368,7 +368,7 @@ package
 			addEventListener( MouseEvent.MOUSE_UP,     _mouse_MOUSEUP_handler );
 			addEventListener( MouseEvent.MOUSE_DOWN,   _mouse_MOUSEDOWN_handler );
 			addEventListener( MouseEvent.MOUSE_OVER,   _mouse_MOUSEOVER_handler );
-			addEventListener( MouseEvent.CLICK, _checkMouseEventTrail );			
+			//addEventListener( MouseEvent.CLICK, _checkMouseEventTrail );			
 		
 		}
 		

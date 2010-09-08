@@ -11,6 +11,7 @@ package com.strattonimaging.site.events
 		public static const REFRESH						:String = "refresh";
 		public static const TRANSFER_START				:String = "transferStart";
 		public static const TRANSFER_COMPLETE			:String = "transferComplete";
+		public static const TRANSFER_CANCEL				:String = "transferCancel";
 		
 		private var _info		: Object;
 		public function get info():Object{
