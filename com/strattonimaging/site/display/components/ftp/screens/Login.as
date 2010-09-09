@@ -26,7 +26,8 @@ package com.strattonimaging.site.display.components.ftp.screens
 	
 	public class Login extends StandardInOut implements IFtpScreen
 	{
-		private var _model				:SiteModel;
+		private var _n					:String = Constants.LOGIN;
+		private var _m					:SiteModel;
 		private var loginBtn			:StandardButton;
 		private var _submitLoader		:URLLoader;
         
@@ -37,7 +38,7 @@ package com.strattonimaging.site.display.components.ftp.screens
 // ================ Workers
 // =================================================
         private function _init():void{
-			_model = SiteModel.getInstance();
+			_m = SiteModel.getInstance();
 			mc.visible = false;
 			
 			loginBtn= new StandardButton(mc.loginBtn_mc);
@@ -57,7 +58,7 @@ package com.strattonimaging.site.display.components.ftp.screens
 			Out.status(this, "Submit handler::");
 			_submitLoader = new URLLoader();
 			
-			var loginURL:String = _model.baseUrl + Constants.LOGIN_ROUTE;
+			var loginURL:String = _m.baseUrl + Constants.LOGIN_ROUTE;
 			var urlRequest:URLRequest = new URLRequest(loginURL);
 			urlRequest.method = URLRequestMethod.POST;
 			var urlVar:URLVariables = new URLVariables();
@@ -84,8 +85,8 @@ package com.strattonimaging.site.display.components.ftp.screens
 			var json:JSONDecoder = new JSONDecoder(Base64.decode($evt.target.data), false);
 			ObjectToString.o(json.getValue());
 			
-			_model.ftpUser = new FTPUser(json.getValue());
-			if (!_model.ftpUser.auth) {
+			_m.ftpUser = new FTPUser(json.getValue());
+			if (!_m.ftpUser.auth) {
 				mc.inputs_mc.utf.text = "";
 				mc.inputs_mc.ptf.text = "";
 				mc.loginError_mc.visible = true;
@@ -105,7 +106,7 @@ package com.strattonimaging.site.display.components.ftp.screens
 // =================================================
 // ================ Getters / Setters
 // =================================================
-        
+     	public function get name ():String{ return _n;}  
 // =================================================
 // ================ Interfaced
 // =================================================

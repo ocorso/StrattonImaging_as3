@@ -2,7 +2,6 @@ package net.ored.util
 {
 	import com.bigspaceship.utils.Out;
 	
-	import flash.display.MovieClip;
 	import flash.display.Stage;
 	import flash.events.Event;
 	
@@ -60,7 +59,7 @@ package net.ored.util
 			STAGE   =   $stage;
 		};
 		
-		public static function add($id:String, $element:*, $type, $params = null):void{
+		public static function add($id:String, $element:*, $type:Array, $params:* = null):void{
 			var obj:Object;
 			
 			obj =   {
@@ -78,7 +77,7 @@ package net.ored.util
 		}
 		
 		public static function onResize($e:Event=null):void{
-			var i, ii;
+			var ii:*;
 			
 			// settings to cancel resize
 			if( !Resize.SETTINGS.enabled )
@@ -86,7 +85,7 @@ package net.ored.util
 			
 			// do resize
 			// _objects is the list of all objects waiting to be resized
-			for( i in _objects ){
+			for( var i:Object in _objects ){
 				
 				if( _objects[i] != null ){
 					
@@ -169,63 +168,63 @@ package net.ored.util
 		}
 		
 		// workers
-		private static function _center_x($object, $element:MovieClip, $params:Object, $useHandler:int = 1):void{
+		private static function _center_x($object:Object, $element:*, $params:Object, $useHandler:int = 1):void{
 			if( !_checkX() ) return;
 			$element.x      =   (Resize.STAGE.stageWidth / 2) - ($element.width/2);
 			if($useHandler)
 				_handleParams($object, $element, $params);
 		}
 		
-		private static function _center_y($object, $element, $params:Object, $useHandler:int = 1):void{
+		private static function _center_y($object:Object, $element:*, $params:Object, $useHandler:int = 1):void{
 			if( !_checkY() ) return;
 			$element.y      =   (Resize.STAGE.stageHeight / 2) - ($element.height/2);
 			if($useHandler)
 				_handleParams($object, $element, $params);
 		}
 		
-		private static function _align_left($object, $element, $params:Object, $useHandler:int = 1):void{
+		private static function _align_left($object:Object, $element:*, $params:Object, $useHandler:int = 1):void{
 			if( !_checkX() ) return;
 			$element.x      =   0;
 			if($useHandler)
 				_handleParams($object, $element, $params);
 		}
 		
-		private static function _align_right($object, $element, $params:Object, $useHandler:int = 1):void{
+		private static function _align_right($object:Object, $element:*, $params:Object, $useHandler:int = 1):void{
 			if( !_checkX() ) return;
 			$element.x      =   Resize.STAGE.stageWidth - $element.width;
 			if($useHandler)
 				_handleParams($object, $element, $params);
 		}
 		
-		private static function _align_top($object, $element, $params:Object, $useHandler:int = 1):void{
+		private static function _align_top($object:Object, $element:*, $params:Object, $useHandler:int = 1):void{
 			if( !_checkY() ) return;
 			$element.y      =   0;
 			if($useHandler)
 				_handleParams($object, $element, $params);
 		}
 		
-		private static function _align_bottom($object, $element, $params:Object, $useHandler:int = 1):void{
+		private static function _align_bottom($object:Object, $element:*, $params:Object, $useHandler:int = 1):void{
 			if( !_checkY() ) return;
 			$element.y      =   Resize.STAGE.stageHeight - $element.height;
 			if($useHandler)
 				_handleParams($object, $element, $params);
 		}
 		
-		private static function _scale_full_width($object, $element, $params:Object, $useHandler:int = 1):void{
+		private static function _scale_full_width($object:Object, $element:*, $params:Object, $useHandler:int = 1):void{
 			if( !_checkX() ) return;
 			$element.width  =   Resize.STAGE.stageWidth;
 			if($useHandler)
 				_handleParams($object, $element, $params);
 		}
 		
-		private static function _scale_full_height($object, $element, $params:Object, $useHandler:int = 1):void{
+		private static function _scale_full_height($object:Object, $element:*, $params:Object, $useHandler:int = 1):void{
 			if( !_checkY() ) return;
 			$element.height =   Resize.STAGE.stageHeight;
 			if($useHandler)
 				_handleParams($object, $element, $params);
 		}
 		
-		private static function _custom($object, $element, $params:Object, $useHandler:int = 1):void{
+		private static function _custom($object:Object, $element:*, $params:Object, $useHandler:int = 1):void{
 			$params.custom($element, $params, Resize.STAGE);
 			if($useHandler)
 				_handleParams($object, $element, $params);
@@ -233,41 +232,41 @@ package net.ored.util
 		
 		
 		// Callable
-		protected static function _center_xy($object, $element, $params:Object, $useHandler:int = 1):void{
+		protected static function _center_xy($object:Object, $element:*, $params:Object, $useHandler:int = 1):void{
 			Resize._center_x($object, $element, $params, $useHandler);
 			Resize._center_y($object, $element, $params, $useHandler);
 		}
 		
-		protected static function _corner_tl($object, $element, $params:Object, $useHandler:int = 1):void{
+		protected static function _corner_tl($object:Object, $element:*, $params:Object, $useHandler:int = 1):void{
 			Resize._align_left($object, $element, $params, $useHandler);
 			Resize._align_top($object, $element, $params, $useHandler);
 		}
 		
-		protected static function _corner_tr($object, $element, $params:Object, $useHandler:int = 1):void{
+		protected static function _corner_tr($object:Object, $element:*, $params:Object, $useHandler:int = 1):void{
 			Resize._align_right($object, $element, $params, $useHandler);
 			Resize._align_top($object, $element, $params, $useHandler);
 		}
 		
-		protected static function _corner_bl($object, $element, $params:Object, $useHandler:int = 1):void{
+		protected static function _corner_bl($object:Object, $element:*, $params:Object, $useHandler:int = 1):void{
 			Resize._align_left($object, $element, $params, $useHandler);
 			Resize._align_bottom($object, $element, $params, $useHandler);
 		}
 		
-		protected static function _corner_br($object, $element, $params:Object, $useHandler:int = 1):void{
+		protected static function _corner_br($object:Object, $element:*, $params:Object, $useHandler:int = 1):void{
 			Resize._align_right($object, $element, $params, $useHandler);
 			Resize._align_bottom($object, $element, $params, $useHandler);
 		}
 		
-		protected static function _scale_fullscreen($object, $element, $params:Object, $useHandler:int = 1):void{
+		protected static function _scale_fullscreen($object:Object, $element:*, $params:Object, $useHandler:int = 1):void{
 			Resize._scale_full_width($object, $element, $params, $useHandler);
 			Resize._scale_full_height($object, $element, $params, $useHandler);
 		}
 		
-		protected static function _scale_fullscreen_x($object, $element, $params:Object, $useHandler:int = 1):void{
+		protected static function _scale_fullscreen_x($object:Object, $element:*, $params:Object, $useHandler:int = 1):void{
 			Resize._scale_full_width($object, $element, $params, $useHandler);
 		}
 		
-		protected static function _scale_fullscreen_y($object, $element, $params:Object, $useHandler:int = 1):void{
+		protected static function _scale_fullscreen_y($object:Object, $element:*, $params:Object, $useHandler:int = 1):void{
 			Resize._scale_full_height($object, $element, $params, $useHandler);
 		}
 		

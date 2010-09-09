@@ -4,6 +4,7 @@ package com.strattonimaging.site.display.components.ftp.screens
 	import com.bigspaceship.display.StandardInOut;
 	import com.bigspaceship.utils.Out;
 	import com.strattonimaging.site.events.FtpEvent;
+	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.model.SiteModel;
 	
 	import flash.display.MovieClip;
@@ -11,6 +12,7 @@ package com.strattonimaging.site.display.components.ftp.screens
 	
 	public class TransferDisplay extends StandardInOut implements IFtpScreen
 	{
+		private var _n				:String = Constants.TRANSFER;
 		private var _m				:SiteModel;
 		public var bar				:MovieClip;
 		
@@ -54,7 +56,7 @@ package com.strattonimaging.site.display.components.ftp.screens
 		// =================================================
 		// ================ Getters / Setters
 		// =================================================
-		
+        public function get name ():String{ return _n;}
 		// =================================================
 		// ================ Interfaced
 		// =================================================

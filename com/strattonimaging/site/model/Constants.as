@@ -90,5 +90,10 @@ package com.strattonimaging.site.model
 		
 		//ftp misc
 		public static const PROGRESS_WIDTH					:int = 300;
+		public static const FTP_TYPE_FOLDER					:String = "folder";
+		public static const FTP_TYPE_FILE					:String = "file";
+		public static const FTP_FOLDER_ICON					:String = "img/site/ftp/folder.png";
+		public static const FTP_DOC_ICON					:String = "img/site/ftp/document.png";
+
 	}//end class
 }//end package

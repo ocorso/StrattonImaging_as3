@@ -7,6 +7,8 @@ package com.strattonimaging.site.display.components.ftp
 	 * it has both upload and download functionality
 	 *  
 	 */	
+	import __AS3__.vec.Vector;
+	
 	import com.bigspaceship.display.AnimationState;
 	import com.bigspaceship.display.StandardButton;
 	import com.bigspaceship.display.StandardButtonInOut;
@@ -29,6 +31,7 @@ package com.strattonimaging.site.display.components.ftp
 	import fl.data.DataProvider;
 	
 	import flash.display.MovieClip;
+	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.MouseEvent;
@@ -61,6 +64,7 @@ package com.strattonimaging.site.display.components.ftp
 		//utility vars
 		private var _bIsInitialIn		:Boolean 		= true;
 		private var _ftpUtil			:FtpUtil; 
+		private var _screenVector		:Vector.<IFtpScreen>;
         
 // =================================================
 // ================ Callable
@@ -83,6 +87,8 @@ package com.strattonimaging.site.display.components.ftp
 			setupButtons();
 			setupResize();
 			
+			//listen for changeFtpScreen event
+			addEventListener(FtpEvent.CHANGE_FTP_SCREEN, _handleFtpScreenChange);
 			
 			//screen nav config			
 			_m.currentFtpScreen = _login;
@@ -92,10 +98,11 @@ package com.strattonimaging.site.display.components.ftp
 		
 		private function _setupFtpScreens():void{
 			Out.status(this, "_setupFtpScreens");
+			
 			//initialize standard in outs
 			_tabs	= new StandardInOut(mc.tabs_mc);
 			_tabs.mc.visible	= false;
-
+			
 			//initialize ftp screens
 			_bg 	= new BackgroundPanel(mc.bg_mc);
 			_login	= new Login(mc.login_mc);
@@ -147,17 +154,23 @@ package com.strattonimaging.site.display.components.ftp
 		}//end function
 		
 		private function _handleFtpScreenChange($e:FtpEvent):void{
-			Out.status(this, "_handleFtpScreenChange():: " + $e.data.ns);
-			switch ($e.data.ns){
-				case Constants.GET  	: ns = _dlm; break;
-				case Constants.PUT  	: ns = _ulm; break;
-				case Constants.DASH 	: ns = _dash; break;
-				case Constants.TRANSFER : ns = _trans; 
-					_ftpUtil.manageProgress(cs, _trans);
-					break;
-				default : Out.error(this, "huh? no idea what you clicked"); return;
-			}//end switch
-			_showNextFtpScreen();
+			Out.status(this, "_handleFtpScreenChange():: ");
+			Out.info(this, "new ns: " + $e.data.ns);
+			Out.error(this, "old ns: " + ns.name);
+			Out.info(this, "cs: " + cs.name);
+			if ($e.data.ns == cs.name) Out.warning(this, "do nothing");
+			else {
+				switch ($e.data.ns){
+					case Constants.GET  	: ns = _dlm; break;
+					case Constants.PUT  	: ns = _ulm; break;
+					case Constants.DASH 	: ns = _dash; break;
+					case Constants.TRANSFER : ns = _trans; 
+						_ftpUtil.manageProgress(cs, _trans);
+						break;
+					default : Out.error(this, "huh? no idea what you clicked"); return;
+				}//end switch
+				_showNextFtpScreen();
+			}//end else 
 			
 		}//end function 
 		
@@ -167,8 +180,7 @@ package com.strattonimaging.site.display.components.ftp
 		}
 		private function _dashClickHandler($me:MouseEvent):void{
 			Out.status(this, "_dashClickHandler()::");
-			ns = _dash;
-			_showNextFtpScreen();
+			dispatchEvent(new FtpEvent(FtpEvent.CHANGE_FTP_SCREEN, {ns:Constants.DASH}));
 		}//end function
 		private function _removeOutListeners($ae:AnimationEvent):void{
 			Out.status(this, "removing OutListeners on: "+ $ae.target);
@@ -243,7 +255,7 @@ package com.strattonimaging.site.display.components.ftp
 				mc,
 				[Resize.CENTER_X, Resize.CUSTOM],
 				{
-					 custom:				function($target, $params, $stage):void{
+					custom:	function($target:*, $params:*, $stage:Stage):void{
 						if ($stage.stageHeight > Constants.STAGE_HEIGHT){
 							mc.y = $stage.stageHeight-Constants.STAGE_HEIGHT;
 						}else mc.y = 0;

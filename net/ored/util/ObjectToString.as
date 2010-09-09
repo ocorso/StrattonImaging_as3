@@ -9,7 +9,7 @@ package net.ored.util
 		 * @param $obj
 		 * 
 		 */		
-		public static function o($obj):void{
+		public static function o($obj:Object):void{
 			var a:Array = new Array();
 			
 			for (var e:String in $obj){

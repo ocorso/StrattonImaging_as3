@@ -79,7 +79,7 @@ package com.strattonimaging.site.display.screens.craft
 // ================ Getters / Setters
 // =================================================
 		public function get current():int{ return _current;}
-		public function set current($i):void{  _current= $i;}
+		public function set current($i:*):void{  _current= $i;}
 		
 // =================================================
 // ================ Core Handler

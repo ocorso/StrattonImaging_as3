@@ -7,11 +7,11 @@ package com.strattonimaging.site.display.screens
 	import com.bigspaceship.events.AnimationEvent;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.SimpleSequencer;
-	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.display.screens.craft.Gallery;
-	import com.strattonimaging.site.model.SiteModel;
+	import com.strattonimaging.site.model.Constants;
 	
 	import flash.display.MovieClip;
+	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
@@ -139,7 +139,7 @@ package com.strattonimaging.site.display.screens
 		 	_ss.addStep(n+2, _cover, _cover.animateOut, AnimationEvent.OUT);
 			_ss.start();
 		}//end function _hideServices
-		private function _onHideServices($evt:Event = null){
+		private function _onHideServices($evt:Event = null):void{
 			Out.status(this, "_onHideServices");
 			_bGalleryIn = true;
 			_gallery	= new Gallery(_gallery_mc, _thumbs_mc, getNodeByType(Constants.CONFIG_LOADABLES, _siteModel.currentSection), _loader);
@@ -201,7 +201,7 @@ package com.strattonimaging.site.display.screens
 				_bg.mc.grad_mc.g,
 				[Resize.FULLSCREEN_X, Resize.CUSTOM],
 				{
-					custom:	function($target, $params, $stage):void{
+				custom:	function($target:*, $params:*, $stage:Stage):void{
 						
 							if ($stage.stageHeight > Constants.STAGE_HEIGHT) _bg.mc.grad_mc.g.height = $stage.stageHeight - (Constants.BOTTOM_OFFSET - 135);
 							else _bg.mc.grad_mc.g.height = Constants.BOTTOM_OFFSET;
@@ -216,7 +216,7 @@ package com.strattonimaging.site.display.screens
 
 				[Resize.CENTER_X, Resize.CUSTOM],
 				{
-					custom:	function($target, $params, $stage):void{
+				custom:	function($target:*, $params:*, $stage:Stage):void{
 								if ($stage.stageHeight > Constants.STAGE_HEIGHT)	_title.mc.y = ($stage.stageHeight-Constants.STAGE_HEIGHT)/2;
 					 			else _title.mc.y = 0;
 					}//end custom function
@@ -228,10 +228,10 @@ package com.strattonimaging.site.display.screens
 				_services.mc,
 				[Resize.CENTER_X, Resize.CUSTOM],
 				{
-					custom:	function($target, $params, $stage):void{
-								if ($stage.stageHeight > Constants.STAGE_HEIGHT){
-									_services.mc.y = ($stage.stageHeight-Constants.STAGE_HEIGHT)/2;
-					 			}else _services.mc.y = 0;
+				custom:	function($target:*, $params:*, $stage:Stage):void{								
+							if ($stage.stageHeight > Constants.STAGE_HEIGHT){
+								_services.mc.y = ($stage.stageHeight-Constants.STAGE_HEIGHT)/2;
+					 		}else _services.mc.y = 0;
 					}//end custom function
 				}//end 4 param
 			);//end resize add @CraftServices

@@ -120,7 +120,7 @@ package com.strattonimaging.site.model
 			_currentDirectory = $u.iPath;
 		}
 		public function getEmail():String{ return _ftpUser.email;}
-		public function get currentDirectory():String{ return _currentDirectory == "/" ? "" : _currentDirectory;}
+		public function get currentDirectory():String{ return _currentDirectory;}
 		public function set currentDirectory($p:String):void{ _currentDirectory = $p;}
 		public function set currentFilename($filename:String):void{ _currentFilename = $filename;}
 		public function get currentFilename():String{ return _currentFilename;}

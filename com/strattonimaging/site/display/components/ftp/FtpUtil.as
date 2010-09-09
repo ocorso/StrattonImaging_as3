@@ -49,6 +49,7 @@ package com.strattonimaging.site.display.components.ftp
 				o[Constants.POST_VAR_PATH] = _m.currentDirectory;
 			
 				Out.debug(this, "we about to getDirectory: "+req.url);
+				Out.debug(this, "currentDir: "+o.p);
 				var toJSON:JSONEncoder = new JSONEncoder(o);
 				var json:String = toJSON.getString();
 				urlVar.d = Base64.encode(json);
@@ -65,6 +66,7 @@ package com.strattonimaging.site.display.components.ftp
 			_p = $progress;
 			_p.addEventListener(FtpEvent.TRANSFER_CANCEL, _handleCancel);
 			_transferer.addEventListener(ProgressEvent.PROGRESS, _onTransferProgress);
+			_transferer.addEventListener(Event.COMPLETE, _frCompleteHandler);
 			_transferer.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, _onTransferComplete);
 			_transferer.addEventListener(IOErrorEvent.IO_ERROR, _frIOErrorHandler);
 			_transferer.addEventListener(SecurityErrorEvent.SECURITY_ERROR, _securityErrorHandler);
@@ -87,9 +89,9 @@ package com.strattonimaging.site.display.components.ftp
 // =================================================
        	private function _getDirectoryHandler($evt:Event):void{
 			Out.status(this, "got directory!");
-			Out.debug(this, "info: "+$evt.target.data);
 			
 			var json:JSONDecoder = new JSONDecoder($evt.target.data, true);
+			Out.debug(this, "info: "+$evt.target.data);
 			var dp:DataProvider = new DataProvider(json.getValue());
 			dispatchEvent(new FtpEvent(FtpEvent.REFRESH, dp));
 		}//end function
@@ -102,10 +104,10 @@ package com.strattonimaging.site.display.components.ftp
 			var w:int = Math.ceil(($pe.bytesLoaded/$pe.bytesTotal)*Constants.PROGRESS_WIDTH);
     		_p.updateProgress(w);
     	}
-    	private function _onTransferComplete($de:DataEvent):void{
+    	private function _onTransferComplete($e:Event = null):void{
 			Out.status(this, "_onTransferComplete, never had progress? "+_np );
-            Out.debug(this, "data response: " + $de);
-            var s:IFtpScreen = IFtpScreen($de.target);
+            Out.debug(this, "data response: " + $e);
+            var s:IFtpScreen = IFtpScreen($e.target);
     		s.removeEventListener(ProgressEvent.PROGRESS, _onTransferProgress);
     		s.removeEventListener(DataEvent.UPLOAD_COMPLETE_DATA, _onTransferComplete);
     		s.removeEventListener(IOErrorEvent.IO_ERROR, _frIOErrorHandler);
@@ -131,7 +133,7 @@ package com.strattonimaging.site.display.components.ftp
     	}
     	private function _frCompleteHandler($e:Event):void{
         	Out.status(this, "_frCompleteHandler");
-        	
+        	_onTransferComplete($e);
         }
         
         private function _frIOErrorHandler($ioe:IOErrorEvent):void{

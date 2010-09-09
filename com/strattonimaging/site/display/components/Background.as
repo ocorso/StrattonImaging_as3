@@ -9,6 +9,7 @@ package com.strattonimaging.site.display.components
 	import flash.display.BitmapData;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
+	import flash.display.Stage;
 	
 	import net.ored.util.Resize;
 	
@@ -40,15 +41,15 @@ package com.strattonimaging.site.display.components
 			[Resize.CUSTOM],
 			{
 			
-				custom:				function($target, $params, $stage):void{
-						_bgSprite.graphics.beginBitmapFill(_bgTile, null, false);
-						_bgSprite.graphics.drawRect(0, 0, $stage.stageWidth, 254);
-						_bgSprite.graphics.endFill();
-						
-						if ($stage.stageHeight > 643){
-							_bgSprite.y = Constants.BOTTOM_OFFSET+($stage.stageHeight-643);
-						} else _bgSprite.y = Constants.BOTTOM_OFFSET;
-				}//end custom function
+				custom: function($target:*, $params:*, $stage:Stage):void{
+							_bgSprite.graphics.beginBitmapFill(_bgTile, null, false);
+							_bgSprite.graphics.drawRect(0, 0, $stage.stageWidth, 254);
+							_bgSprite.graphics.endFill();
+							
+							if ($stage.stageHeight > 643){
+								_bgSprite.y = Constants.BOTTOM_OFFSET+($stage.stageHeight-643);
+							} else _bgSprite.y = Constants.BOTTOM_OFFSET;
+						}//end custom function
 			}//end 4th resize add parameter
 			);//end @footerBg
 			

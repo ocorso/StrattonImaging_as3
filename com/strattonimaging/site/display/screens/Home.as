@@ -5,6 +5,7 @@ package com.strattonimaging.site.display.screens
 	import com.strattonimaging.site.model.Constants;
 	
 	import flash.display.MovieClip;
+	import flash.display.Stage;
 	import flash.events.Event;
 	
 	import net.ored.util.Resize;
@@ -28,7 +29,7 @@ package com.strattonimaging.site.display.screens
 				_mc,
 				[Resize.CENTER_X, Resize.CUSTOM],
 				{
-					custom:	function($target, $params, $stage):void{
+				custom:	function($target:*, $params:*, $stage:Stage):void{
 								if ($stage.stageHeight > Constants.STAGE_HEIGHT){
 									_mc.y = ($stage.stageHeight-Constants.STAGE_HEIGHT)/2;
 					 			}else _mc.y = 0;

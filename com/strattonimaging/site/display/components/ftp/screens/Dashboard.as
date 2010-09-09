@@ -11,6 +11,7 @@ package com.strattonimaging.site.display.components.ftp.screens
 
 	public class Dashboard extends StandardInOut implements IFtpScreen
 	{
+        private var _n					:String = Constants.DASH;
 		private var _getBtn				:StandardButton;
 		private var _putBtn				:StandardButton;
         
@@ -46,7 +47,7 @@ package com.strattonimaging.site.display.components.ftp.screens
 // =================================================
 // ================ Getters / Setters
 // =================================================
-        
+        public function get name ():String{ return _n;}
 // =================================================
 // ================ Interfaced
 // =================================================

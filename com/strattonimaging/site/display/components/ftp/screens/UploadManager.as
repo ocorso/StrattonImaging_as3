@@ -19,6 +19,7 @@ package com.strattonimaging.site.display.components.ftp.screens
 
 	public class UploadManager extends StandardInOut implements IFtpScreen
 	{
+		private var _n				:String = Constants.PUT;
 		private var _m				:SiteModel;
         private var _fr				:FileReference;
         
@@ -97,7 +98,7 @@ package com.strattonimaging.site.display.components.ftp.screens
 // =================================================
 // ================ Getters / Setters
 // =================================================
-        
+        public function get name ():String{ return _n;}        
 // =================================================
 // ================ Interfaced
 // =================================================

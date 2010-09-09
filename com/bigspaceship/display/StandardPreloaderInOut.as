@@ -33,6 +33,7 @@ package com.bigspaceship.display
 	import com.bigspaceship.utils.Out;
 	
 	import flash.display.MovieClip;
+	import flash.display.Stage;
 	import flash.events.Event;
 	
 	import net.ored.util.Resize;
@@ -62,7 +63,7 @@ package com.bigspaceship.display
 				_mc,
 				[ Resize.CENTER_X, Resize.CUSTOM],
 				{
-						custom:			function($target, $params, $stage):void{
+						custom:			function($target:*, $params:*, $stage:Stage):void{
 						$target.x	+=	$target.width/2;
 						$target.y 	=	150;
 						

@@ -8,6 +8,7 @@ package com.strattonimaging.site.display.components.ftp.screens
 		function animateOut($forceAnim:Boolean=false):void;
 		function startTransfer():void;
 		function cancelTransfer():void;
+		function get name():String;
 	}//end interface
 	
 }//end package

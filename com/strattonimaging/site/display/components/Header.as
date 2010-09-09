@@ -3,13 +3,13 @@ package com.strattonimaging.site.display.components
 	import com.asual.swfaddress.SWFAddress;
 	import com.bigspaceship.display.StandardButton;
 	import com.bigspaceship.utils.Out;
-	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.display.screens.Screen;
+	import com.strattonimaging.site.model.Constants;
 	
 	import flash.display.MovieClip;
+	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.text.TextField;
 	import flash.utils.Dictionary;
 	
 	import net.ored.util.Resize;
@@ -60,7 +60,7 @@ package com.strattonimaging.site.display.components
 				_mc,
 				[Resize.CENTER_X, Resize.CUSTOM],
 				{
-					custom:				function($target, $params, $stage):void{
+					custom:	function($target:*, $params:*, $stage:Stage):void{
 						if ($stage.stageHeight > Constants.STAGE_HEIGHT){
 							_mc.y = $stage.stageHeight-Constants.STAGE_HEIGHT;
 						}else _mc.y = 0;

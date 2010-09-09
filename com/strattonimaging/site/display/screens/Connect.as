@@ -4,6 +4,7 @@ package com.strattonimaging.site.display.screens
 	import com.strattonimaging.site.model.Constants;
 	
 	import flash.display.MovieClip;
+	import flash.display.Stage;
 	import flash.events.Event;
 	
 	import net.ored.util.Resize;
@@ -48,7 +49,7 @@ package com.strattonimaging.site.display.screens
 				[Resize.FULLSCREEN_X, Resize.CUSTOM],
 				{
 				
-					custom:				function($target, $params, $stage):void{
+				custom:	function($target:*, $params:*, $stage:Stage):void{
 						
 						Out.debug(this, "grad w: "+_mc.grad_mc.width+" grad h: "+_mc.grad_mc.height+ " grad alpha: "+_mc.grad_mc.alpha);
 							if ($stage.stageHeight > 643) _mc.grad_mc.g.height = $stage.stageHeight - (Constants.BOTTOM_OFFSET - 135);
@@ -61,7 +62,7 @@ package com.strattonimaging.site.display.screens
 				_mc.title_mc.txt,
 				[Resize.CENTER_X, Resize.CUSTOM],
 				{
-					custom:				function($target, $params, $stage):void{
+				custom:	function($target:*, $params:*, $stage:Stage):void{
 						if ($stage.stageHeight > 643){
 							_mc.title_mc.txt.y = ($stage.stageHeight-643)/2;
 					 	}else _mc.title_mc.txt.y = 0;
@@ -74,7 +75,7 @@ package com.strattonimaging.site.display.screens
 				_mc.address_mc.txt,
 				[Resize.CENTER_X, Resize.CUSTOM],
 				{
-					custom:				function($target, $params, $stage):void{
+				custom:	function($target:*, $params:*, $stage:Stage):void{
 						if ($stage.stageHeight > 643){
 							_mc.address_mc.txt.y = ($stage.stageHeight-643)/2;
 					 	}else _mc.address_mc.txt.y = 0;
@@ -87,7 +88,7 @@ package com.strattonimaging.site.display.screens
 				_mc.phone_mc.txt,
 				[Resize.CENTER_X, Resize.CUSTOM],
 				{
-					custom:				function($target, $params, $stage):void{
+				custom:	function($target:*, $params:*, $stage:Stage):void{
 						if ($stage.stageHeight > 643){
 							_mc.phone_mc.txt.y = ($stage.stageHeight-643)/2;
 					 	}else _mc.phone_mc.txt.y = 0;

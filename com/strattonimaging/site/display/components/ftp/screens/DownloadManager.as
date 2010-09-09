@@ -7,12 +7,15 @@ package com.strattonimaging.site.display.components.ftp.screens
 	import com.greensock.plugins.AutoAlphaPlugin;
 	import com.greensock.plugins.TweenPlugin;
 	import com.greensock.plugins.VisiblePlugin;
+	import com.strattonimaging.site.display.components.ftp.display.AlternatingRowColors;
 	import com.strattonimaging.site.events.FtpEvent;
 	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.model.SiteModel;
 	
 	import fl.controls.DataGrid;
+	import fl.controls.dataGridClasses.DataGridColumn;
 	import fl.data.DataProvider;
+	import fl.events.ListEvent;
 	
 	import flash.display.MovieClip;
 	import flash.events.DataEvent;
@@ -21,15 +24,21 @@ package com.strattonimaging.site.display.components.ftp.screens
 	import flash.events.ProgressEvent;
 	import flash.net.FileReference;
 	import flash.net.URLRequest;
+	import flash.utils.Timer;
 	
 	public class DownloadManager extends StandardInOut implements IFtpScreen
 	{
-		private var _m					:SiteModel;
-        private var _dg					:DataGrid;
-        private var _fr					:FileReference;
+		private var _n						:String = Constants.GET;
+		private var _m						:SiteModel;
+        private var _dg						:DataGrid;
+        private var _fr						:FileReference;
         
-		private var _refreshBtn			:StandardButton;
-		private var _downloadBtn		:StandardButton;
+		private var _refreshBtn				:StandardButton;
+		private var _downloadBtn			:StandardButton;
+		
+		private var _dcTimer				:Timer; //timer for doubleClick
+		private const __DOUBLE_CLICK_TIME	:int = 300;
+		private var _clicked				:Boolean = false;
 		
 	// =================================================
 	// ================ Callable
@@ -70,7 +79,9 @@ package com.strattonimaging.site.display.components.ftp.screens
 			
 			//table structure
 			_dg = new DataGrid();
-			_dg.addColumn("Name");
+			_dg.setStyle("cellRenderer", AlternatingRowColors);
+			
+			var iconColumn:DataGridColumn = _dg.addColumn("Name");
 			_dg.addColumn("Type");
 			_dg.addColumn("Size");
 			_dg.addColumn("Date");
@@ -83,6 +94,7 @@ package com.strattonimaging.site.display.components.ftp.screens
 			
 			//datagrid events
 			_dg.addEventListener(Event.CHANGE, _selectHandler);
+			_dg.addEventListener(ListEvent.ITEM_DOUBLE_CLICK, _doubleClickHandler);
 			
 			mc.addChild(_dg);
 		}//end function
@@ -106,6 +118,15 @@ package com.strattonimaging.site.display.components.ftp.screens
 			Out.status(this, "_selectHandler: "+$e.target.selectedItem.Name);			
 			_m.currentFilename = $e.target.selectedItem.Name;
 		}
+		
+		private function _doubleClickHandler($e:ListEvent):void{
+			Out.status(this, "_doubleClickHandler: "+$e.target.selectedItem.Type);	
+			if ($e.target.selectedItem.Type == Constants.FTP_TYPE_FOLDER){
+				_m.currentDirectory += $e.target.selectedItem.Name+"/";
+				dispatchEvent(new FtpEvent(FtpEvent.DO_REFRESH));
+			}//end if item is a folder	
+		}//end function
+		
 		private function _frCancelHandler($e:Event):void{
 			Out.status(this, "_frCancelHandler");
 			dispatchEvent(new FtpEvent(FtpEvent.CHANGE_FTP_SCREEN, {ns:Constants.DASH}));
@@ -118,14 +139,15 @@ package com.strattonimaging.site.display.components.ftp.screens
 	// =================================================
 	// ================ Getters / Setters
 	// =================================================
-	        
+        public function get name ():String{ return _n;}	        
 	// =================================================
 	// ================ Interfaced
 	// =================================================
 		public function startTransfer():void{
 			Out.status(this, "startTransfer from "+_downloadReq.url);
-
-        	_fr.download(_downloadReq, _m.currentFilename);
+			try{
+	        	_fr.download(_downloadReq);//omitting second param preserves filename
+			}catch($e:Error){ Out.error(this, $e);}
 		
 		}//end function  
 		

@@ -7,13 +7,14 @@ package com.strattonimaging.site.display.screens
 	import com.bigspaceship.events.AnimationEvent;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.SimpleSequencer;
-	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.display.screens.credits.Carousel;
 	import com.strattonimaging.site.display.screens.credits.Credit;
 	import com.strattonimaging.site.display.screens.credits.CreditFactory;
 	import com.strattonimaging.site.display.screens.credits.ICredit;
+	import com.strattonimaging.site.model.Constants;
 	
 	import flash.display.MovieClip;
+	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
@@ -189,7 +190,7 @@ package com.strattonimaging.site.display.screens
 				[Resize.FULLSCREEN_X, Resize.CUSTOM],
 				{
 				
-					custom:				function($target, $params, $stage):void{
+				custom:	function($target:*, $params:*, $stage:Stage):void{
 							if ($stage.stageHeight > Constants.STAGE_HEIGHT) _bg.mc.grad_mc.g.height = $stage.stageHeight - (Constants.BOTTOM_OFFSET - 135);
 							else _bg.mc.grad_mc.g.height = Constants.BOTTOM_OFFSET;
 					}//end custom function
@@ -200,7 +201,7 @@ package com.strattonimaging.site.display.screens
 				_carousel.mc,
 				[Resize.CENTER_X, Resize.CUSTOM],
 				{
-					custom:	function($target, $params, $stage):void{
+				custom:	function($target:*, $params:*, $stage:Stage):void{
 								if ($stage.stageHeight > Constants.STAGE_HEIGHT){
 									_carousel.mc.y = ($stage.stageHeight-Constants.STAGE_HEIGHT)/2;
 					 			}else _carousel.mc.y = 0;

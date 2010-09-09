@@ -4,6 +4,7 @@ package com.strattonimaging.site.display.components
 	import com.strattonimaging.site.display.screens.Screen;
 	
 	import flash.display.MovieClip;
+	import flash.display.Stage;
 	import flash.events.MouseEvent;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
@@ -63,7 +64,7 @@ package com.strattonimaging.site.display.components
 				[Resize.CENTER_X, Resize.CUSTOM],
 				{
 							
-					custom:				function($target, $params, $stage):void{
+					custom:		function($target:*, $params:*, $stage:Stage):void{
 						if ($stage.stageHeight > 643){
 							_mc.y = $stage.stageHeight-643;
 						}else _mc.y = 0;
