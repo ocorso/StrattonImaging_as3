@@ -2,11 +2,6 @@ package com.strattonimaging.site.model
 {
 	public class Constants
 	{
-		//routes
-		public static const CONFIG_XML_PATH					:String = "xml/site/config.xml";
-		public static const LOGIN_ROUTE						:String = "ftp/login.json";
-		public static const REFRESH_ROUTE					:String = "ftp/refresh.json"; 
-		public static const UPLOAD_ROUTE					:String = "ftp/upload/"; 
 		
 		//xml config
 		public static const CONFIG_SETTING					:String	= "setting";
@@ -31,7 +26,6 @@ package com.strattonimaging.site.model
 		
 		//positioning
 		public static const BOTTOM_OFFSET					:int = 389;
-		
 		public static const LAYERS_BACKGROUND				:int = 0;
 		public static const LAYERS_SCREEN					:int = 1;
 		public static const LAYERS_FOOTER					:int = 2;
@@ -39,8 +33,19 @@ package com.strattonimaging.site.model
 		public static const LAYERS_LOADER					:int = 4;
 		public static const LAYERS_LOADER_2					:int = 5;
 		public static const LAYERS_FTPCLIENT				:int = 6;
-		
 		public static const LAYERS_TOTAL					:int = 7;
+		
+		//header 
+		public static const LEARN							:String = "learn";
+		public static const CRAFT							:String = "craft";
+		public static const CREDITS							:String = "credits";
+		public static const CONNECT							:String = "connect";
+		//rollover colors
+		public static const TINT_GREEN						:uint = 0x009900;
+		public static const TINT_YELLOW						:uint = 0xFFFF00;
+		public static const TINT_RED						:uint = 0xFF0000;
+		public static const TINT_BLUE						:uint = 0x3300FF;
+		
 		
 		//components
 		public static const COMPONENT_HEADER				:String = "header";
@@ -81,6 +86,12 @@ package com.strattonimaging.site.model
 		public static const POST_VAR_EMAIL						:String = "e";
 		public static const O_RED_DATA							:String = "ored_data";
 		
+		//routes
+		public static const CONFIG_XML_PATH					:String = "xml/site/config.xml";
+		public static const LOGIN_ROUTE						:String = "ftp/login.json";
+		public static const REFRESH_ROUTE					:String = "ftp/refresh.json"; 
+		public static const UPLOAD_ROUTE					:String = "ftp/upload/"; 
+
 		//ftp screen names
 		public static const GET								:String = "get";
 		public static const PUT								:String = "put";

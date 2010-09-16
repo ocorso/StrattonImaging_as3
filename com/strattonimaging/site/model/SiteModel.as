@@ -121,7 +121,7 @@ package com.strattonimaging.site.model
 		}
 		public function getEmail():String{ return _ftpUser.email;}
 		public function get currentDirectory():String{ return _currentDirectory;}
-		public function set currentDirectory($p:String):void{ _currentDirectory = $p;}
+		public function set currentDirectory($p:String):void{ _currentDirectory = $p; Out.info(this, "cd: "+_currentDirectory);}
 		public function set currentFilename($filename:String):void{ _currentFilename = $filename;}
 		public function get currentFilename():String{ return _currentFilename;}
 		public function get fileToDownload():String{ return baseUrl + currentDirectory + _currentFilename;}

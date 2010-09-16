@@ -2,7 +2,9 @@ package com.strattonimaging.site.display.components
 {
 	import com.asual.swfaddress.SWFAddress;
 	import com.bigspaceship.display.StandardButton;
+	import com.bigspaceship.events.AnimationEvent;
 	import com.bigspaceship.utils.Out;
+	import com.greensock.TweenMax;
 	import com.strattonimaging.site.display.screens.Screen;
 	import com.strattonimaging.site.model.Constants;
 	
@@ -10,6 +12,7 @@ package com.strattonimaging.site.display.components
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.text.TextField;
 	import flash.utils.Dictionary;
 	
 	import net.ored.util.Resize;
@@ -42,14 +45,39 @@ package com.strattonimaging.site.display.components
 				var id:String = _xml.menu[i].@id.toString();
 				Out.info(this, "the id of this button is: "+ id);
 				//setup nav btns
-				_navIdsToItems[id] = new StandardButton(_mc.tabs_mc[id + "_mc"], _mc.tabs_mc[id + "_mc"].btn);					
-				if (id!="home")	_navIdsToItems[id].mc.text_mc.inner.tf.text = id.toUpperCase();					
+				_navIdsToItems[id] = new StandardButton(_mc.tabs_mc[id + "_mc"], _mc.tabs_mc[id + "_mc"].btn);
+				//store tint color value in btn
+				switch (id){
+					case Constants.LEARN : _addHoverTweens(_navIdsToItems[id], Constants.TINT_GREEN); break;
+					case Constants.CRAFT : _addHoverTweens(_navIdsToItems[id], Constants.TINT_YELLOW); break;
+					case Constants.CREDITS : _addHoverTweens(_navIdsToItems[id], Constants.TINT_RED); break;
+					case Constants.CONNECT : _addHoverTweens(_navIdsToItems[id], Constants.TINT_BLUE); break;
+				}//end switch
+				if (id!="home")	{
+					_navIdsToItems[id].mc.text_mc.inner.tf.text = id.toUpperCase();		
+				}
 				_navIdsToItems[id].addEventListener(MouseEvent.CLICK,_navOnClick,false,0,true);
 				_navIdsToItems[id].addEventListener(MouseEvent.ROLL_OVER,_navOnRollOver,false,0,true);
 				_navIdsToItems[id].addEventListener(MouseEvent.ROLL_OUT,_navOnRollOut,false,0,true);
 				_navItemsToIds[_navIdsToItems[id]] = id;
 			}//end for
 		}//end function
+		
+		private function _addHoverTweens($sb:StandardButton, $tint:uint):void{
+			$sb.id = String($tint);	
+			$sb.addEventListener(AnimationEvent.ROLL_OVER_START, _tweenToTint);
+			$sb.addEventListener(AnimationEvent.ROLL_OUT_START, _tweenToWhite);
+		}//end function
+		
+		private function _tweenToTint($e:AnimationEvent):void{
+			TweenMax.to($e.target.mc, 0.25, {colorTransform:{tint:$e.target.id, tintAmount:1, brightness:1}});
+			
+		}//end function
+		private function _tweenToWhite($e:AnimationEvent):void{
+			TweenMax.to($e.target.mc, 0.25, {colorTransform:{tint:0xFFFFFF, tintAmount:1, brightness:1}});
+			
+		}//end function
+		
 		private function oef(e:Event):void{
 			Out.debug(this, "frame: "+ MovieClip(_navIdsToItems['craft'].mc).currentFrame);
 		}
@@ -95,5 +123,6 @@ package com.strattonimaging.site.display.components
 			Out.info(this, "HEEEEEEYYYYY_onAnimateIn()");
 			
 		}//end function
+		
 	}//end class
 }//end package
