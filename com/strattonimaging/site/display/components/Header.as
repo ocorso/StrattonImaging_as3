@@ -43,7 +43,7 @@ package com.strattonimaging.site.display.components
 			//setup nav
 			for(var i:int=0;i<_xml.menu.length();i++) {
 				var id:String = _xml.menu[i].@id.toString();
-				Out.info(this, "the id of this button is: "+ id);
+				Out.info(this, "the id of this button is: "+ id); 
 				//setup nav btns
 				_navIdsToItems[id] = new StandardButton(_mc.tabs_mc[id + "_mc"], _mc.tabs_mc[id + "_mc"].btn);
 				//store tint color value in btn
