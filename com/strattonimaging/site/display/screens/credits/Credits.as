@@ -1,4 +1,4 @@
-package com.strattonimaging.site.display.screens
+package com.strattonimaging.site.display.screens.credits
 {
 	import __AS3__.vec.Vector;
 	
@@ -7,10 +7,6 @@ package com.strattonimaging.site.display.screens
 	import com.bigspaceship.events.AnimationEvent;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.SimpleSequencer;
-	import com.strattonimaging.site.display.screens.credits.Carousel;
-	import com.strattonimaging.site.display.screens.credits.Credit;
-	import com.strattonimaging.site.display.screens.credits.CreditFactory;
-	import com.strattonimaging.site.display.screens.credits.ICredit;
 	import com.strattonimaging.site.model.Constants;
 	
 	import flash.display.MovieClip;
@@ -19,6 +15,8 @@ package com.strattonimaging.site.display.screens
 	import flash.events.MouseEvent;
 	
 	import net.ored.util.Resize;
+	import com.strattonimaging.site.display.screens.IScreen;
+	import com.strattonimaging.site.display.screens.Screen;
 
 	public class Credits extends Screen implements IScreen
 	{

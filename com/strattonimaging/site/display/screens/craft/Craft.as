@@ -1,13 +1,16 @@
-package com.strattonimaging.site.display.screens
+package com.strattonimaging.site.display.screens.craft
 {
 	import com.asual.swfaddress.SWFAddress;
+	import com.bigspaceship.display.AnimationState;
 	import com.bigspaceship.display.StandardButtonInOut;
 	import com.bigspaceship.display.StandardCover;
 	import com.bigspaceship.display.StandardInOut;
 	import com.bigspaceship.events.AnimationEvent;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.SimpleSequencer;
-	import com.strattonimaging.site.display.screens.craft.Gallery;
+	import com.greensock.TweenLite;
+	import com.strattonimaging.site.display.screens.IScreen;
+	import com.strattonimaging.site.display.screens.Screen;
 	import com.strattonimaging.site.model.Constants;
 	
 	import flash.display.MovieClip;
@@ -60,7 +63,6 @@ package com.strattonimaging.site.display.screens
 			if(swfArr.length == 1 && _bGalleryIn){
 					Out.debug(this, "swfArr length is 1 and gallery is in");
 					_gallery.addEventListener(AnimationEvent.OUT, _showServices);		
-					_title.mc.visible = true;				
 					_gallery.animateOut();
 			}
 			else if(swfArr.length > 1 && _xml.loadables.(@type==swfArr[2])){
@@ -117,7 +119,7 @@ package com.strattonimaging.site.display.screens
 				n++;
 			}
 		 	_ss.addStep(n+2, _cover, _cover.animateOut, AnimationEvent.OUT);
-			
+			if(_title.mc.visible == false) TweenLite.to(_title.mc, .4, {autoAlpha:1}); 
 			_ss.start();
 			
 		}//end function showServices
@@ -144,7 +146,7 @@ package com.strattonimaging.site.display.screens
 			_bGalleryIn = true;
 			_gallery	= new Gallery(_gallery_mc, _thumbs_mc, getNodeByType(Constants.CONFIG_LOADABLES, _siteModel.currentSection), _loader);
 			_gallery.addEventListener(AnimationEvent.OUT, _destroyGallery);
-			_title.mc.visible = false;			
+			TweenLite.to(_title.mc,.4,{autoAlpha:0});
 			_gallery.animateIn();
 			SWFAddress.setValue(_siteModel.currentScreen+"/"+_siteModel.currentSection);
 		}
@@ -253,6 +255,13 @@ package com.strattonimaging.site.display.screens
 		// =================================================
 		// ================ Overrides
 		// =================================================
+		override protected function _onAnimateInStart():void{
+			_title.mc.gotoAndStop(AnimationState.OUT);
+			_title.mc.visible = true;
+			_title.mc.alpha = 1;
+
+		}//end function
+		
 		override protected function _animateIn():void{
 			//Out.status(this, "animateIn():: here is loadlist: "+_loadList);
 			

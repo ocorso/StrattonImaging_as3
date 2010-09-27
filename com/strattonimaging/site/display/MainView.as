@@ -17,8 +17,8 @@ package com.strattonimaging.site.display
 	import com.strattonimaging.site.display.components.Header;
 	import com.strattonimaging.site.display.components.ftp.FtpClient;
 	import com.strattonimaging.site.display.screens.Connect;
-	import com.strattonimaging.site.display.screens.Craft;
-	import com.strattonimaging.site.display.screens.Credits;
+	import com.strattonimaging.site.display.screens.craft.Craft;
+	import com.strattonimaging.site.display.screens.credits.Credits;
 	import com.strattonimaging.site.display.screens.Home;
 	import com.strattonimaging.site.display.screens.Learn;
 	import com.strattonimaging.site.display.screens.Screen;
