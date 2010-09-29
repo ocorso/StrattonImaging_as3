@@ -18,7 +18,7 @@ package com.strattonimaging.site.display.screens
 		protected var _loadList				:XMLList;
 		
 		protected var _loader				:BigLoader;
-		protected var _siteModel			:SiteModel;
+		protected var _m					:SiteModel;
 		protected var _ss					:SimpleSequencer;
 		
 		public function Screen($mc:MovieClip, $xml:XML, $useWeakReference:Boolean=false)
@@ -26,7 +26,7 @@ package com.strattonimaging.site.display.screens
 			super($mc, $useWeakReference);
 			_xml = $xml;
 			_loader = new BigLoader();
-			_siteModel = SiteModel.getInstance();
+			_m = SiteModel.getInstance();
 		}//end constructor
 		
 		protected function _destroySequencer():void{
@@ -59,12 +59,12 @@ package com.strattonimaging.site.display.screens
 					if(path.substr((path.length - 4), 1) == "."){
 						var fileType:String = path.substr((path.length - 3), 3);
 						if(fileType == "jpg") fileType=Constants.TYPE_IMG;
-						path = _siteModel.getDirPath(fileType) + path;
+						path = _m.getDirPath(fileType) + path;
 					}
 					
 					
 					//check to see if the base url needs to be added
-					if(_loadList[n].@needs_baseURL == "yes") path = _siteModel.baseUrl + path;
+					if(_loadList[n].@needs_baseURL == "yes") path = _m.baseUrl + path;
 					
 					//if there is no "." for a file extension I am assuming it is a URL request
 					if(path.substr((path.length - 4), 1) == ".") _loader.add(path, _loadList[n].@id);

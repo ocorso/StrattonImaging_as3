@@ -40,8 +40,6 @@ package com.strattonimaging.site.display.components.ftp
 
 	public class FtpClient extends Screen implements IScreen
 	{
-		private var _m					:SiteModel;
-		
 		//standard in outs
 		private var _tabs				:StandardInOut;
 		
@@ -75,7 +73,6 @@ package com.strattonimaging.site.display.components.ftp
 // =================================================
         private function _init():void{
 			Out.status(this, "init()");
-			_m 	= SiteModel.getInstance();
 			
 			//initialize our handy little ftp module			
 			_ftpUtil = new FtpUtil();

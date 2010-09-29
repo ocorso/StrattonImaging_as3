@@ -60,6 +60,7 @@ package com.strattonimaging.site.display.screens.craft
 			
 			//SWF ADDRESS STUFF
 			var swfArr:Array = SWFAddress.getPathNames(); // path should look something like this: craft/grand_format/2
+			Out.info(this, swfArr);
 			if(swfArr.length == 1 && _bGalleryIn){
 					Out.debug(this, "swfArr length is 1 and gallery is in");
 					_gallery.addEventListener(AnimationEvent.OUT, _showServices);		
@@ -67,15 +68,15 @@ package com.strattonimaging.site.display.screens.craft
 			}
 			else if(swfArr.length > 1 && _xml.loadables.(@type==swfArr[2])){
 				Out.debug(this, "swfArr length is > 1 and the type of gallery is one of the loadables types");
-				_siteModel.currentSection = swfArr[2];
-				Out.debug(this, "current service = "+_siteModel.currentSection);
+				_m.currentSection = swfArr[1];
+				Out.debug(this, "current service = "+_m.currentSection);
 				if(!_bGalleryIn) _onHideServices();
 			}
 				
 			//this is what we do as a defualt
 			else{
 				Out.debug(this, "url change fell through, show services.");
-				//if(_siteModel.currentSection == null) _siteModel.currentSection = _xml.loadables[0].@type;
+				//if(_m.currentSection == null) _m.currentSection = _xml.loadables[0].@type;
 				_showServices();
 				
 			}
@@ -144,17 +145,28 @@ package com.strattonimaging.site.display.screens.craft
 		private function _onHideServices($evt:Event = null):void{
 			Out.status(this, "_onHideServices");
 			_bGalleryIn = true;
-			_gallery	= new Gallery(_gallery_mc, _thumbs_mc, getNodeByType(Constants.CONFIG_LOADABLES, _siteModel.currentSection), _loader);
-			_gallery.addEventListener(AnimationEvent.OUT, _destroyGallery);
-			TweenLite.to(_title.mc,.4,{autoAlpha:0});
+			_createGallery();
 			_gallery.animateIn();
-			SWFAddress.setValue(_siteModel.currentScreen+"/"+_siteModel.currentSection);
-		}
+			SWFAddress.setValue(_m.currentScreen+"/"+_m.currentSection);
+		}//end function
+		private function _fadeOutTitle($e:AnimationEvent = null):void{
+				TweenLite.to(_title.mc,.4,{autoAlpha:0});
+			
+		}//end function
+		
+		private function _createGallery():void{
+			Out.status(this, "create gallery");
+			_gallery	= new Gallery(_gallery_mc, _thumbs_mc, getNodeByType(Constants.CONFIG_LOADABLES, _m.currentSection), _loader);
+			_gallery.addEventListener(AnimationEvent.OUT, _destroyGallery);
+			_gallery.addEventListener(AnimationEvent.IN_START, _fadeOutTitle);
+		}//end function
+		
 		private function _destroyGallery($ae:AnimationEvent=null):void{
 			_bGalleryIn = false
 			if(_gallery){
 				_gallery.removeEventListener(AnimationEvent.OUT, _showServices);
 				_gallery.removeEventListener(AnimationEvent.OUT, _destroyGallery);
+				_gallery.removeEventListener(AnimationEvent.IN_START, _fadeOutTitle);
 				_gallery.destroy();
 				_gallery = null;
 			}
@@ -246,8 +258,8 @@ package com.strattonimaging.site.display.screens.craft
 			
 			Out.status(this, "_serviceOnClick(): target: "+ $me.target);
 			var tempS:StandardButtonInOut = $me.target as StandardButtonInOut;
-			_siteModel.currentSection = _serviceItemsToIds[tempS];
-			Out.debug(this, _siteModel.currentSection);
+			_m.currentSection = _serviceItemsToIds[tempS];
+			Out.debug(this, _m.currentSection);
 			_hideServices();
 			
 		}//end function 
@@ -263,8 +275,9 @@ package com.strattonimaging.site.display.screens.craft
 		}//end function
 		
 		override protected function _animateIn():void{
-			//Out.status(this, "animateIn():: here is loadlist: "+_loadList);
-			
+			Out.status(this, "animateIn()");
+			var swfArr:Array = SWFAddress.getPathNames();
+			Out.info(this, swfArr);
 			mc.visible = true;
 			_destroySequencer();
 			_ss = new SimpleSequencer("in");
@@ -272,19 +285,25 @@ package com.strattonimaging.site.display.screens.craft
 			_ss.addStep(1,_bg,_bg.animateIn,AnimationEvent.IN);
 			_ss.addStep(2,_title,_title.animateIn,AnimationEvent.IN);
 			
-			// oc: services
-			var n:uint=0
-			for each(var s:StandardButtonInOut in _serviceIdsToItems){
-				_ss.addStep(2 + (n+1), s.mc, s.animateIn, "NEXT_IN");
-				n++;
-			}
-			
+			if (swfArr.length > 1){
+				_m.currentSection = swfArr[1];
+				_createGallery();
+				_bGalleryIn = true;
+				_ss.addStep(3, _gallery, _gallery.animateIn, AnimationEvent.IN);
+			}else{
+				// oc: services
+				var n:uint=0
+				for each(var s:StandardButtonInOut in _serviceIdsToItems){
+					_ss.addStep(2 + (n+1), s.mc, s.animateIn, "NEXT_IN");
+					n++;
+				}//end for each
+			}//end else
 			_ss.start();
 			
 		}//end function _animateIn
-		override protected function _onAnimateOut():void{
-		}//end function
-		//override protected function _onAnimateIn():void { _siteModel.track(); }
+
+		override protected function _onAnimateOut():void{}//end function
+		//override protected function _onAnimateIn():void { _m.track(); }
 		
 		override protected function _animateOut():void{
 			Out.status(this, "_animateOut, here is _bGalleryIn: "+ _bGalleryIn);

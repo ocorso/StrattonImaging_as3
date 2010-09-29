@@ -1,6 +1,7 @@
 package com.strattonimaging.site.display.components
 {
 	import com.asual.swfaddress.SWFAddress;
+	import com.bigspaceship.display.AnimationState;
 	import com.bigspaceship.display.StandardButton;
 	import com.bigspaceship.events.AnimationEvent;
 	import com.bigspaceship.utils.Out;
@@ -12,7 +13,6 @@ package com.strattonimaging.site.display.components
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.text.TextField;
 	import flash.utils.Dictionary;
 	
 	import net.ored.util.Resize;
@@ -48,17 +48,16 @@ package com.strattonimaging.site.display.components
 				_navIdsToItems[id] = new StandardButton(_mc.tabs_mc[id + "_mc"], _mc.tabs_mc[id + "_mc"].btn);
 				//store tint color value in btn
 				switch (id){
-					case Constants.LEARN : _addHoverTweens(_navIdsToItems[id], Constants.TINT_GREEN); break;
-					case Constants.CRAFT : _addHoverTweens(_navIdsToItems[id], Constants.TINT_YELLOW); break;
-					case Constants.CREDITS : _addHoverTweens(_navIdsToItems[id], Constants.TINT_RED); break;
-					case Constants.CONNECT : _addHoverTweens(_navIdsToItems[id], Constants.TINT_BLUE); break;
+					case Constants.LEARN 	: _addHoverTweens(_navIdsToItems[id], Constants.TINT_GREEN); break;
+					case Constants.CRAFT 	: _addHoverTweens(_navIdsToItems[id], Constants.TINT_YELLOW); break;
+					case Constants.CREDITS 	: _addHoverTweens(_navIdsToItems[id], Constants.TINT_RED); break;
+					case Constants.CONNECT 	: _addHoverTweens(_navIdsToItems[id], Constants.TINT_BLUE); break;
 				}//end switch
 				if (id!="home")	{
 					_navIdsToItems[id].mc.text_mc.inner.tf.text = id.toUpperCase();		
 				}
 				_navIdsToItems[id].addEventListener(MouseEvent.CLICK,_navOnClick,false,0,true);
-				_navIdsToItems[id].addEventListener(MouseEvent.ROLL_OVER,_navOnRollOver,false,0,true);
-				_navIdsToItems[id].addEventListener(MouseEvent.ROLL_OUT,_navOnRollOut,false,0,true);
+
 				_navItemsToIds[_navIdsToItems[id]] = id;
 			}//end for
 		}//end function
@@ -81,7 +80,12 @@ package com.strattonimaging.site.display.components
 		private function oef(e:Event):void{
 			Out.debug(this, "frame: "+ MovieClip(_navIdsToItems['craft'].mc).currentFrame);
 		}
-		
+		private function _doFirstSelect($e:AnimationEvent):void{
+			Out.status(this, "_doFirstSelect(): _currentActive = "+_currentActive);
+			
+			StandardButton(_navIdsToItems[_currentActive]).select();
+			
+		}//end function
 		private function _setupResize():void{
 			Resize.add(
 				"@headerBtns",
@@ -98,12 +102,6 @@ package com.strattonimaging.site.display.components
 			);//end btns center
 		
 		}//end function
-		private function _navOnRollOver($me:MouseEvent):void{
-			Out.debug(this, "over: "+$me.localY);
-		}
-		private function _navOnRollOut($me:MouseEvent):void{
-			Out.debug(this, "out: "+$me.localY);
-		}
 		
 		private function _navOnClick($evt:MouseEvent):void {
 			Out.debug(this, "just clicked: "+ $evt.target);
@@ -112,11 +110,15 @@ package com.strattonimaging.site.display.components
 		}
 		
 		public function setActiveScreen():void {
-			
 			Out.status(this, "setActiveScreen(): _currentActive = "+_currentActive);
+			
+			Out.warning(this, "_currentScreen = "+_m.currentScreen);
+			Out.error(this, "headerState = "+state);
 			if(_currentActive != null) _navIdsToItems[_currentActive].deselect();
-			_currentActive = _siteModel.currentScreen;
-			_navIdsToItems[_currentActive].select();
+			_currentActive = _m.currentScreen;
+			if (state == AnimationState.OUT){
+				addEventListener(AnimationEvent.IN, _doFirstSelect);
+			}else	StandardButton(_navIdsToItems[_currentActive]).select();
 			
 		}//end function
 		override protected function _onAnimateIn():void{
