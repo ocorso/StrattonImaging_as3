@@ -202,6 +202,8 @@ package
 			
 			// force the first screen to load.
 			_m.getInitialPath();
+			
+			
 		}
 		/**our master loading tidy up function**/
 		private function _loaderCleanUp():void {
