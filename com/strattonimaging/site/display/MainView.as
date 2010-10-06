@@ -11,18 +11,18 @@ package com.strattonimaging.site.display
 	import com.bigspaceship.utils.Lib;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.SimpleSequencer;
-	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.display.components.Background;
 	import com.strattonimaging.site.display.components.Footer;
 	import com.strattonimaging.site.display.components.Header;
 	import com.strattonimaging.site.display.components.ftp.FtpClient;
 	import com.strattonimaging.site.display.screens.Connect;
-	import com.strattonimaging.site.display.screens.craft.Craft;
-	import com.strattonimaging.site.display.screens.credits.Credits;
 	import com.strattonimaging.site.display.screens.Home;
 	import com.strattonimaging.site.display.screens.Learn;
 	import com.strattonimaging.site.display.screens.Screen;
+	import com.strattonimaging.site.display.screens.craft.Craft;
+	import com.strattonimaging.site.display.screens.credits.Credits;
 	import com.strattonimaging.site.events.ScreenEvent;
+	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.model.SiteModel;
 	
 	import flash.display.MovieClip;
@@ -91,6 +91,7 @@ package com.strattonimaging.site.display
 		}
 		
 		public function loadScreenSpecifics():void {	
+			Out.status(this, "loadScreenSpecifics");
 			_screenLoading = _m.currentScreen;
 			_screens[_screenLoading].addEventListener(ProgressEvent.PROGRESS,dispatchEvent,false,0,true);
 			_screens[_screenLoading].addEventListener(Event.COMPLETE,dispatchEvent,false,0,true);

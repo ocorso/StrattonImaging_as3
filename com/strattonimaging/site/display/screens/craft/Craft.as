@@ -200,6 +200,7 @@ package com.strattonimaging.site.display.screens.craft
 			
 			//setup services
 			for(var i:int=0;i<_xml.loadables.length();i++) {
+			Out.warning(this, "bombing here(): "+i);
 				var id:String = _xml.loadables[i].@type.toString();
 				//setup service btns
 				_serviceIdsToItems[id] = new StandardButtonInOut(_services.mc["s"+i], _services.mc["s"+i].btn);					
@@ -208,7 +209,8 @@ package com.strattonimaging.site.display.screens.craft
 				_serviceIdsToItems[id].addEventListener(MouseEvent.CLICK,_serviceOnClick,false,0,true);
 				_serviceIdsToItems[id].addEventListener(AnimationEvent.IN,_serviceOnAnimateIn,false,0,true);
 				_serviceItemsToIds[_serviceIdsToItems[id]] = id;
-			}//end for			
+			}//end for	
+			
 		}//end function
 		public function setupResize():void{
 			
