@@ -44,7 +44,7 @@ package com.strattonimaging.site.display
 		private var _background				:Background;
 		private var _sl						:MovieClip;
 		
-		private var _siteModel				:SiteModel;
+		private var _m						:SiteModel;
 		
 		private var _sequencer				:SimpleSequencer;
 		
@@ -62,9 +62,9 @@ package com.strattonimaging.site.display
 			super($mc, $useWeakReference);
 			
 			//setup variable
-			_siteModel = SiteModel.getInstance();
-			_siteModel.addEventListener(SWFAddressEvent.CHANGE,_screenOnURLChange,false,0,true);
-			_siteModel.addEventListener(NavigationEvent.NAVIGATE,_goToNextScreen,false,0,true);
+			_m = SiteModel.getInstance();
+			_m.addEventListener(SWFAddressEvent.CHANGE,_screenOnURLChange,false,0,true);
+			_m.addEventListener(NavigationEvent.NAVIGATE,_goToNextScreen,false,0,true);
 		
 			_layers = new Vector.<Sprite>(Constants.LAYERS_TOTAL);
 			_screens = new Dictionary();
@@ -91,12 +91,12 @@ package com.strattonimaging.site.display
 		}
 		
 		public function loadScreenSpecifics():void {	
-			_screenLoading = _siteModel.currentScreen;
+			_screenLoading = _m.currentScreen;
 			_screens[_screenLoading].addEventListener(ProgressEvent.PROGRESS,dispatchEvent,false,0,true);
 			_screens[_screenLoading].addEventListener(Event.COMPLETE,dispatchEvent,false,0,true);
 			_screens[_screenLoading].beginCustomLoad();
 		}
-		public function get isNextScreenLoaded():Boolean { return _screens[_siteModel.nextScreen] != null; }
+		public function get isNextScreenLoaded():Boolean { return _screens[_m.nextScreen] != null; }
 		
 		public function addAsset($id:String,$swf:MovieClip,$xml:XML):void
 		{
@@ -151,6 +151,7 @@ package com.strattonimaging.site.display
 					break;
 				case Constants.SCREEN_CRAFT:
 					_screens[$id] = new Craft($swf,$xml);
+					_m.siteAssets = $swf;
 					break;
 				case Constants.SCREEN_CREDITS:
 					_screens[$id] = new Credits($swf,$xml);
@@ -174,10 +175,10 @@ package com.strattonimaging.site.display
 		/***********************************************************/
 		public function _goToNextScreen($evt:NavigationEvent = null):void {
 			Out.status(this, "_goToNextScreen");
-			//Out.debug(this, "current screen state: "+_screens[_siteModel.currentScreen].state);
+			//Out.debug(this, "current screen state: "+_screens[_m.currentScreen].state);
 			if(!_sequencer) {
-				if(!_screens[_siteModel.currentScreen] || _screens[_siteModel.currentScreen].state == AnimationState.OUT) _screenOnAnimateOut();
-				else if(_screens[_siteModel.currentScreen].state == AnimationState.IN) _animateScreenOut();
+				if(!_screens[_m.currentScreen] || _screens[_m.currentScreen].state == AnimationState.OUT) _screenOnAnimateOut();
+				else if(_screens[_m.currentScreen].state == AnimationState.IN) _animateScreenOut();
 			}
 		}//end function
 		
@@ -193,7 +194,7 @@ package com.strattonimaging.site.display
 			
 			_sequencer = new SimpleSequencer("out");
 			_sequencer.addEventListener(Event.COMPLETE,_screenOnAnimateOut,false,0,true);			
-			_sequencer.addStep(1,_screens[_siteModel.currentScreen],_screens[_siteModel.currentScreen].animateOut,AnimationEvent.OUT);
+			_sequencer.addStep(1,_screens[_m.currentScreen],_screens[_m.currentScreen].animateOut,AnimationEvent.OUT, {$forceAnim:true});
 			
 			_sequencer.start();
 		}//end function
@@ -202,9 +203,9 @@ package com.strattonimaging.site.display
 			Out.status(this,"_screenOnAnimateOut();");
 			_destroySequencer();
 			
-			_siteModel.currentScreen = _siteModel.nextScreen;
+			_m.currentScreen = _m.nextScreen;
 			
-			if(_screens[_siteModel.currentScreen]) {
+			if(_screens[_m.currentScreen]) {
 				
 				if(_bPreloaderIn) dispatchEvent(new ScreenEvent(ScreenEvent.REQUEST_LOAD_CANCEL));
 				else _animateScreenIn();
@@ -234,19 +235,19 @@ package com.strattonimaging.site.display
 			
 			_header.setActiveScreen();
 			
-			_sequencer.addStep(4,_screens[_siteModel.currentScreen],_screens[_siteModel.currentScreen].animateIn,AnimationEvent.IN);
+			_sequencer.addStep(4,_screens[_m.currentScreen],_screens[_m.currentScreen].animateIn,AnimationEvent.IN);
 			_sequencer.start();			
 		}
 		
 		private function _screenOnAnimateIn($evt:Event):void {
 			Out.status(this,"_screenOnAnimateIn();");
 			_destroySequencer();
-			if(_siteModel.nextScreen != _siteModel.currentScreen) _goToNextScreen();
+			if(_m.nextScreen != _m.currentScreen) _goToNextScreen();
 		
 		}		
 		
 		private function _screenOnURLChange($evt:Event):void {
-			if(_screens[_siteModel.currentScreen]) _screens[_siteModel.currentScreen].onURLChange();	
+			if(_screens[_m.currentScreen]) _screens[_m.currentScreen].onURLChange();	
 		}//end function
 		
 		/***********************************************************/

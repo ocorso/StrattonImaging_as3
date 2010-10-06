@@ -6,8 +6,8 @@ package com.strattonimaging.site.display.components.ftp.screens
 	import com.bigspaceship.display.StandardInOut;
 	import com.bigspaceship.utils.Out;
 	import com.dynamicflash.util.Base64;
-	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.events.FtpEvent;
+	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.model.SiteModel;
 	import com.strattonimaging.site.model.vo.FTPUser;
 	
@@ -21,8 +21,7 @@ package com.strattonimaging.site.display.components.ftp.screens
 	import flash.net.URLVariables;
 	import flash.ui.Keyboard;
 	
-	import net.ored.util.ObjectToString;
-	
+	import net.ored.util.ORedUtils;
 	
 	public class Login extends StandardInOut implements IFtpScreen
 	{
@@ -83,7 +82,7 @@ package com.strattonimaging.site.display.components.ftp.screens
         private function _loginHandler($evt:Event):void{
 			Out.status(this, "loginHandler, here is the response: "+$evt.target.data);
 			var json:JSONDecoder = new JSONDecoder(Base64.decode($evt.target.data), false);
-			ObjectToString.o(json.getValue());
+			ORedUtils.objectToString(json.getValue());
 			
 			_m.ftpUser = new FTPUser(json.getValue());
 			if (!_m.ftpUser.auth) {

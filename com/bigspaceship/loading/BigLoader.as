@@ -65,7 +65,7 @@ package com.bigspaceship.loading
 	 *  @since  25.05.2010
 	 */
 	public class BigLoader extends EventDispatcher {
-		public static var verbose		:Boolean = true;
+		public static var verbose		:Boolean = false;
 
 		private const MAX_CONNECTIONS	:int = 2;
 

@@ -2,8 +2,11 @@ package com.strattonimaging.site.display.screens.craft
 {
 	import com.bigspaceship.display.StandardButton;
 	import com.bigspaceship.display.StandardInOut;
+	import com.bigspaceship.events.AnimationEvent;
+	import com.bigspaceship.utils.Lib;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.SimpleSequencer;
+	import com.strattonimaging.site.model.SiteModel;
 	
 	import flash.display.MovieClip;
 	import flash.events.Event;
@@ -14,8 +17,11 @@ package com.strattonimaging.site.display.screens.craft
 	{
 		private const _THUMB_HEIGHT		:int = 34;
 		private const _THUMB_MAX_WIDTH	:int = 53;
+		private const _THUMB_PADDING	:int = 5;
 		
-		private var _thumbsDict				:Dictionary;
+		private var _m					:SiteModel;
+		private var _thumbsDict			:Dictionary;
+		private var _thumbsVect			:Vector.<StandardInOut>;
 		
 		private var _ss					:SimpleSequencer;
 		private var _current			:int;
@@ -24,18 +30,30 @@ package com.strattonimaging.site.display.screens.craft
 // ================ Callable
 // =================================================
 		public function addThumb($asset:*):void{
+			Out.status(this, "addThumb; asset: "+$asset);
+			$asset.height 	= _THUMB_HEIGHT;
+			$asset.width 	= _THUMB_MAX_WIDTH;
+			var id:String 	= "t"+_current;
+			//old static 
+			//mc[id].visible 	= true;
+			//mc[id].img.addChild($asset);
+			//_thumbsDict[id] = new StandardButton(mc[id], mc[id].btn);
+			//_thumbsDict[id].addEventListener(MouseEvent.CLICK, _thumbClickHandler);
 			
-			$asset.height = _THUMB_HEIGHT;
-			$asset.width = _THUMB_MAX_WIDTH;
+			//new dynamic
+			var thumbClip:MovieClip = Lib.createAsset("com.strattonimaging.site.display.screens.craft.ThumbClip",_m.siteAssets) as MovieClip;
+			thumbClip.x = _current*(_THUMB_MAX_WIDTH + _THUMB_PADDING);
+			thumbClip.name = id;
+			thumbClip.visible 	= true;
+			thumbClip.mc.img.addChild($asset);
+			thumbClip.mask = mc.mask_mc;
+			mc.addChild(thumbClip);
 			
-			var id:String = "t"+_current;
-			mc[id].visible = true;
-			mc[id].img.addChild($asset);
-			_thumbsDict[id] = new StandardButton(mc[id], mc[id].btn);
+			_thumbsDict[id] = new StandardButton(thumbClip.mc, thumbClip.mc.btn);
+			_thumbsVect.push(new StandardInOut(thumbClip));	
 			_thumbsDict[id].addEventListener(MouseEvent.CLICK, _thumbClickHandler);
-			
 			_current++;
-		}//end fucntion
+		}//end function
 		
 		public function changeThumb($deselectThis:int):void{
 			_thumbsDict["t"+$deselectThis].deselect();
@@ -54,6 +72,13 @@ package com.strattonimaging.site.display.screens.craft
 // =================================================
 // ================ Workers
 // =================================================
+	private function _init():void{
+		_m 			= SiteModel.getInstance();
+		_thumbsDict = new Dictionary();
+		_thumbsVect = new Vector.<StandardInOut>();
+		_current	= _m.currentThumb;
+	}//end function
+	
 	private function _destroySequencer():void{
 		if(_ss){
 				_ss.removeEventListener(Event.COMPLETE,_animateInSequencer_COMPLETE_handler);
@@ -66,7 +91,7 @@ package com.strattonimaging.site.display.screens.craft
 // =================================================
 		private function _thumbClickHandler($me:MouseEvent):void{
 			
-			var s:String = StandardButton($me.target).mc.name;
+			var s:String = StandardButton($me.target).mc.parent.name;
 			Out.status(this, "_thumbClickHandler: "+ s);
 			_thumbsDict[s].select();
 			_thumbsDict["t"+current].deselect();
@@ -99,6 +124,36 @@ package com.strattonimaging.site.display.screens.craft
 // =================================================
 // ================ Overrides
 // =================================================
+		override protected function _animateIn():void{
+			Out.status(this, "animateIn()");
+			
+			mc.visible = true;
+			_destroySequencer();
+			_ss = new SimpleSequencer("in");
+			_ss.addEventListener(Event.COMPLETE,_animateInSequencer_COMPLETE_handler,false,0,true);
+			var n:uint=0
+			for each(var s:StandardInOut in _thumbsVect){
+				n++;
+				_ss.addStep(n, s.mc, s.animateIn, "NEXT_IN");
+			}//end for each
+			_ss.start();
+			
+		}//end function _animateIn
+		override protected function _animateOut():void{
+			Out.status(this, "animateOut()");
+			Out.debug(this, "thumbsVect length: "+ _thumbsVect.length);
+			_destroySequencer();
+			_ss = new SimpleSequencer("out");
+			_ss.addEventListener(Event.COMPLETE,_animateOutSequencer_COMPLETE_handler,false,0,true);
+			var n:int = 0;
+			for(var i:int = _thumbsVect.length-1; i>=0; i--){
+				_ss.addStep(n, _thumbsVect[i].mc, _thumbsVect[i].animateOut, "NEXT_OUT");
+				n++;
+			}//end for
+			_ss.start();
+			
+		}//end function _animateIn
+
 		override protected function _onAnimateIn():void{
 			//deselect all thumbs prior to showing the thumbs.
 			for each(var s:StandardButton in _thumbsDict){s.deselect();}
@@ -106,7 +161,9 @@ package com.strattonimaging.site.display.screens.craft
 		}
 		override protected function _onAnimateOut():void{
 			for each(var s:StandardButton in _thumbsDict){s.deselect();}
-			
+			mc.visible = false;
+			dispatchEvent(new AnimationEvent(AnimationEvent.OUT));
+			_m.currentThumb = 0;
 		}
 // =================================================
 // ================ Constructor
@@ -115,6 +172,8 @@ package com.strattonimaging.site.display.screens.craft
 		public function Thumbs($mc:MovieClip, $useWeakReference:Boolean=true)
 		{
 			super($mc);
+			_init();
+			_m 			= SiteModel.getInstance();
 			_thumbsDict = new Dictionary();
 		}//end constructor
 		

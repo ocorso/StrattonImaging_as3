@@ -71,6 +71,8 @@ package com.strattonimaging.site.display.screens.craft
 				_m.currentSection = swfArr[1];
 				Out.debug(this, "current service = "+_m.currentSection);
 				if(!_bGalleryIn) _onHideServices();
+				if (swfArr.length == 3)	_m.currentThumb = swfArr[2];
+				else _m.currentThumb = 0;
 			}
 				
 			//this is what we do as a defualt
@@ -98,7 +100,7 @@ package com.strattonimaging.site.display.screens.craft
 			_thumbs_mc 	= mc.services_mc.gallery_mc.thumbs_mc;
 			
 			//here are all the StandardInOuts
-			_cover		= new StandardCover(mc.services_mc.cover_mc);
+			_cover		= new StandardCover(mc.cover_mc);
 			_bg 		= new StandardInOut(mc.bg_mc);
 			_title 		= new StandardInOut(mc.title_mc);
 			_services	= new StandardInOut(mc.services_mc);
@@ -186,7 +188,7 @@ package com.strattonimaging.site.display.screens.craft
 		// =================================================		
 		
 		private function _serviceOnAnimateIn($evt:Event):void{
-			Out.status(this, "_serviceOnAnimateIn()::");
+			//Out.status(this, "_serviceOnAnimateIn()::");
 		}
 		// =================================================
 		// ================ Interfaced		
@@ -282,22 +284,28 @@ package com.strattonimaging.site.display.screens.craft
 			_destroySequencer();
 			_ss = new SimpleSequencer("in");
 			_ss.addEventListener(Event.COMPLETE,_animateInSequencer_COMPLETE_handler,false,0,true);
+			_ss.addStep(0,_cover,_cover.animateIn,AnimationEvent.IN);
 			_ss.addStep(1,_bg,_bg.animateIn,AnimationEvent.IN);
 			_ss.addStep(2,_title,_title.animateIn,AnimationEvent.IN);
 			
+			var n:uint=3
 			if (swfArr.length > 1){
 				_m.currentSection = swfArr[1];
+				if (swfArr.length == 3) _m.currentThumb = swfArr[2];
+				else _m.currentThumb = 0;
 				_createGallery();
 				_bGalleryIn = true;
-				_ss.addStep(3, _gallery, _gallery.animateIn, AnimationEvent.IN);
+				_ss.addStep(n, _gallery, _gallery.animateIn, AnimationEvent.IN);
 			}else{
 				// oc: services
-				var n:uint=0
 				for each(var s:StandardButtonInOut in _serviceIdsToItems){
-					_ss.addStep(2 + (n+1), s.mc, s.animateIn, "NEXT_IN");
 					n++;
+					_ss.addStep(n, s.mc, s.animateIn, "NEXT_IN");
 				}//end for each
 			}//end else
+			
+			n++;
+			_ss.addStep(n,_cover,_cover.animateOut,AnimationEvent.OUT);
 			_ss.start();
 			
 		}//end function _animateIn

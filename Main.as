@@ -8,9 +8,9 @@ package
 	import com.bigspaceship.utils.out.adapters.ArthropodAdapter;
 	import com.greensock.plugins.BlurFilterPlugin;
 	import com.greensock.plugins.TweenPlugin;
-	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.display.MainView;
 	import com.strattonimaging.site.events.ScreenEvent;
+	import com.strattonimaging.site.model.Constants;
 	import com.strattonimaging.site.model.SiteModel;
 	
 	import flash.display.MovieClip;
@@ -23,6 +23,7 @@ package
 	import flash.net.URLRequest;
 	import flash.ui.Mouse;
 	
+	import net.ored.util.ORedUtils;
 	import net.ored.util.Resize;
 	
 	import nl.demonsters.debugger.MonsterDebugger;
@@ -64,7 +65,7 @@ package
 			_m.initialize(stage.loaderInfo);
 			
 			if(!Environment.IS_IN_BROWSER || !Environment.IS_ON_SERVER){
-				_turnOnOut();
+				ORedUtils.turnOutOn();
 				
 				Out.status(this,"_initialize(); Main the next generation ");
 				Out.warning(this, "!Environment.IS_IN_BROWSER");
@@ -358,19 +359,13 @@ package
 // =================================================
 // ================ Debug Stuff
 // =================================================
-		private function _turnOnOut():void{
-				Out.enableAllLevels();
-				Out.registerDebugger(new ArthropodAdapter(true));
-				Out.clear();
-				Out.silence(Resize);
-		
-		}
+
 		private function _setMouseListeners():void{		
 				
 			addEventListener( MouseEvent.MOUSE_UP,     _mouse_MOUSEUP_handler );
 			addEventListener( MouseEvent.MOUSE_DOWN,   _mouse_MOUSEDOWN_handler );
 			addEventListener( MouseEvent.MOUSE_OVER,   _mouse_MOUSEOVER_handler );
-			addEventListener( MouseEvent.CLICK, _checkMouseEventTrail );			
+			//addEventListener( MouseEvent.CLICK, _checkMouseEventTrail );			
 		
 		}
 		

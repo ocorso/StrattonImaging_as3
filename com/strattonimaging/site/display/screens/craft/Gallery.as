@@ -17,7 +17,7 @@ package com.strattonimaging.site.display.screens.craft
 
 	public class Gallery extends StandardInOut
 	{
-		private var _siteModel			:SiteModel;
+		private var _m			:SiteModel;
 		
 		private var _xml				:XMLList;
 		private var _bl					:BigLoader;
@@ -67,8 +67,9 @@ package com.strattonimaging.site.display.screens.craft
 				Out.debug(this, _xml.loadable[e].@id);
 				_thumbs.addThumb(_bl.getLoadedAssetById(_xml.loadable[e].@id.toString()));
 			}//end for in
-			_thumbs.current = 0;
-			_curThumb = _xml.loadable[0].@id.toString();
+			_thumbs.current = _m.currentThumb;
+			_curThumb = _xml.loadable[_m.currentThumb].@id.toString();
+			Out.debug(this, "_curThumb: "+_curThumb);
 		}//end function
 		
 		private function _changeMainImg():void{
@@ -98,7 +99,7 @@ package com.strattonimaging.site.display.screens.craft
 			_curThumb = _xml.@type+"_"+c;
 			Out.status(this, "_thumbChanged: new id: "+ _curThumb);
 			_changeMainImg();
-			SWFAddress.setValue(_siteModel.currentScreen+"/"+_siteModel.currentSection+"/"+c);
+			SWFAddress.setValue(_m.currentScreen+"/"+_m.currentSection+"/"+c);
 			
 		}//end function 
 		private function _closeHandler($evt:Event=null):void{
@@ -131,6 +132,7 @@ package com.strattonimaging.site.display.screens.craft
 			_thumbs.animateIn();
 		}
 		private function _animateOutCompleteHandler($evt:Event):void{
+			Out.status(this, "_animateOutCompleteHandler");
 			//dispatchEvent(new Event(Event.CHANGE));		
 		}
 		private function _animateControlsIn($evt:Event=null):void{
@@ -155,7 +157,7 @@ package com.strattonimaging.site.display.screens.craft
 			_destroySequencer();
 			_ss = new SimpleSequencer("Out");
 			_ss.addEventListener(Event.COMPLETE, _animateOutCompleteHandler,false,0,true);
-			_ss.addStep(1, _thumbs.mc, _thumbs.animateOut, AnimationEvent.OUT);
+			_ss.addStep(1, _thumbs, _thumbs.animateOut, AnimationEvent.OUT);
 			_ss.addStep(2, _mainImg.mc, _mainImg.animateOut, AnimationEvent.OUT);
 			_ss.addStep(3, this, super._animateOut, AnimationEvent.OUT);
 			_ss.start();
@@ -179,7 +181,7 @@ package com.strattonimaging.site.display.screens.craft
 			_thumbs_mc 	= $thumbs;
 			_xml 		= $imgList;
 			_bl			= $bigLoader;
-			_siteModel 	= SiteModel.getInstance();
+			_m 	= SiteModel.getInstance();
 			Out.status(this, "new gallery, length = "+ _xml.loadable.length());
 			_init();
 						

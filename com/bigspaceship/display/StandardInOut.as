@@ -132,7 +132,7 @@ package com.bigspaceship.display
 		 * @param $forceAnim Forces the MovieClip to animate Out no matter what the current Screenstate is.
 		 * 
 		 */		
-		public function animateOut($forceAnim:Boolean=false):void{
+		public function animateOut($forceAnim:Boolean=true):void{
 			//trace("animate out called");
 			if((_curState == AnimationState.IN && _curState != AnimationState.OUT_START && _curState != AnimationState.OUT) || $forceAnim){
 				_curState = AnimationState.OUT_START;

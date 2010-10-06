@@ -29,6 +29,7 @@
 
 package com.bigspaceship.display
 {	
+	import com.bigspaceship.loading.BigLoader;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.out.adapters.ArthropodAdapter;
 	
@@ -40,6 +41,7 @@ package com.bigspaceship.display
 	import flash.events.ProgressEvent;
 	import flash.net.URLRequest;
 	
+	import net.ored.util.ORedUtils;
 	import net.ored.util.Resize;
 	
 	/**
@@ -61,12 +63,9 @@ package com.bigspaceship.display
 		public static function getInstance():SiteLoader { return __instance; };
 		
 		public function SiteLoader(){
-			Out.enableAllLevels();
-			Out.silence(Resize);
-			Out.registerDebugger(new ArthropodAdapter(true));
-			Out.clear();
-			//Out.registerDebugger(new FirebugAdapter());
-			//Out.disableAllLevels();
+			
+			//arthropod debugging
+			ORedUtils.turnOutOn();
 			
 			//singleton
 			__instance = this;

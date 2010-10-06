@@ -14,7 +14,7 @@ package com.strattonimaging.site.model
 	import flash.events.IEventDispatcher;
 	import flash.system.Capabilities;
 	
-	import net.ored.util.PrintFlashvars;
+	import net.ored.util.ORedUtils;
 	
 	public class SiteModel extends EventDispatcher
 	{
@@ -27,7 +27,9 @@ package com.strattonimaging.site.model
 		private var _flashvars								:Object;
 		private var _nextScreen								:String;
 		private var _currentScreen							:String; // learn, craft, credits, connect
+		//craft stuff
 		private var _currentSection							:String; // could be service, credit, which about ect
+		private var _currentThumb							:Number;
 		
 		//ftp stuff
 		private var _ftpUser								:FTPUser;
@@ -55,7 +57,7 @@ package com.strattonimaging.site.model
 			//if(Environment.DOMAIN == "strattonimaging.com"){
 				_flashvars = $loaderInfo.parameters;
 				_baseUrl =  unescape(getFlashVar("baseUrl")); 
-				PrintFlashvars.o(_flashvars);
+				ORedUtils.printFlashVars(_flashvars);
 			}
 			else _baseUrl = "http://localhost/";
 			
@@ -136,6 +138,8 @@ package com.strattonimaging.site.model
 		public function set currentScreen($screenId:String):void { _currentScreen = $screenId; }
 		public function get currentSection():String { return _currentSection; }
 		public function set currentSection($screenId:String):void { _currentSection = $screenId; }
+		public function get currentThumb():Number { return _currentThumb; }
+		public function set currentThumb($thumbId:Number):void { _currentThumb = $thumbId; }
 		
 		//vars
 		public function get baseUrl():String{ return _baseUrl;}
