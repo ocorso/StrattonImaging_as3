@@ -46,13 +46,7 @@ package com.strattonimaging.site.display.components
 				Out.info(this, "the id of this button is: "+ id); 
 				//setup nav btns
 				_navIdsToItems[id] = new StandardButton(_mc.tabs_mc[id + "_mc"], _mc.tabs_mc[id + "_mc"].btn);
-				//store tint color value in btn
-				switch (id){
-					case Constants.LEARN 	: _addHoverTweens(_navIdsToItems[id], Constants.TINT_GREEN); break;
-					case Constants.CRAFT 	: _addHoverTweens(_navIdsToItems[id], Constants.TINT_YELLOW); break;
-					case Constants.CREDITS 	: _addHoverTweens(_navIdsToItems[id], Constants.TINT_RED); break;
-					case Constants.CONNECT 	: _addHoverTweens(_navIdsToItems[id], Constants.TINT_BLUE); break;
-				}//end switch
+				
 				if (id!="home")	{
 					_navIdsToItems[id].mc.text_mc.inner.tf.text = id.toUpperCase();		
 				}
@@ -122,8 +116,17 @@ package com.strattonimaging.site.display.components
 			
 		}//end function
 		override protected function _onAnimateIn():void{
-			Out.info(this, "HEEEEEEYYYYY_onAnimateIn()");
-			
+			Out.status(this, "_onAnimateIn()");
+			//store tint color value in btn
+			for (var id:String in _navIdsToItems){
+				switch (id){
+					case Constants.LEARN 	: _addHoverTweens(_navIdsToItems[id], Constants.TINT_GREEN); break;
+					case Constants.CRAFT 	: _addHoverTweens(_navIdsToItems[id], Constants.TINT_YELLOW); break;
+					case Constants.CREDITS 	: _addHoverTweens(_navIdsToItems[id], Constants.TINT_RED); break;
+					case Constants.CONNECT 	: _addHoverTweens(_navIdsToItems[id], Constants.TINT_BLUE); break;
+				}//end switch
+				
+			}//end for
 		}//end function
 		
 	}//end class

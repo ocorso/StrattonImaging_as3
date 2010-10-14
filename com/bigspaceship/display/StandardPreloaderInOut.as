@@ -91,7 +91,7 @@ package com.bigspaceship.display
 		public function updateProgressPercent($percent:Number):void{
 			if(_progress_mc){
 				_targetFrame = Math.floor(_progress_mc.totalFrames * $percent);
-				Out.debug(this, "updateProgressPercent :: " +  _progress_mc.currentFrame + "/" +_progress_mc.totalFrames + " :: " + _targetFrame +' :: '+$percent);
+				//Out.debug(this, "updateProgressPercent :: " +  _progress_mc.currentFrame + "/" +_progress_mc.totalFrames + " :: " + _targetFrame +' :: '+$percent);
 			}else{
 				Out.debug(this, "updateProgressPercent :: _progress_mc does NOT EXIST!");
 			}

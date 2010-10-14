@@ -44,7 +44,7 @@ package com.strattonimaging.site.model
 		public static const TINT_GREEN						:uint = 0x009900;
 		public static const TINT_YELLOW						:uint = 0xFFFF00;
 		public static const TINT_RED						:uint = 0xFF0000;
-		public static const TINT_BLUE						:uint = 0x3300FF;
+		public static const TINT_BLUE						:uint = 0x556dff;
 		
 		
 		//components

@@ -3,6 +3,8 @@ package net.ored.util
 	import com.bigspaceship.loading.BigLoader;
 	import com.bigspaceship.utils.Out;
 	import com.bigspaceship.utils.out.adapters.ArthropodAdapter;
+	
+	import flash.display.Sprite;
 
 	public class ORedUtils
 	{
@@ -44,5 +46,23 @@ package net.ored.util
 			}
 			Out.debug(o, "---------------------------------");
 		}//end function
+		
+		/**
+		 * This is a function that returns a sprite that is a rectangle 
+		 * filled with either red or cyan (#00FFFF)
+		 *  
+		 * @param $w - width of the rectangle
+		 * @param $h - height of the rectange
+		 * 
+		 * @return - the newly created sprite
+		 * 
+		 */		
+		public static function gimmeRect($w:Number, $h:Number):Sprite{
+			var r:Sprite = new Sprite();
+			r.graphics.beginFill(0x00FFFF,1);
+			r.graphics.drawRect(0,0,$w,$h);
+			r.graphics.endFill();
+			return r;
+		}
 	}//end class
 }//end package

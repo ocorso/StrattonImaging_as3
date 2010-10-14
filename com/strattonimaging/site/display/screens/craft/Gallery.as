@@ -29,7 +29,7 @@ package com.strattonimaging.site.display.screens.craft
 		private var _mainImg			:StandardInOut;
 		private var _thumbs				:Thumbs;
 		private var _thumbs_mc			:MovieClip;
-		private var _curThumb			:String;
+		private var _curThumbId			:String;
 		private var _curImg				:Bitmap;
 		
 		private const _MAIN_IMG_WIDTH	:int = 400;
@@ -44,9 +44,9 @@ package com.strattonimaging.site.display.screens.craft
 		// =================================================		
 		private function _init():void{
 			Out.status(this, "init");
-			_curThumb = _xml.loadable[0].@id.toString();
 			mc.tf.txt.text = _xml.label.toString();
-			
+			_curThumbId = _xml.loadable[_m.currentThumb-1].@id.toString();
+			Out.debug(this, "_curThumbId: "+ _curThumbId);
 			//controls
 			_prev = new StandardButton(mc.prev_mc, mc.prev_mc.btn);	
 			_prev.addEventListener(MouseEvent.CLICK, _prevHandler);
@@ -58,22 +58,23 @@ package com.strattonimaging.site.display.screens.craft
 			
 			//standardInOuts			
 			_mainImg = new StandardInOut(mc.mainImg_mc);
-			_changeMainImg();
 			
 			_thumbs = new Thumbs(mc.thumbs_mc);
 			_thumbs.addEventListener(Event.CHANGE, _thumbChanged);
 			
 			for(var e:String in _xml.loadable){
+				Out.debug(this, "index: "+ e);
 				Out.debug(this, _xml.loadable[e].@id);
 				_thumbs.addThumb(_bl.getLoadedAssetById(_xml.loadable[e].@id.toString()));
 			}//end for in
 			_thumbs.current = _m.currentThumb;
-			_curThumb = _xml.loadable[_m.currentThumb].@id.toString();
-			Out.debug(this, "_curThumb: "+_curThumb);
+			_curThumbId = _xml.loadable[_m.currentThumb-1].@id.toString();
+			_changeMainImg();
+			Out.debug(this, "_curThumbId: "+_curThumbId);
 		}//end function
 		
 		private function _changeMainImg():void{
-			var bmd:BitmapData = Bitmap(_bl.getLoadedAssetById(_curThumb)).bitmapData.clone();
+			var bmd:BitmapData = Bitmap(_bl.getLoadedAssetById(_curThumbId)).bitmapData.clone();
 			var bm:Bitmap = new Bitmap(bmd);
 			var w:int = bmd.width;
 			Out.status(this, "_changeMainImg:: asset width: "+ w);
@@ -94,10 +95,10 @@ package com.strattonimaging.site.display.screens.craft
 		// =================================================
 		// ================ Handlers
 		// =================================================
-		private function _thumbChanged($evt:Event):void{
+		private function _thumbChanged($evt:Event = null):void{
 			var c:int = _thumbs.current +1;
-			_curThumb = _xml.@type+"_"+c;
-			Out.status(this, "_thumbChanged: new id: "+ _curThumb);
+			_curThumbId = _xml.@type+"_"+c;
+			Out.status(this, "_thumbChanged: new id: "+ _curThumbId);
 			_changeMainImg();
 			SWFAddress.setValue(_m.currentScreen+"/"+_m.currentSection+"/"+c);
 			

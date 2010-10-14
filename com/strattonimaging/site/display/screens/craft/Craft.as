@@ -72,7 +72,7 @@ package com.strattonimaging.site.display.screens.craft
 				Out.debug(this, "current service = "+_m.currentSection);
 				if(!_bGalleryIn) _onHideServices();
 				if (swfArr.length == 3)	_m.currentThumb = swfArr[2];
-				else _m.currentThumb = 0;
+				else _m.currentThumb = 1;
 			}
 				
 			//this is what we do as a defualt
@@ -294,12 +294,13 @@ package com.strattonimaging.site.display.screens.craft
 			if (swfArr.length > 1){
 				_m.currentSection = swfArr[1];
 				if (swfArr.length == 3) _m.currentThumb = swfArr[2];
-				else _m.currentThumb = 0;
+				else _m.currentThumb = 1;
 				_createGallery();
 				_bGalleryIn = true;
 				_ss.addStep(n, _gallery, _gallery.animateIn, AnimationEvent.IN);
 			}else{
 				// oc: services
+				_m.currentThumb = 1;
 				for each(var s:StandardButtonInOut in _serviceIdsToItems){
 					n++;
 					_ss.addStep(n, s.mc, s.animateIn, "NEXT_IN");

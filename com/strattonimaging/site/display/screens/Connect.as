@@ -6,97 +6,133 @@ package com.strattonimaging.site.display.screens
 	import flash.display.MovieClip;
 	import flash.display.Stage;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
 	
 	import net.ored.util.Resize;
 
 	public class Connect extends Screen implements IScreen
 	{
-		public function Connect($mc:MovieClip, $xml:XML, $useWeakReference:Boolean=false)
-		{
-			super($mc, $xml, $useWeakReference);
-		}//end constructor
+		private const __TOUT_OFFSET_X:Number = 360;
 		
-		override protected function _loadComplete($evt:Event):void
-		{
-			dispatchEvent($evt);
-		}
-		
+		// =================================================
+		// ================ Callable
+		// =================================================
 		public override function onURLChange():void{
 			super.onURLChange();
 			Out.status(this, "we'd do something within the same screen here");
-		}//end function
-		
-		override protected function _onAnimateInStart():void{
-			Out.status(this, "onAnimateInStart");
-			
+		}//end function		
+		// =================================================
+		// ================ Workers
+		// =================================================
+		private function _init():void{
 			setupButtons();
 			setupResize();
-			
 		}//end function
+		// =================================================
+		// ================ Handlers
+		// =================================================
+		private function _handleEmailClick($me:MouseEvent):void{
+			Out.status(this, "_handleEmailClick");
+			navigateToURL(new URLRequest("mailto:info@strattonimaging.com"));
+		}
+		// =================================================
+		// ================ Animation
+		// =================================================
 		
-		override protected function _onAnimateIn():void{
-			Out.status(this, "onAnimateIn(): but i can't see it");
-		}//end function
+		// =================================================
+		// ================ Getters / Setters
+		// =================================================
+		
+		// =================================================
+		// ================ Interfaced
+		// =================================================
 		public function setupButtons():void{
-			
+			mc.tout2_mc.inner.emailBtn.addEventListener(MouseEvent.CLICK, _handleEmailClick);
 		}//end function
 		
 		public function setupResize():void{
 			
 			Resize.add(
 				"@ConnectGrad",
-				_mc.grad_mc.g,
+				mc.grad_mc.g,
 				[Resize.FULLSCREEN_X, Resize.CUSTOM],
 				{
-				
-				custom:	function($target:*, $params:*, $stage:Stage):void{
-						
-						Out.debug(this, "grad w: "+_mc.grad_mc.width+" grad h: "+_mc.grad_mc.height+ " grad alpha: "+_mc.grad_mc.alpha);
-							if ($stage.stageHeight > 643) _mc.grad_mc.g.height = $stage.stageHeight - (Constants.BOTTOM_OFFSET - 135);
-							else _mc.grad_mc.g.height = 389;
+					custom:	function($target:*, $params:*, $stage:Stage):void{
+						Out.debug(this, "grad w: "+mc.grad_mc.width+" grad h: "+mc.grad_mc.height+ " grad alpha: "+mc.grad_mc.alpha);
+						if ($stage.stageHeight > 643) mc.grad_mc.g.height = $stage.stageHeight - (Constants.BOTTOM_OFFSET - 135);
+						else mc.grad_mc.g.height = 389;
 					}//end custom function
 				}//end 4th resize add parameter
 			);//end @Grad
 			Resize.add(
 				"@ConnectTitle",
-				_mc.title_mc.txt,
+				mc.title_mc.inner,
 				[Resize.CENTER_X, Resize.CUSTOM],
 				{
-				custom:	function($target:*, $params:*, $stage:Stage):void{
+					custom:	function($target:*, $params:*, $stage:Stage):void{
+						mc.title_mc.inner.x += 100;
 						if ($stage.stageHeight > 643){
-							_mc.title_mc.txt.y = ($stage.stageHeight-643)/2;
-					 	}else _mc.title_mc.txt.y = 0;
+							mc.title_mc.inner.y = ($stage.stageHeight-643)/2;
+						}else mc.title_mc.inner.y = 0;
 						
 					}
 				}
 			);//end connect title
 			Resize.add(
-				"@ConnectAddress",
-				_mc.address_mc.txt,
+				"@ConnectTout1",
+				mc.tout1_mc.inner,
 				[Resize.CENTER_X, Resize.CUSTOM],
 				{
-				custom:	function($target:*, $params:*, $stage:Stage):void{
+					custom:	function($target:*, $params:*, $stage:Stage):void{
+						mc.tout1_mc.inner.x -= __TOUT_OFFSET_X;
 						if ($stage.stageHeight > 643){
-							_mc.address_mc.txt.y = ($stage.stageHeight-643)/2;
-					 	}else _mc.address_mc.txt.y = 0;
+							mc.tout1_mc.inner.y = ($stage.stageHeight-643)/2;
+						}else mc.tout1_mc.inner.y = 0;
 						
 					}
 				}
-			);//end connect title
+			);//end connect tout1
 			Resize.add(
-				"@ConnectPhone",
-				_mc.phone_mc.txt,
+				"@ConnectTout2",
+				mc.tout2_mc.inner,
 				[Resize.CENTER_X, Resize.CUSTOM],
 				{
-				custom:	function($target:*, $params:*, $stage:Stage):void{
+					custom:	function($target:*, $params:*, $stage:Stage):void{
+						mc.tout2_mc.inner.x -= __TOUT_OFFSET_X;
 						if ($stage.stageHeight > 643){
-							_mc.phone_mc.txt.y = ($stage.stageHeight-643)/2;
-					 	}else _mc.phone_mc.txt.y = 0;
+							mc.tout2_mc.inner.y = ($stage.stageHeight-643)/2;
+						}else mc.tout2_mc.inner.y = 0;
 						
 					}
 				}
 			);//end connect title
 		}//end function
+		// =================================================
+		// ================ Core Handler
+		// =================================================
+		
+		// =================================================
+		// ================ Overrides
+		// =================================================
+		override protected function _onAnimateInStart():void{
+			Out.status(this, "onAnimateInStart");
+			
+		}//end function
+		
+		override protected function _onAnimateIn():void{
+			Out.status(this, "onAnimateIn(): but i can't see it");
+		}//end function
+		// =================================================
+		// ================ Constructor
+		// =================================================
+
+		public function Connect($mc:MovieClip, $xml:XML, $useWeakReference:Boolean=false)
+		{
+			super($mc, $xml, $useWeakReference);
+			_init();
+		}//end constructor
 		
 	}//end class
 }//end package

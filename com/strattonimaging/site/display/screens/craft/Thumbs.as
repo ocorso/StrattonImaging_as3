@@ -9,15 +9,22 @@ package com.strattonimaging.site.display.screens.craft
 	import com.strattonimaging.site.model.SiteModel;
 	
 	import flash.display.MovieClip;
+	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.utils.Dictionary;
+	
+	import net.ored.util.ORedUtils;
 
 	public class Thumbs extends StandardInOut
 	{
 		private const _THUMB_HEIGHT		:int = 34;
 		private const _THUMB_MAX_WIDTH	:int = 53;
-		private const _THUMB_PADDING	:int = 5;
+		private const _THUMB_PADDING	:int = 6;
+		private const _MASK_WIDTH		:Number = 418; 
+		private const _MASK_HEIGHT		:Number = 52;
+		private const _MASK_X			:Number = 0;
+		private const _MASK_Y			:Number = 0;
 		
 		private var _m					:SiteModel;
 		private var _thumbsDict			:Dictionary;
@@ -30,23 +37,18 @@ package com.strattonimaging.site.display.screens.craft
 // ================ Callable
 // =================================================
 		public function addThumb($asset:*):void{
-			Out.status(this, "addThumb; asset: "+$asset);
+			Out.status(this, "addThumb; _current: "+_current);
 			$asset.height 	= _THUMB_HEIGHT;
 			$asset.width 	= _THUMB_MAX_WIDTH;
 			var id:String 	= "t"+_current;
-			//old static 
-			//mc[id].visible 	= true;
-			//mc[id].img.addChild($asset);
-			//_thumbsDict[id] = new StandardButton(mc[id], mc[id].btn);
-			//_thumbsDict[id].addEventListener(MouseEvent.CLICK, _thumbClickHandler);
-			
-			//new dynamic
+			//new dynamic thumbs, gimmeRect IS a function!
+			var thumbMask:Sprite = _gimmeRect(_MASK_WIDTH,_MASK_HEIGHT);
 			var thumbClip:MovieClip = Lib.createAsset("com.strattonimaging.site.display.screens.craft.ThumbClip",_m.siteAssets) as MovieClip;
 			thumbClip.x = _current*(_THUMB_MAX_WIDTH + _THUMB_PADDING);
 			thumbClip.name = id;
-			thumbClip.visible 	= true;
 			thumbClip.mc.img.addChild($asset);
-			thumbClip.mask = mc.mask_mc;
+			thumbClip.mask = thumbMask;
+			mc.addChild(thumbMask);
 			mc.addChild(thumbClip);
 			
 			_thumbsDict[id] = new StandardButton(thumbClip.mc, thumbClip.mc.btn);
@@ -76,8 +78,25 @@ package com.strattonimaging.site.display.screens.craft
 		_m 			= SiteModel.getInstance();
 		_thumbsDict = new Dictionary();
 		_thumbsVect = new Vector.<StandardInOut>();
-		_current	= _m.currentThumb;
 	}//end function
+	
+	/**
+	 * This is a function that returns a sprite that is a rectangle 
+	 * filled with either red or cyan (#00FFFF)
+	 *  
+	 * @param $w - width of the rectangle
+	 * @param $h - height of the rectange
+	 * 
+	 * @return - the newly created sprite
+	 * 
+	 */		
+	private function _gimmeRect($w:Number, $h:Number):Sprite{
+		var r:Sprite = new Sprite();
+		r.graphics.beginFill(0x00FFFF,1);
+		r.graphics.drawRect(0,0,$w,$h);
+		r.graphics.endFill();
+		return r;
+	}//end function 
 	
 	private function _destroySequencer():void{
 		if(_ss){
@@ -85,7 +104,7 @@ package com.strattonimaging.site.display.screens.craft
 				_ss.removeEventListener(Event.COMPLETE,_animateOutSequencer_COMPLETE_handler);
 				_ss = null;
 			}
-	}
+	}//end function
 // =================================================
 // ================ Handlers
 // =================================================
@@ -157,13 +176,13 @@ package com.strattonimaging.site.display.screens.craft
 		override protected function _onAnimateIn():void{
 			//deselect all thumbs prior to showing the thumbs.
 			for each(var s:StandardButton in _thumbsDict){s.deselect();}
-			_thumbsDict["t0"].select();
+			_thumbsDict["t"+ (_current-1)].select();
 		}
 		override protected function _onAnimateOut():void{
 			for each(var s:StandardButton in _thumbsDict){s.deselect();}
 			mc.visible = false;
 			dispatchEvent(new AnimationEvent(AnimationEvent.OUT));
-			_m.currentThumb = 0;
+			_m.currentThumb = 1;
 		}
 // =================================================
 // ================ Constructor
@@ -173,8 +192,7 @@ package com.strattonimaging.site.display.screens.craft
 		{
 			super($mc);
 			_init();
-			_m 			= SiteModel.getInstance();
-			_thumbsDict = new Dictionary();
+
 		}//end constructor
 		
 	}//end class

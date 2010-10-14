@@ -59,8 +59,10 @@ package com.strattonimaging.site.model
 				_baseUrl =  unescape(getFlashVar("baseUrl")); 
 				ORedUtils.printFlashVars(_flashvars);
 			}
-			else _baseUrl = "http://localhost/";
-			
+			else {
+				_baseUrl = "http://localhost/";
+				currentThumb = 1;
+			}			
 			Out.info(this, "Here is the base URL: "+ _baseUrl);
 			
 		}//end function
