@@ -58,9 +58,9 @@ package com.strattonimaging.site.display.screens.craft
 			
 			//standardInOuts			
 			_mainImg = new StandardInOut(mc.mainImg_mc);
-			
 			_thumbs = new Thumbs(mc.thumbs_mc);
 			_thumbs.addEventListener(Event.CHANGE, _thumbChanged);
+			
 			
 			for(var e:String in _xml.loadable){
 				Out.debug(this, "index: "+ e);

@@ -12,6 +12,7 @@ package com.strattonimaging.site.model
 	import flash.display.LoaderInfo;
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
+	import flash.external.ExternalInterface;
 	import flash.system.Capabilities;
 	
 	import net.ored.util.ORedUtils;
@@ -154,6 +155,7 @@ package com.strattonimaging.site.model
 		// ================ Core Handler
 		// =================================================
 		private function _swfAddressOnChange($evt:SWFAddressEvent):void{
+			
 			//  determine deeplink
 			Out.status(this,"_swfAddressOnChange();");
 			
@@ -163,6 +165,7 @@ package com.strattonimaging.site.model
 			var screenId:String = "";
 			if(paths.length == 0 || paths[0] == "") screenId = _configXml.settings.setting.(@id == "defaultScreen").@value.toString();
 			else{
+				if (ExternalInterface.available) ExternalInterface.call("track", paths.join("/"));
 				var prettyURL:String = paths[0];
 				var screenNode:XMLList = _configXml.loadables.(@type == "screens").component.(@pretty_url == prettyURL);
 				if(screenNode.length() == 0) screenId = _configXml.settings.setting.(@id == "defaultScreen").@value.toString();
@@ -175,6 +178,7 @@ package com.strattonimaging.site.model
 			
 			if(_nextScreen != _currentScreen) dispatchEvent(new NavigationEvent(NavigationEvent.NAVIGATE));
 			else dispatchEvent($evt);
+			
 		}//end function		
 		
 		// =================================================

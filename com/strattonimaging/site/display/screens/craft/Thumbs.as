@@ -112,8 +112,10 @@ package com.strattonimaging.site.display.screens.craft
 			
 			var s:String = StandardButton($me.target).mc.parent.name;
 			Out.status(this, "_thumbClickHandler: "+ s);
+			for(var e:String in _thumbsDict) _thumbsDict[e].deselect();
+			//_thumbsDict["t0"].deselect();
 			_thumbsDict[s].select();
-			_thumbsDict["t"+current].deselect();
+			//_thumbsDict["t"+current].deselect();
 			current = s.charAt(1);
 			Out.debug(this, "current = "+current);
 			dispatchEvent(new Event(Event.CHANGE));
